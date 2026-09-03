@@ -1,0 +1,67 @@
+---
+title: A company that runs out of a folder of text files
+kind: note
+area: agent-operations
+date: 2026-09-03
+status: draft
+summary: How a one-person software company runs its daily operations through a crew of named agents working over plain Markdown — what's enforced in code, what's only a prompt, and what has broken so far.
+caveats:
+  - This describes one company at one size. Nothing here has been shown to hold for a team.
+  - The numbers cited (nine ticks a day, three parallel sessions, two review rounds) are the current configuration, not measured optima.
+  - Agents drafted this description of the system they run inside. A human reviewed it; the reviewer is also the system's only user.
+artifacts: []
+artifactsNote: The vault is one company's live operating state and isn't released. The design is what's public; a scrubbed prompt set is under consideration.
+corrections: []
+---
+
+Intrinsic Labs is one person. It has clients, three product bets, a research program and a lot of admin, and for about two months it has run most of its day-to-day operations through a small crew of AI agents. This note is what that actually looks like — the mechanics, not the pitch — because the arrangement is one of the things this lab studies, and because most descriptions of "agentic companies" are written by people selling one.
+
+## The folder
+
+Everything the company knows about itself lives as plain Markdown in one folder, opened in an ordinary notes app. Each project has a brief (what it is, where it stands, what's next, the decisions and why), a directory of tasks (one file per task, with an id that never changes), and a `docs/` folder for anything worth keeping. The business itself — agreements, finance, a decision log — is a project too. There is no database. There is no dashboard that isn't generated from those files. The folder is a git repository, and the git history is the only journal; nobody, human or agent, writes a log.
+
+Two files are the human's whole interface. One is an inbox: he dumps ideas, call notes and half-thoughts there in whatever order they arrive, from a phone if that's what's in his hand. The other is a to-do list that holds *only things that need a human* — a client to answer, a decision to make, a preview to approve — grouped by project. He checks things off. That's most of what he does with the system.
+
+## The crew
+
+Five agents, each with a name, so that the same worker is called the same thing in a task file, in a document and in the chat channel where he talks to them.
+
+The **Superintendent** runs the daily loop: nine times a day, six days a week, one model session reads the inbox and routes every item into the right project, checks each project's stated position against its code repository's recent history and corrects what's drifted, rewrites the to-do list, and leaves a short prose note about anything it judged or couldn't. A deterministic layer around it does the checkable things — syncing his check-offs back into the task files, snapshotting, committing, pushing — with no model involved.
+
+An **executor** picks up tasks the human has delegated and runs each one as its own session: in a git worktree, on a branch, ending in a pull request. Up to three run at once, at most one per project.
+
+A **maintenance agent** does the nightly checkup and sweep, watches the scheduled jobs and repairs one that stops firing, polls every repository's CI and says so once when a lane goes red.
+
+An **arbiter** twice a week reads each repository's agent instructions against what the code actually does and reports the discrepancies, and red-teams the week's changes.
+
+The fifth is a persona experiment and out of scope here.
+
+None of them has a hardcoded prompt. Every prompt any agent is ever sent is a Markdown file in the same folder, read fresh from disk on every run, so editing one in the notes app changes the next run with no code, no build and no restart.
+
+## What's enforced in code, and what isn't
+
+This is the part worth reading closely, because it's where most "agent company" descriptions get vague.
+
+**Autonomy is a declaration, per project, and a missing one means nothing runs.** Each project's brief carries a single line:
+
+```
+autonomy: gated
+```
+
+`locked` — the agent drafts, a human commits. `gated` — the agent builds to a boundary (a deploy, a device test, anything a client would see), then stops and queues a decision. `open` — the agent runs the task to completion and its branch lands by itself. A project with no line is never executed, and that default lives in the code that spawns sessions. Only the human may write or change that line; a guard snapshots every brief before a session starts and reverts the line if the session touched it, keeping every other edit and saying so out loud. The prohibition used to be prompt law; it became code after the prompt version was found to be exactly as strong as a prompt.
+
+**No repository work publishes unreviewed.** Every executor session ends by requesting a review from a fresh session that never saw the author's conversation — its only context is the diff and the task. The author fixes what comes back, at most twice, and the chassis checks the review report against the branch's final state, re-running the review if the report is stale. The reviewer's tool permissions deny it any messaging, so it cannot be argued with. High-severity findings withhold automatic landing: the work ships as a PR carrying the findings, for a human.
+
+**Nothing outward-facing has an agent path.** Production deploys, sends, publishes and purchases require an explicit human yes. The sanctioned exceptions are narrow deterministic tools, each refusing anything outside its shape: push a branch with a specific prefix, open a PR, deploy a *preview*, append to the decision queue. Production promotion has no agent path at all.
+
+**Sundays, nothing runs and nothing answers.** The whole system stands down from Saturday evening to Monday morning, by code, in one file every job reads. A message to any channel gets one automated "closed — reopens Monday" and nothing else.
+
+And then the honest half. **Some walls are prompt-only.** The browsing tool can click and submit on a real website; its "read, never transact" rule is an instruction. When an agent may message a peer session, the rule that a peer's answer is an opinion and never a permission is an instruction. We know which walls are which, we write it down next to each one, and the pattern so far has been that a prompt wall becomes a code wall after it's been found leaning.
+
+## What has broken
+
+A partial list, because the list is the point.
+
+A gated task's line stayed open for the days its PR waited on a human, and every tick re-did the work: one task made four branches and four PRs in one day before the chassis learned to check for an unlanded branch. The land step fast-forwarded the local default branch and pushed without asking the remote whether it was still current — so a merge the human made from his phone was silently reverted minutes later, with a clean tree and green CI. Executor sessions told to check their task's box "if the task is genuinely done" checked it at PR time on gated work, closing a line that was supposed to stay open until a human merged; the chassis now closes those. A logging channel meant to keep two versions of the same agent in sync was wired for a week and carried nothing, because the writer never fired. For a stretch, 61% of executor sessions were the system working on itself, which is now capped at one per tick.
+
+Every one of these was found by looking at the record the system keeps of its own operation. That is the case for the whole arrangement, and it is also the research program: a company small enough that one person can see all of it, instrumented well enough that the failures are legible, run by agents doing work that matters to someone. The studies in the agent-operations area come out of that record. This note is the map.

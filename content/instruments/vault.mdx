@@ -1,0 +1,34 @@
+---
+name: The vault
+measures: Agent operations — dispatch, review, autonomy, drift.
+area: agent-operations
+status: described
+statusNote: Described here; the code is private for now.
+order: 1
+---
+
+The vault is the company. Not a metaphor: every project's state, every open task, every decision and its rationale, and every prompt any agent is ever sent lives as a plain Markdown file in one folder. A person reads and writes it in an ordinary notes app, from a laptop or a phone. A crew of named agents reads and writes it on a schedule.
+
+## What it does, mechanically
+
+Nine times a day, six days a week, a scheduled tick runs one model session over the whole folder. It consumes the inbox — an unorganized brain-dump file — and routes each item to the right project. It checks each project's stated position against its code repository's history and corrects drift. It rewrites the human's to-do list to hold only the things that genuinely need a human. Around that one judgment pass sits a deterministic chassis that does the boring, checkable things — syncing check-offs, taking snapshots, committing, pushing — without a model in the loop.
+
+Separately, an executor picks up tasks that are marked as delegable and runs each one as its own session in a git worktree, on a branch, ending in a pull request. Whether that PR lands by itself or waits for a human depends on a single line in the project's file:
+
+```
+autonomy: gated
+```
+
+`locked` means draft only. `gated` means build to a boundary — a deploy, a device test, a client send — then stop and ask. `open` means run to completion. A project with no line never executes, and the rule is enforced in the code that spawns sessions, not in the prompt.
+
+## Why it's an instrument
+
+Every one of those sessions writes a run report. Every review gate records what it found. Every autonomy refusal, every held task and the reason, every decision that had to go to a human — all of it is logged in the same plain files. That makes the vault a continuous record of what agents actually do when the work is real and the stakes are someone's actual company, which is the dataset the agent-operations research area is built on.
+
+## The review gate
+
+No repository work publishes unreviewed. Every executor session ends by requesting a review from a fresh, read-only session that never saw the author's conversation — its only context is the diff and the task. The author fixes what comes back, at most twice. The reviewer's tool permissions deny it any way to be messaged, so it cannot be argued into leniency; that isolation is code, not instruction. High-severity findings withhold automatic landing and the work ships as a PR carrying the findings instead.
+
+## What is not released
+
+The code, for now, and everything in the folder — it is one company's operating state. What we publish is the design, the measurements, and the failures.

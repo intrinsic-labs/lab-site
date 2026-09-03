@@ -1,69 +1,58 @@
-import Image from "next/image";
+import { listablePosts, countByKind } from "@/lib/content/posts";
+import { Specimen } from "@/components/home/Specimen";
+import { AreaCards } from "@/components/home/AreaCards";
+import { InstrumentStrip } from "@/components/home/InstrumentStrip";
+import { HowThisWorks } from "@/components/home/HowThisWorks";
+import { SectionHead } from "@/components/ui/SectionHead";
+import { PostList } from "@/components/research/PostList";
 
-export default function Home() {
+export default async function Home() {
+  const posts = await listablePosts();
+  const counts = await countByKind();
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="mx-auto max-w-6xl px-6">
+      {/* 00 Masthead */}
+      <section className="grid-paper -mx-6 px-6 pt-20 pb-16 border-b border-rule">
+        <div className="grid gap-12 lg:grid-cols-[1.1fr_1fr] lg:items-end">
+          <div>
+            <p className="label mb-6">Intrinsic Labs · a research studio</p>
+            <h1 className="font-serif text-[2.6rem] sm:text-6xl font-medium tracking-tight leading-[1.02] max-w-[16ch]">
+              We build the instruments we need, run our work through them, and publish what they measure.
+            </h1>
+            <p className="mt-8 text-xl text-ink-2 max-w-[38ch] leading-snug">
+              A one-person lab. N-of-1 elicitation, agents doing real work, and models on hardware we own —
+              reported plainly, <span className="marker">including when the method didn&apos;t work.</span>
+            </p>
+          </div>
+          <Specimen />
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+      </section>
+
+      <section className="pt-16">
+        <SectionHead n="01" title="Research areas" href="/research" hrefLabel="Index" />
+        <AreaCards posts={posts} />
+      </section>
+
+      <section className="pt-20">
+        <SectionHead n="02" title="Latest" href="/research" />
+        <PostList posts={posts.slice(0, 6)} empty="Nothing published yet. The first notes are in review." />
+        <p className="label mt-5">
+          {counts.paper} {counts.paper === 1 ? "paper" : "papers"} · {counts.note} {counts.note === 1 ? "note" : "notes"} ·{" "}
+          {counts["field-note"]} field {counts["field-note"] === 1 ? "note" : "notes"}
+          {counts.paper === 0 && " — there are no papers yet, and we say so."}
+        </p>
+      </section>
+
+      <section className="pt-20">
+        <SectionHead n="03" title="Instruments" href="/instruments" />
+        <InstrumentStrip />
+      </section>
+
+      <section className="pt-20">
+        <SectionHead n="04" title="How this works" />
+        <HowThisWorks />
+      </section>
     </div>
   );
 }

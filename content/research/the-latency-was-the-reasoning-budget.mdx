@@ -1,0 +1,28 @@
+---
+title: The latency was the reasoning budget, not the model
+kind: field-note
+area: local-compute
+date: 2026-09-03
+status: draft
+summary: A 27B open-weight model measured at 38–256 seconds per item and looked like a non-candidate. With reasoning turned off it became the fastest local engine in the round and classified 300 items in 70 minutes.
+caveats:
+  - One task (three-way classification of short transcript excerpts), one machine (a 32 GB Apple Silicon desktop), one runtime (LM Studio). Numbers are conditions, not properties of the model.
+  - Accuracy with reasoning off was measured on the same 300-item slice but is not compared here; this note is about latency and about the knobs actually taking effect.
+artifacts: []
+artifactsNote: Per-call timings and the reasoning-token audit live in the private pipeline repo alongside corpus rows.
+corrections: []
+---
+
+In a model comparison round, Qwen3.8-27B ran at a default "high" reasoning tier and measured **38–256 seconds per item**, clustering near two minutes. Its predecessor did the same items in about 31 seconds. The natural read was that the newer model was too slow for a 3,800-item pass and should be dropped.
+
+The person reviewing the numbers said it "smells like we haven't gotten the model working properly yet," and asked for the fair retest: same slice, same prompt, reasoning off.
+
+He was right. **With reasoning disabled, Qwen3.8 was the fastest local engine in the round** — ahead of Qwen3.6 — and finished all 300 items in 70 minutes of wall clock. The latency had been the thinking budget, not the model.
+
+Three things worth keeping from the retest:
+
+**The tell that a knob took is in the response, never in the flag you sent.** `reasoning_effort` and `enable_thinking` are both accepted by the API without complaint whether or not the runtime honours them. What proves the setting landed is `usage.completion_tokens_details.reasoning_tokens` and the length of `message.reasoning_content` on the way back. All 300 reasoning-off rows came back with zero reasoning content; every row from the earlier runs has it. That is the audit trail, and without it "we ran it with reasoning off" is an assertion.
+
+**"MLX is faster on Apple Silicon" is a rule of thumb, not a fact about your machine.** MLX quantizations for this model landed hours after the GGUF ones. Measured head-to-head on the same slice, the MLX 4-bit build ran ~40 s/item against the GGUF's ~29 — and worse, **it could not be made to stop reasoning**: the MLX runtime accepted both knobs and silently ignored them. Only the llama.cpp/GGUF path honoured them. The GGUF build also ships speculative decoding (the API confirms it in `stats.accepted_draft_tokens_count`), which accounts for most of its win. The round ran on the GGUF.
+
+**A 4× headline is relative to its own default.** The earlier round had noted that dropping to `reasoning_effort: low` made one item go from 152 s to 34 s. That was one lucky item; over a wider run "low" still measured 38–256 s, tracking the length of the excerpt being classified. The 4× was real *relative to the default tier*. It did not make the model fast. Off did.

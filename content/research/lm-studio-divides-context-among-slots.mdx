@@ -1,0 +1,19 @@
+---
+title: LM Studio divides the context window among parallel slots
+kind: field-note
+area: local-compute
+date: 2026-09-03
+status: draft
+summary: "\"-c 16384 --parallel 4\" gives each concurrent request 4k of context, not 16k. Every call in a four-item probe died with \"context size exceeded\" before anything was measured."
+caveats:
+  - Observed on LM Studio's llama.cpp runtime on one machine in August 2026. The behaviour is plausibly the upstream server's, and may change.
+artifacts: []
+artifactsNote: Nothing to release; the finding is the sentence.
+corrections: []
+---
+
+Loading a 27B model with `-c 16384 --parallel 4` reads as "16k of context, four at a time." It isn't. The context is divided among the slots, so each concurrent request gets about 4k — under half of what a stage-2 grading prompt with few-shot exemplars needs. The first four-item probe failed 4 for 4 with `Context size has been exceeded`, before a single item was scored.
+
+The working shape for a 27B on a 32 GB machine turned out to be `-c 32768 --parallel 2`: 16k per slot, two in flight. Halving parallelism to double per-request context was the whole fix.
+
+Two small lessons. First, budget context **per slot**, and write the arithmetic down where the next person loading the model will see it — this one went into the repository's agent instructions the same day. Second, a harness that "makes real inference calls" and a harness that "fails before inference" produce the same red test; read the error string before concluding anything about the model.

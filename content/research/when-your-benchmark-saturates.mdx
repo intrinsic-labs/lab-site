@@ -1,0 +1,85 @@
+---
+title: When your benchmark saturates, stop ranking and start mining disagreement
+kind: note
+area: elicitation
+date: 2026-09-03
+status: draft
+summary: A 14-item calibration sheet could tell us which model was bad. It could not tell us which was best — every competent model landed within two points of each other. What we did instead.
+caveats:
+  - n=14 held-out items. Every point is ±7%. Nothing here ranks models; it filters them.
+  - The grading prompt's rules were distilled from the same 20 labels the sheet scores against, so every row is partly tested on material derived from the test.
+  - The Claude rows ran a flattened single-shot adaptation of a prompt tuned for a local model. Cross-family comparisons are indicative at best.
+  - The disagreement round measures where two engines draw a line, not which one is right. The hand-labelling that settles it is ongoing.
+artifacts: []
+artifactsNote: The harness, per-item results and the round instrument exist in the private pipeline repo. They can't be released yet because the per-item rows carry corpus text; a scrubbed export is planned.
+corrections: []
+---
+
+The pipeline this comes from mines one person's real steering decisions out of several years of transcripts with AI agents. Stage 2 of that pipeline asks a model, for each candidate moment, *is this a genuine steer, and how strong?* We needed to choose which model runs that stage over roughly 3,800 candidates. This is the story of how the obvious way to choose stopped working, and what replaced it.
+
+## The instrument
+
+Twenty candidate moments were hand-labelled by the person whose record it is: HIT, WEAK or MISS. Six of those became the few-shot exemplars printed in the grading prompt, which leaves fourteen held out as the score. A model's output is the three-way grade; we report exact agreement and, separately, the binary that actually matters downstream — did it call this a HIT or not — because only "HIT" moments ever reach the next stage.
+
+The harness was validated first by reproducing a previously documented row exactly (8/14 exact, 10/14 binary, 3/6 on the exemplars). That matters more than it sounds: a harness you haven't reproduced a known result on isn't measuring anything yet.
+
+## What the sheet said
+
+| engine | exact | HIT / not-HIT | few-shot (n=6) | s/item |
+|---|---|---|---|---|
+| Qwen3.6-27B (local) | 8/14 | **10/14** | 3/6 | 31 |
+| Qwen3.8-27B (local) | 8/14 | 9/14 | 5/6 | 89 |
+| Claude Sonnet | 8/14 | 9/14 | 5/6 | 9 |
+| Claude Opus | 7/14 | 8/14 | 6/6 | 14 |
+| Claude Fable | 7/14 | 8/14 | 6/6 | 13 |
+
+Three things fall out of this.
+
+**Everything competent clusters at 8–10 of 14.** No model separated from the pack — including the frontier ones. The instrument had done real work a day earlier: it killed a smaller open model outright at 6/14. So it is a perfectly good *terribleness filter*. But at n=14 every point is ±7%, and the survivors sit within two points of each other. It cannot rank them, and pretending it could would be reading noise.
+
+**The misses are shared, and not all of them are model error.** Items 8, 15, 16 and 17 miss across nearly every engine. Item 16 is the instructive one. The model read a message — roughly "fan out subagents to get this done" — as a durable delegation steer with a coherent policy behind it. The human's label was MISS, because in that moment they were just trying out a new feature of the tool. That is not a reasoning failure. It is biographical context no prompt carries. A share of the residual disagreement is a genuinely contested HIT/WEAK boundary plus items that are unknowable without being the person, which is another way of saying: **this sheet is partly saturated.**
+
+**The newer local model was a wash.** Qwen3.8 fixed real things — it respected its own few-shot examples where 3.6 hadn't, and caught one of the known blind-spot items — but regressed two others and cost three times the latency. (The latency turned out to be a configuration problem, not the model; that is [its own field note](/research/the-latency-was-the-reasoning-budget).)
+
+## The method that replaced ranking
+
+If the sheet can't rank survivors, stop asking it to. The replacement:
+
+> **Filter → disagreement-mine → label the disagreements.** Run two or three survivors over a stratified slice of the *real* candidate set. Where they agree, accept provisionally. Where they disagree, a human labels — and those labels are spent exactly where they buy the most information.
+
+We ran it. 300 stage-1 candidates, stratified round-robin by project so no single loud project owned the sample, drawn under a frozen salt so the slice is reproducible, with the six exemplars removed first — a model graded on items printed in its own prompt has told you nothing. The slicing function nests, so `slice(n)` is a prefix of `slice(n+k)`: a slow engine can run part of the slice and still be compared item-for-item.
+
+No per-engine prompt tuning was spent. It was allowed, once, and deliberately not used: an identical prompt across engines is what makes this one controlled comparison instead of three experiments, and the one enrichment we get is better spent *after* the labels say what the failure mode actually is.
+
+## What the round said
+
+Both full engines completed all 300 items with zero failures, so this is a census of the slice, not a sample of it.
+
+```
+compared 300 items answered by both engines
+  unanimous on HIT / not-HIT : 80.0%  (60 split)
+  unanimous on 3-way grade   : 73.0%  (81 split)
+
+  "mine it" rate:   Qwen3.6  46.0%     Sonnet  34.0%
+```
+
+The confusion matrix is where it gets interesting (Qwen3.6 down, Sonnet across):
+
+| | strong | weak | none |
+|---|---|---|---|
+| **strong** | 90 | **45** | 3 |
+| **weak** | 9 | 85 | 7 |
+| **none** | 3 | 14 | 44 |
+
+Of the 60 binary splits, 48 are "Qwen mines it, Sonnet doesn't," and 45 of those sit in a single cell: Qwen says *strong*, Sonnet says *weak*. Only 6 items in 300 are a strong↔none flip — the case where one engine saw a real steer and the other saw nothing at all.
+
+**So the engines are not reading these moments differently. They are cutting the same ordering at different places.** The question the human labels now answer isn't "which model understands the corpus" — it's *where does the HIT/WEAK line belong*, and whichever engine happens to sit on the right side of it wins. One weak prior: the original 20-item calibration draw, from the same population under the same stratification, came back 50% HIT — closer to Qwen's 46% than Sonnet's 34%. At n=20 that is ±11 points and settles nothing. The sheet settles it.
+
+The splits also aren't evenly spread across the stage-1 detectors that surfaced the candidates. The "long affirmation after loading context" detector — the one that exists because the person's highest-value steers turned out to hide behind a *yes* — splits 29% of the time, the highest of any; the structural "step back and check" detector splits 0 of 6. Which is roughly what you'd expect if the disagreement is about thresholds on a continuous quantity rather than about categories.
+
+## What to take from it
+
+1. **A small calibration sheet is a filter, not a ranker.** Say which one you're using. At n=14, refusing to rank is the honest result.
+2. **Shared misses are data about the task, not just the model.** Check whether the residual is contestable before spending it on prompt engineering.
+3. **Mine disagreement instead of scoring agreement.** Where competent engines disagree is exactly where a human label is worth the most, and the *shape* of the disagreement (threshold vs. category) tells you what to fix.
+4. **Freeze the slice and nest it.** Reproducibility is one salt and one prefix property.
