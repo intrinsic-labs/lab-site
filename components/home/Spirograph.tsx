@@ -11,7 +11,7 @@ import { useEffect, useRef } from "react";
  *   - the three curve families and their formulas, drawn in the same order with the same
  *     per-curve rotation multipliers (×1.25, ×0.5, ×0.25 of `allRotation`)
  *   - `generateRandomParams` — every parameter uniform, R/r/d in [0, 256), rotations in [-1, 1)
- *   - the framing: centre at (w/2, h/2.9), scale `min(w, h) / 600`, stroke 0.5px
+ *   - the scale `min(w, h) / 600` and the 0.5px stroke (the centre is ours — see draw())
  *   - the trace opens at 0.05 and is DRAWN BY THE POINTER: each pixel of mouse travel advances
  *     it by 0.0002; at 1 it turns around and unwinds; at 0 it re-rolls a new figure. There
  *     is no ambient animation — a still pointer is a still figure.
@@ -161,9 +161,11 @@ export function Spirograph({ className = "" }: { className?: string }) {
       ctx!.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx!.clearRect(0, 0, width, height);
 
-      // The original's framing, verbatim.
+      // The original's scale, verbatim; the centre is ours. The old hero was bottom-aligned
+      // text under a figure hung at h/2.9 — here the headline is centred, so the figure is
+      // too (Asher, 2026-09-04: "center on the headline").
       const centerX = width / 2;
-      const centerY = height / 2.9;
+      const centerY = height / 2;
       const scale = Math.min(width, height) / 600;
 
       ctx!.lineWidth = STROKE_WIDTH;
