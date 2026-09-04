@@ -1,6 +1,6 @@
 # lab-site — Intrinsic Labs' public research site
 
-Next.js (App Router, static), Tailwind v4, MDX content in-repo. Deployed on Vercel as
+Next.js (App Router, static), Tailwind v4, MDX content in-repo. Designed for deployment on Vercel to
 `intrinsiclabs.co`. The vault project is `Projects/meta/lab/` in the Obsidian vault —
 its `_brief.md` is the business-side source of truth; `docs/site-plan-2026-08-17.md`
 (sections, decisions D1–D7 + rulings) and `docs/publication-cadence.md` (how a post gets
