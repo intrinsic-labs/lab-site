@@ -285,10 +285,25 @@ export function OrbInteraction({
       {children}
 
       <div className="mx-auto max-w-6xl px-6">
+      {/* Fixed height, so a swap never moves the page. */}
+      <div className="relative mt-6 min-h-[9.5rem] sm:min-h-[7rem] md:min-h-[5.5rem]">
+        {metrics.map((m) => (
+          <p
+            key={m.key}
+            className={`${line} ${active === m.key ? "opacity-100" : "opacity-0"}`}
+            aria-hidden={active !== m.key}
+          >
+            <span style={{ color: `var(${m.colorVar})` }}>{m.label}.</span> {m.blurb}{" "}
+            <span className="text-ink-3">{m.fraction}.</span>
+          </p>
+        ))}
+      </div>
       {/* On a phone the figure carries no labels — three plain-English phrases do not fit
-          over three overlapping orbs — so the legend is where they live, and it is the same
-          hit target the orbs are on a desktop. */}
-      <ul className="mt-6 flex flex-col gap-1.5 md:hidden">
+          over three overlapping orbs — so the legend is where they live, under the panel
+          (Asher, 2026-09-04: paragraph first, then the bullets), and it is the same hit
+          target the orbs are on a desktop. The list is a centred block whose rows stay
+          left-aligned to each other: `w-fit mx-auto`, never `text-center`. */}
+      <ul className="mx-auto mt-6 flex w-fit flex-col gap-1.5 md:hidden">
         {metrics.map((m) => (
           <li key={m.key}>
             <button
@@ -311,20 +326,6 @@ export function OrbInteraction({
           </li>
         ))}
       </ul>
-
-      {/* Fixed height, so a swap never moves the page. */}
-      <div className="relative mt-5 min-h-[9.5rem] sm:min-h-[7rem] md:min-h-[5.5rem]">
-        {metrics.map((m) => (
-          <p
-            key={m.key}
-            className={`${line} ${active === m.key ? "opacity-100" : "opacity-0"}`}
-            aria-hidden={active !== m.key}
-          >
-            <span style={{ color: `var(${m.colorVar})` }}>{m.label}.</span> {m.blurb}{" "}
-            <span className="text-ink-3">{m.fraction}.</span>
-          </p>
-        ))}
-      </div>
       </div>
     </div>
   );
