@@ -11,9 +11,6 @@ const COLOR: Record<string, string> = {
   decisions: "--color-marker",
 };
 
-const FALLBACK_INTRO =
-  "Three measures of how much of Intrinsic Labs runs without Asher. Each orb rises out of the blur by its percentage.";
-
 /**
  * How much of the company runs itself, drawn as three orbs rising out of a haze.
  *
@@ -45,6 +42,8 @@ export async function AutonomyOrbs() {
     colorVar: COLOR[m.key] ?? "--color-ink",
   }));
 
+  // The panel opens on the highest number — the one the picture leads with.
+  const lead = up.reduce((a, b) => (b.value > a.value ? b : a)).key;
   const panel: PanelMetric[] = up.map((m) => ({
     key: m.key,
     label: m.shortLabel ?? m.label,
@@ -65,7 +64,7 @@ export async function AutonomyOrbs() {
       {/* The figure is full-bleed and the prose around it is not: the haze under the
           waterline has to reach the edges of the viewport, or it ends in the hard vertical
           edge the boxed version had. */}
-      <OrbInteraction intro={data.figure?.intro ?? FALLBACK_INTRO} metrics={panel}>
+      <OrbInteraction defaultKey={lead} metrics={panel}>
         <OrbFigure size={MOBILE} metrics={metrics} className="md:hidden" />
         <OrbFigure size={DESKTOP} metrics={metrics} className="hidden md:block" />
       </OrbInteraction>

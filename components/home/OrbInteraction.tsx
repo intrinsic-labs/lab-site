@@ -69,11 +69,12 @@ function smoothstep(t: number) {
  */
 export function OrbInteraction({
   children,
-  intro,
+  defaultKey,
   metrics,
 }: {
   children: ReactNode;
-  intro: string;
+  /** Which metric the panel shows before anyone hovers or taps — the highest number. */
+  defaultKey: string;
   metrics: PanelMetric[];
 }) {
   const hostRef = useRef<HTMLDivElement>(null);
@@ -83,7 +84,8 @@ export function OrbInteraction({
   // pin is what lets a phone hold one metric's explanation in the panel.
   const [hovered, setHovered] = useState<string | null>(null);
   const [pinned, setPinned] = useState<string | null>(null);
-  const active = pinned ?? hovered;
+  // Hover previews, a pin holds, and with neither the lead metric stands — the panel is never empty.
+  const active = hovered ?? pinned ?? defaultKey;
 
   // --- the panel: hover, focus and tap all resolve to the same "which orb" ---------------
   useEffect(() => {
@@ -328,9 +330,6 @@ export function OrbInteraction({
 
       {/* Fixed height, so a swap never moves the page. */}
       <div className="relative mt-5 min-h-[9.5rem] sm:min-h-[7rem] md:min-h-[5.5rem]">
-        <p className={`${line} ${active ? "opacity-0" : "opacity-100"}`} aria-hidden={active !== null}>
-          {intro}
-        </p>
         {metrics.map((m) => (
           <p
             key={m.key}
