@@ -4,7 +4,7 @@ import { allCaseStudies, caseStudyBySlug } from "@/lib/content/work";
 import { Mdx } from "@/lib/mdx/render";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { GenerativeCover } from "@/components/ui/GenerativeCover";
-import { cardo } from "@/components/research/fonts";
+import { WorkSceneCanvas } from "@/components/work/scenes/WorkSceneCanvas";
 
 export const dynamicParams = false;
 export async function generateStaticParams() { return (await allCaseStudies()).map((c) => ({ slug: c.slug })); }
@@ -20,7 +20,9 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
   return (
     <article className="mx-auto max-w-6xl px-6">
       <div className="mt-10 aspect-[16/9] w-full overflow-hidden">
-        {c.cover ? (
+        {c.scene ? (
+          <WorkSceneCanvas scene={c.scene} seed={c.slug} className="h-full w-full" />
+        ) : c.cover ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={c.cover} alt={c.name} className="h-full w-full object-cover" />
         ) : (
@@ -38,7 +40,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
         )}
       </header>
       <div className="mx-auto max-w-[68ch]">
-        <div className={`prose prose-post py-12 ${cardo.className}`}>
+        <div className="prose prose-post py-12">
           <Mdx source={c.body} />
         </div>
       </div>

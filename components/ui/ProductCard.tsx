@@ -4,13 +4,13 @@ import { STATUS_LABEL } from "@/lib/content/products";
 import { Chip } from "./Chip";
 import { GenerativeCover } from "./GenerativeCover";
 
-/** One product card: hero image (or generated cover), name, one line, status chip.
+/** One product card: hero image (or generated cover), name, one line, status label.
  *  Shared by the home page's Products grid and /products so a product reads the same everywhere. */
 export function ProductCard({ item, images, blurb }: { item: Product; images: ProductImages; blurb?: React.ReactNode }) {
   const href = `/products/${item.slug}`;
   return (
     <li className="flex flex-col bg-paper">
-      <Link href={href} className="group relative block aspect-[4/3] w-full overflow-hidden border-b border-rule">
+      <Link href={href} className="group relative block aspect-[4/3] w-full overflow-hidden">
         {images.hero ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={images.hero} alt={item.name} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" />

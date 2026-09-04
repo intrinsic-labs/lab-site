@@ -6,7 +6,7 @@ export function Footer() {
     <footer className="border-t border-rule mt-24">
       <div className="mx-auto max-w-6xl px-6 py-10 grid gap-8 sm:grid-cols-3">
         <div>
-          <p className="font-serif font-medium">Intrinsic Labs LLC</p>
+          <p className="font-sans font-medium">Intrinsic Labs LLC</p>
           <p className="text-ink-2 text-sm mt-1">One person, a crew of named agents, and a folder of plain text files.</p>
         </div>
         <div className="flex flex-col gap-2">

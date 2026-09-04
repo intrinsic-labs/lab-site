@@ -1,6 +1,16 @@
 import Link from "next/link";
 
-/** Solid, square-cornered button-style link. Mono caps label, filled background. */
+/**
+ * Button-style link. Shape and colour taken from latent-spaces-web's CTA
+ * (`bg-ls-accent/30 border border-ls-accentLight text-white rounded-full`, its Hero /
+ * DiscordCTA / Navigation buttons): a full-radius capsule, translucent green fill, 1px
+ * accent border, Calling Code label.
+ *
+ * The label is the LIGHT accent rather than the dark green fill colour — the previous
+ * `bg-verdant text-paper` put near-black text on dark green and was unreadable. Every
+ * tone here clears 7:1 against its own fill. The rules live in `.btn` / `.btn-*` in
+ * app/globals.css.
+ */
 export function ButtonLink({
   href,
   tone = "green",
@@ -12,11 +22,7 @@ export function ButtonLink({
   external?: boolean;
   children: React.ReactNode;
 }) {
-  const tones = {
-    green: "bg-verdant text-paper hover:bg-ink",
-    ink: "bg-ink text-paper hover:bg-accent",
-  };
-  const className = `label inline-block ${tones[tone]} px-3.5 py-2`;
+  const className = `btn btn-${tone}`;
 
   if (external) {
     return (

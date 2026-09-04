@@ -1,145 +1,359 @@
 @import "tailwindcss";
 
+/* ─────────────────────────────────────────────────────────────────────────────
+   FONTS — the exact files latent-spaces-web ships, copied byte-for-byte from
+   ~/dev/web/latent-spaces-web/next-js/public/fonts/ into public/fonts/, with the
+   same @font-face family names, weights and styles as that repo's globals.css.
+   No Google Fonts substitutes: these are the files, not lookalikes.
+   ───────────────────────────────────────────────────────────────────────────── */
+
+/* JetBrains Mono Variable */
+@font-face {
+  font-family: 'JetBrains Mono Variable';
+  src: url('/fonts/jetbrains_mono/JetBrainsMono-VariableFont_wght.ttf') format('truetype-variations');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'JetBrains Mono Variable';
+  src: url('/fonts/jetbrains_mono/JetBrainsMono-Italic-VariableFont_wght.ttf') format('truetype-variations');
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Cardo */
+@font-face {
+  font-family: 'Cardo';
+  src: url('/fonts/cardo/Cardo-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Cardo';
+  src: url('/fonts/cardo/Cardo-Bold.ttf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Cardo';
+  src: url('/fonts/cardo/Cardo-Italic.ttf') format('truetype');
+  font-weight: normal;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Calling Code */
+@font-face {
+  font-family: 'Calling Code';
+  src: url('/fonts/calling_code/CallingCode-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Neue Montreal */
+@font-face {
+  font-family: 'Neue Montreal';
+  src: url('/fonts/neue_montreal/NeueMontreal-Regular.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Neue Montreal';
+  src: url('/fonts/neue_montreal/NeueMontreal-Bold.otf') format('opentype');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Neue Montreal';
+  src: url('/fonts/neue_montreal/NeueMontreal-Medium.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Neue Montreal';
+  src: url('/fonts/neue_montreal/NeueMontreal-Light.otf') format('opentype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Neue Montreal';
+  src: url('/fonts/neue_montreal/NeueMontreal-Italic.otf') format('opentype');
+  font-weight: normal;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Neue Montreal';
+  src: url('/fonts/neue_montreal/NeueMontreal-BoldItalic.otf') format('opentype');
+  font-weight: bold;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Neue Montreal';
+  src: url('/fonts/neue_montreal/NeueMontreal-MediumItalic.otf') format('opentype');
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Neue Montreal';
+  src: url('/fonts/neue_montreal/NeueMontreal-LightItalic.otf') format('opentype');
+  font-weight: 300;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   Palette and type ported from latent-spaces-web (~/dev/web/latent-spaces-web),
+   its dark ("ls") theme, with ONE deliberate change: the ground is pure black
+   (#000) rather than that site's #121212. Every value below is annotated with
+   where it came from. Full provenance table: docs/style-notes.md.
+   ───────────────────────────────────────────────────────────────────────────── */
+
 @theme {
-  --color-paper: #f3eee4;
-  --color-paper-2: #eae4d6;
-  --color-paper-3: #dfd8c7;
-  --color-ink: #1b1915;
-  --color-ink-2: #5a544b;
-  --color-ink-3: #8a8377;
-  --color-rule: #cbc2af;
-  --color-accent: #b5471f;
-  --color-marker: #f4d58a;
-  --color-verdant: #3d6b4f;
+  /* Ground. --color-paper is the page; -2 is a raised surface (cards, plates,
+     specimen blocks); -3 is the dot grid and hover fill. */
+  --color-paper: #000000;   /* OUR change — latent-spaces uses ls.background #121212 */
+  --color-paper-2: #121212; /* ls.background, demoted to "raised surface" on black */
+  --color-paper-3: #1f1f1f;
 
-  /* Dark dossier — the negative of the plate. Scoped to one page, never a toggle. */
-  --color-night: #14140f;
-  --color-night-2: #1e1d17;
-  --color-night-3: #2b2921;
-  --color-chalk: #ece6d8;
-  --color-chalk-2: #a9a094;
-  --color-chalk-3: #6f6960;
-  --color-rule-night: #3b382e;
-  --color-accent-night: #e0723f;
+  /* Type. latent-spaces sets pure white body text on the dark theme, with
+     rgba(255,255,255,0.8) as its secondary — flattened here to opaque hex so
+     text over a card surface doesn't shift. */
+  --color-ink: #ffffff;     /* ls.text */
+  --color-ink-2: #cccccc;   /* ls.textSecondary, flattened on black */
+  --color-ink-3: #8c8c8c;
+  --color-rule: #2a2a2a;
 
-  --font-serif: var(--font-newsreader), "Iowan Old Style", Georgia, serif;
-  --font-mono: var(--font-plex-mono), ui-monospace, "SF Mono", Menlo, monospace;
+  /* Accents. Green is the UI accent (chips, buttons, marks, generative covers);
+     the sand/yellow pair is the reading accent — latent-spaces uses it for the
+     OpenLoom spec's inline links (its CodeChip), which is what prose links wear
+     here. Ember is the OpenLoom page's dark inline-code colour. */
+  --color-accent: #6cba78;   /* ls.accentLight — rgb(108,186,120) */
+  --color-verdant: #4d8c56;  /* ls.accent — rgb(77,140,86) */
+  --color-marker: #c9b374;   /* ls.yellowLight — rgb(201,179,116) */
+  --color-marker-2: #a4915c; /* ls.yellow — rgb(164,145,92) */
+  --color-ember: #e07a55;    /* latent-spaces `orange` — its dark inline-code colour */
+
+  /* Low-opacity fills. latent-spaces: ls.surface / ls.surfaceHover, raised a
+     little because pure black shows less of a 3% white wash than #121212 does. */
+  --color-surface: rgba(255, 255, 255, 0.08);
+  --color-surface-hover: rgba(255, 255, 255, 0.14);
+
+  /* Type stack — the four faces declared above, with latent-spaces' own fallbacks.
+     NOTE ON NAMES: latent-spaces sets headings in Neue Montreal and body copy in
+     Cardo. Every heading in this codebase already carries `font-serif`, so the
+     serif slot is the HEADING slot here and Cardo is applied as the document
+     default plus explicitly on the reading column. Renaming that utility across
+     components other agents own would have been a far bigger diff than this note. */
+  --font-serif: 'Neue Montreal', sans-serif;
+  --font-sans: 'Neue Montreal', sans-serif;
+  --font-body: 'Cardo', 'Times New Roman', serif;
+  --font-mono: 'JetBrains Mono Variable', 'JetBrains Mono', Menlo, Monaco, Consolas, monospace;
+  --font-code: 'Calling Code', monospace;
 }
 
 html {
   background: var(--color-paper);
   color: var(--color-ink);
-  font-family: var(--font-serif);
+  font-family: var(--font-body);
   font-size: 18px;
   line-height: 1.5;
+  color-scheme: dark;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  font-feature-settings: "kern", "liga", "onum";
+  font-feature-settings: "kern", "liga";
   /* Keeps a jumped-to anchor clear of the sticky header. */
   scroll-padding-top: 5rem;
 }
 
-body { overflow-x: clip; }
+body { overflow-x: clip; background: var(--color-paper); }
 
-::selection { background: var(--color-marker); color: var(--color-ink); }
+::selection { background: var(--color-marker); color: #000; }
 
-/* Paper grain — a faint dot grid, drawn once, so the page reads as a sheet not a screen. */
+/* Every heading is Neue Montreal, as on latent-spaces (`heading-xl`…`heading-sm`
+   are all `font-family: 'Neue Montreal'`). Unlayered, so it also catches headings
+   that carry no font utility at all. */
+h1, h2, h3, h4, h5, h6 { font-family: var(--font-sans); }
+
+/* Dot grid — on black this reads as a faint machine ground rather than paper
+   grain, which is the intent on the new palette. */
 .grid-paper {
   background-image: radial-gradient(var(--color-paper-3) 0.6px, transparent 0.6px);
   background-size: 22px 22px;
   background-position: 11px 11px;
 }
 
-/* Mono label: caps, tracked, small. Every date, kind, id and nav item wears this. */
+/* Mono label: caps, tracked, small. Every date, kind, id and nav item wears this.
+   Calling Code — latent-spaces' own small-label / tag / inline-code face. */
 .label {
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
+  font-family: var(--font-code);
+  font-size: 0.74rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--color-ink-2);
 }
 
-.marker { background: linear-gradient(transparent 55%, var(--color-marker) 55%, var(--color-marker) 92%, transparent 92%); }
+/* Highlight. A solid sand band would black out white text, so on the dark ground
+   it's the same colour at low alpha — the band still reads, the text stays white. */
+.marker {
+  background: linear-gradient(
+    transparent 55%,
+    color-mix(in srgb, var(--color-marker) 34%, transparent) 55%,
+    color-mix(in srgb, var(--color-marker) 34%, transparent) 92%,
+    transparent 92%
+  );
+  box-shadow: inset 0 -1px 0 color-mix(in srgb, var(--color-marker) 55%, transparent);
+}
 
-/* Reading column — measure ported from latent-spaces-web's blog (docs/blog-style-notes.md). */
-.prose { max-width: 68ch; }
+/* ── Reading column ───────────────────────────────────────────────────────────
+   Measure and rhythm ported from latent-spaces-web's BlogPostContent /
+   OpenLoomContent. See docs/style-notes.md. */
+.prose { max-width: 68ch; font-family: var(--font-body); }
 .prose > * + * { margin-top: 1.1em; }
-.prose h2 { font-size: 1.55rem; line-height: 1.2; margin-top: 2.2em; font-weight: 500; letter-spacing: -0.01em; }
-.prose h3 { font-size: 1.15rem; margin-top: 1.8em; font-weight: 500; font-style: italic; }
+.prose h2 { font-family: var(--font-sans); font-size: 1.5rem; line-height: 1.25; margin-top: 2.2em; font-weight: 700; letter-spacing: -0.01em; }
+.prose h3 { font-family: var(--font-sans); font-size: 1.2rem; line-height: 1.3; margin-top: 1.8em; font-weight: 700; }
 .prose h2 + *, .prose h3 + * { margin-top: 0.6em; }
 .prose p, .prose li { color: var(--color-ink); }
-.prose a { color: var(--color-accent); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
-.prose a:hover { text-decoration-thickness: 2px; }
-.prose strong { font-weight: 600; }
+/* Links wear latent-spaces' CodeChip colour (its OpenLoom spec link treatment):
+   sand on a wash of itself. Underlined rather than chipped so a paragraph of
+   prose doesn't turn into a row of buttons. */
+.prose a { color: var(--color-marker); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+.prose a:hover { color: #ffffff; background: color-mix(in srgb, var(--color-marker) 22%, transparent); }
+.prose strong { font-weight: 700; color: var(--color-ink); }
 .prose ul, .prose ol { padding-left: 1.4em; }
-.prose ul { list-style: square; }
+.prose ul { list-style: disc; }
 .prose li + li { margin-top: 0.35em; }
-.prose blockquote { border-left: 1px solid var(--color-ink); padding-left: 1.2em; font-style: italic; color: var(--color-ink-2); }
+.prose li::marker { color: var(--color-ink-3); }
+/* latent-spaces: `border-l-4 border-primary/30 pl-4 italic`. */
+.prose blockquote { border-left: 4px solid rgba(255, 255, 255, 0.3); padding-left: 1.1em; font-style: italic; color: var(--color-ink-2); }
 .prose hr { border: 0; border-top: 1px solid var(--color-rule); margin: 2.5em 0; }
-.prose code { font-family: var(--font-mono); font-size: 0.82em; background: var(--color-paper-2); padding: 0.1em 0.35em; border-radius: 2px; }
-.prose pre { max-width: 100%; font-family: var(--font-mono); font-size: 0.78rem; line-height: 1.55; background: var(--color-paper-2); border: 1px solid var(--color-rule); padding: 1rem 1.2rem; overflow-x: auto; }
-.prose pre code { background: none; padding: 0; font-size: inherit; }
+
+/* Inline code — latent-spaces' DARK treatment (OpenLoomContent):
+   `bg-neutral-800/40 text-orange rounded px-1.5 py-0.5 font-calling-code`.
+   The wash is raised from neutral-800/40 (all but invisible on #000) to 8% white. */
+.prose code {
+  font-family: var(--font-code);
+  font-size: 0.92em;
+  color: var(--color-ember);
+  background: var(--color-surface);
+  padding: 0.1em 0.35em;
+  border-radius: 0.25rem;
+}
+
+/* Code blocks — latent-spaces highlights with react-syntax-highlighter's Prism
+   `vscDarkPlus` at `borderRadius: 1rem`. Same theme here via shiki's `dark-plus`
+   (the identical VS Code Dark+ tokens), applied at build time in lib/mdx/. */
+.prose pre {
+  max-width: 100%;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  line-height: 1.6;
+  background: #1e1e1e;
+  border: 0;
+  border-radius: 1rem;
+  padding: 1.1rem 1.3rem;
+  margin-top: 1.6em;
+  margin-bottom: 1.6em;
+  overflow-x: auto;
+}
+.prose pre code { background: none; padding: 0; font-size: inherit; color: inherit; font-family: var(--font-mono); border-radius: 0; }
+/* shiki emits per-token inline colours; the wrapper carries the theme background. */
+.prose pre.shiki { background: #1e1e1e; }
+.prose pre.shiki code { display: block; }
+
 .prose table { display: block; overflow-x: auto; width: 100%; border-collapse: collapse; font-size: 0.9rem; font-variant-numeric: tabular-nums; }
-.prose th { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 500; text-align: left; color: var(--color-ink-2); border-bottom: 1px solid var(--color-ink); padding: 0.5em 0.8em 0.5em 0; }
+.prose th { font-family: var(--font-code); font-size: 0.7rem; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 500; text-align: left; color: var(--color-ink-2); border-bottom: 1px solid var(--color-ink-3); padding: 0.5em 0.8em 0.5em 0; }
 .prose td { border-bottom: 1px solid var(--color-rule); padding: 0.45em 0.8em 0.45em 0; vertical-align: top; }
 .prose td:first-child code, .prose td code { white-space: nowrap; }
-.prose img { border: 1px solid var(--color-rule); }
+.prose img { border: 1px solid var(--color-rule); border-radius: 0.5rem; }
 .prose .footnotes { font-size: 0.9rem; color: var(--color-ink-2); border-top: 1px solid var(--color-rule); margin-top: 3em; padding-top: 1em; }
 
-/* Post reading column only — rhythm and pull-quote treatment ported from
-   latent-spaces-web's BlogPostContent (font-cardo text-[1.2rem] leading-[1.8]), rescaled
-   to our 18px root and paired with the Cardo font applied alongside this class in
-   app/research/[slug]/page.tsx. Kept out of the base .prose rule so about/editorial's
-   plain prose is untouched. See docs/blog-style-notes.md. */
-.prose-post p, .prose-post li { font-size: 1.05rem; line-height: 1.75; }
-.prose-post blockquote {
-  border-left: 2px solid var(--color-ink);
-  padding-left: 1.4em;
-  font-size: 1.15rem;
-  font-style: italic;
-  color: var(--color-ink-2);
-}
+/* Post reading column only. latent-spaces' body block is
+   `font-cardo text-[1.2rem] leading-[1.8] tracking-[0.01rem]` at a 16px root —
+   1.2rem there is 19.2px, which is 1.07rem at our 18px root. Kept out of the
+   base .prose rule so about/editorial's plain prose is untouched. */
+.prose-post p, .prose-post li { font-size: 1.07rem; line-height: 1.8; letter-spacing: 0.01rem; }
+.prose-post blockquote { font-size: 1.15rem; }
 
 /* Specimen: a real vault file, typeset as a plate. */
 .specimen { font-family: var(--font-mono); font-size: 0.74rem; line-height: 1.6; white-space: pre-wrap; word-break: break-word; color: var(--color-ink); }
 .specimen .fm { color: var(--color-ink-3); }
 .specimen .k { color: var(--color-ink-2); }
 .specimen .v { color: var(--color-ink); }
-.specimen .q { color: var(--color-accent); }
+.specimen .q { color: var(--color-marker); }
 
-/* ── Dark dossier ──────────────────────────────────────────────────────────────
-   There is still one colour mode and no toggle. A single instrument page (Tycho)
-   opts in from its front matter (`theme: dark`) and renders as the photographic
-   negative of the plate: dark ground, chalk lines, the same rules and registration
-   marks. It works by re-pointing the palette variables rather than by restating
-   every rule, so `.label`, `.prose`, `Frame`'s corner marks, the hairline rules and
-   every `bg-paper` / `text-ink` utility follow automatically.
-
-   `html:has(.dossier-dark)` is what carries the inversion up to the header and
-   footer, which live in the root layout above the page. */
-html:has(.dossier-dark) {
-  --color-paper: var(--color-night);
-  --color-paper-2: var(--color-night-2);
-  --color-paper-3: var(--color-night-3);
-  --color-ink: var(--color-chalk);
-  --color-ink-2: var(--color-chalk-2);
-  --color-ink-3: var(--color-chalk-3);
-  --color-rule: var(--color-rule-night);
-  --color-accent: var(--color-accent-night);
-  color-scheme: dark;
+/* ── Labels and pills ─────────────────────────────────────────────────────────
+   Ruling (Asher, 2026-09-04): a category/kind label is NOT a stroked pill. It is
+   text on a low-opacity fill at a small radius — latent-spaces' own tag /
+   inline-code shape: a 10% wash of the text colour, `rounded px-1.5 py-0.5
+   font-calling-code`. No border, ever. */
+.pill {
+  display: inline-block;
+  font-family: var(--font-code);
+  font-size: 0.72rem;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  line-height: 1.5;
+  padding: 0.2em 0.55em;
+  border-radius: 0.25rem;
+  border: 0;
+  background: var(--color-surface);
+  color: var(--color-ink-2);
 }
+.pill-accent { background: color-mix(in srgb, var(--color-accent) 16%, transparent); color: var(--color-accent); }
+.pill-marker { background: color-mix(in srgb, var(--color-marker) 16%, transparent); color: var(--color-marker); }
+.pill-muted { background: rgba(255, 255, 255, 0.05); color: var(--color-ink-3); }
 
-html:has(.dossier-dark) ::selection { background: var(--color-accent-night); color: var(--color-night); }
+/* ── Buttons ──────────────────────────────────────────────────────────────────
+   latent-spaces' CTA shape: a full-radius capsule with a translucent accent fill
+   and a 1px accent border, the LABEL in the light accent so it always reads.
+   (The old `bg-verdant text-paper` put dark text on dark green — unreadable.) */
+.btn {
+  display: inline-block;
+  font-family: var(--font-code);
+  font-size: 0.78rem;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  line-height: 1;
+  padding: 0.75em 1.4em;
+  border-radius: 9999px;
+  border: 1px solid transparent;
+  transition: background-color 200ms ease, color 200ms ease, border-color 200ms ease;
+}
+.btn-green {
+  background: color-mix(in srgb, var(--color-verdant) 30%, transparent);
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+.btn-green:hover { background: var(--color-verdant); color: #ffffff; }
+.btn-ink {
+  background: var(--color-ink);
+  border-color: var(--color-ink);
+  color: #000000;
+}
+.btn-ink:hover { background: transparent; color: var(--color-ink); }
 
-/* Hairlines read heavier on a dark ground; pull them back to the same optical weight. */
-.dossier-dark .prose hr,
-.dossier-dark .prose td { border-color: var(--color-rule-night); }
-.dossier-dark .prose blockquote { border-left-color: var(--color-chalk-2); }
-.dossier-dark .prose code,
-.dossier-dark .prose pre { background: var(--color-night-2); }
+/* ── Dark dossier (neutralised) ───────────────────────────────────────────────
+   The site is one colour mode and that mode is now dark, so the `theme: dark`
+   front-matter field no longer needs to invert anything — the page it marks
+   already looks like this. The field and the `.dossier-dark` class it emits are
+   left in place (lib/content/schema.ts, app/products/[slug]/page.tsx) so no
+   content file breaks; the class is simply inert, and no rule below re-points a
+   palette variable. */
 
 /* Hairline card grid: seams between cards are drawn by each card's own 1px outline, which
-   overlaps into the 1px gap — so a short last row leaves paper, never a dead rule-coloured cell. */
+   overlaps into the 1px gap — so a short last row leaves ground, never a dead rule-coloured cell. */
 .card-grid {
   display: grid;
   gap: 1px;
@@ -148,4 +362,22 @@ html:has(.dossier-dark) ::selection { background: var(--color-accent-night); col
 }
 .card-grid > li {
   outline: 1px solid var(--color-rule);
+}
+
+/* The OpenLoom banner's version pill. This one IS a stroked capsule — it is the
+   one place latent-spaces uses that shape (OpenLoomHeader:
+   `text-md font-calling-code text-neutral-300 border border-neutral-400
+   rounded-full px-4 py-1 bg-neutral-300/10 backdrop-blur-md`), and the ruling
+   against strokes is about category/kind LABELS, not this. */
+.version-pill {
+  display: inline-block;
+  font-family: var(--font-code);
+  font-size: 0.95rem;
+  line-height: 1.4;
+  padding: 0.25rem 1rem;
+  border-radius: 9999px;
+  border: 1px solid #a3a3a3;          /* neutral-400 */
+  background: rgba(212, 212, 212, 0.1); /* neutral-300/10 */
+  color: #d4d4d4;                      /* neutral-300 */
+  backdrop-filter: blur(12px);
 }

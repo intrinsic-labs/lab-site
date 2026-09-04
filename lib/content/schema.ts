@@ -73,6 +73,15 @@ export const productFrontMatter = z.object({
 });
 export type ProductFrontMatter = z.infer<typeof productFrontMatter>;
 
+/**
+ * The 3D wireframe point-cloud scenes ported from intrinsiclabs-co-v3
+ * (`components/work/scenes/`) — a closed vocabulary because each id names an actual
+ * component in that registry (`components/work/scenes/WorkSceneCanvas.tsx`), not a
+ * free-form label.
+ */
+export const WORK_SCENE_IDS = ["dog-head", "wifi", "church", "bible", "total-station"] as const;
+export type WorkSceneId = (typeof WORK_SCENE_IDS)[number];
+
 /** Work = the client portfolio, ported from the old intrinsiclabs.co case studies. */
 export const caseStudyFrontMatter = z.object({
   name: z.string().min(1),
@@ -85,6 +94,10 @@ export const caseStudyFrontMatter = z.object({
   url: z.string().url().optional(),
   /** `public/work/<slug>/<cover>` — absent falls back to GenerativeCover. */
   cover: z.string().optional(),
+  /** Ported 3D wireframe scene, rendered in the card cover slot and the case-study hero in
+   * place of `cover`/GenerativeCover when set. Absent falls back to `cover`, then
+   * GenerativeCover — see `WorkSceneCanvas`. */
+  scene: z.enum(WORK_SCENE_IDS).optional(),
   order: z.number().int().default(100),
 });
 export type CaseStudyFrontMatter = z.infer<typeof caseStudyFrontMatter>;

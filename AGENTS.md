@@ -74,9 +74,18 @@ flips `status`, merges. Production promotion is a human act — there is no agen
 
 - `gray-matter` is configured with js-yaml's `JSON_SCHEMA` so `date: 2026-09-03` stays a string.
   A summary that starts with `-` or contains `: ` must be quoted (YAML).
-- `next/font/google` Newsreader is a variable font: `axes: ["opsz"]` and **no `weight`** array.
+- **No `next/font/google` anywhere.** All four faces (Cardo, Neue Montreal, JetBrains Mono,
+  Calling Code) are the exact files latent-spaces-web ships, vendored into `public/fonts/`
+  and declared with `@font-face` at the top of `app/globals.css`. Don't swap one for a
+  Google lookalike — Asher's ruling, 2026-09-04.
 - No analytics. Deliberate (Sovereignty beam). Don't add a tracker.
-- One colour mode (cream). No dark toggle — ruled 2026-09-03 (D7).
+- One colour mode, and it is **pure black** — the latent-spaces-web dark palette with
+  `--color-paper: #000000` (re-skinned 2026-09-04; the cream/paper palette is gone). No
+  toggle — the D7 ruling of 2026-09-03 still stands, only the mode changed. Every component
+  reads the semantic tokens in `app/globals.css`, so the palette lives in exactly one place:
+  never hardcode a colour in a component. `docs/style-notes.md` is the provenance table.
+- Category/kind labels are **not stroked pills** — text on a low-opacity fill, small radius,
+  no border (`.pill` in `globals.css`, `components/ui/Chip.tsx`). Ruled 2026-09-04.
 
 ## Commands
 
@@ -99,7 +108,8 @@ context, and must not read as marketing.
 Related house rules from the same session: never narrate honesty ("and we say so") — state
 the fact and stop; never assert "every" where the site's own numbers say otherwise; The
 Ghost is always "The Ghost" and lives under Tycho; `/products/tycho` is the one dark
-page (`theme: dark` in its front matter), never a site-wide toggle.
+page (`theme: dark` in its front matter) — a field that is now **inert**, since the whole
+site is dark; it and `.dossier-dark` are kept only so content doesn't break.
 
 Rules from the 2026-09-03 outsider pivot (Asher's feedback on v1.1): **Haiku writes
 posts** (or the coordinating session itself) — never Opus, whose drafts ran long; Asher
@@ -107,7 +117,7 @@ edits. Posts are short, forward-looking and searching, never self-flagellating, 
 never an internal bug report dressed as research — the LM Studio field note is the bar.
 **Caveats, corrections and artifacts render only when non-empty.** **Cards, not lists**,
 for any collection. Landing page is one sentence + the plate + three grids, ≤120 words
-of prose. Post pages match latent-spaces-web's reading column (`docs/blog-style-notes.md`).
+of prose. Post pages match latent-spaces-web's reading column (`docs/style-notes.md`).
 
 <!-- BEGIN:nextjs-agent-rules -->
 

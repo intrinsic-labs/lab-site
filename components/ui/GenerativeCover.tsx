@@ -1,7 +1,8 @@
 /**
  * Deterministic placeholder cover for a post (or product) card with no real image yet: a
- * seeded plotted trochoid over a faint dot grid, drawn only in the paper/ink palette so it
- * never looks like it's pretending to be a photo. Pure SVG, server-renderable — no canvas,
+ * seeded plotted trochoid over a faint dot grid. On the black ground it is drawn in the two
+ * latent-spaces accents — the light green for the outer curve, the sand for the inner — over
+ * a #121212 plate, so it reads as a plotted mark and never as a photo. Pure SVG, server-renderable — no canvas,
  * no client JS, so it's safe inside a card that's otherwise a plain server component.
  *
  * Same curve family as the masthead's Spirograph and components/home/CardCover.tsx (a
@@ -48,18 +49,21 @@ export function GenerativeCover({ seed, className = "" }: { seed: string; classN
       <rect width="200" height="150" fill="var(--color-paper-2)" />
       <rect width="200" height="150" fill={`url(#${gridId})`} />
       <circle cx={cx} cy={cy} r={r1 + r2 + 2} fill="none" stroke="var(--color-rule)" strokeWidth="0.5" />
+      <circle cx={cx} cy={cy} r={(r1 + r2) * 0.35} fill="none" stroke="var(--color-rule)" strokeWidth="0.5" />
       <polyline
         points={trochoid(cx, cy, petals, r1, r2, 0.72)}
         fill="none"
         stroke="var(--color-accent)"
-        strokeWidth="1.1"
+        strokeWidth="1.2"
+        opacity="0.95"
         transform={`rotate(${rot} ${cx} ${cy})`}
       />
       <polyline
         points={trochoid(cx, cy, petals + 2, r1 * 0.6, r2 * 0.6, 0.72)}
         fill="none"
-        stroke="var(--color-ink-3)"
-        strokeWidth="0.6"
+        stroke="var(--color-marker)"
+        strokeWidth="0.8"
+        opacity="0.7"
         transform={`rotate(${(rot + 40) % 360} ${cx} ${cy})`}
       />
     </svg>

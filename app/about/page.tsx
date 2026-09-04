@@ -5,11 +5,12 @@ import { Mdx } from "@/lib/mdx/render";
 import { pageContent } from "@/lib/content/pages";
 import { site } from "@/lib/site";
 
-export const metadata: Metadata = { title: "About", description: "What the lab is and how it operates." };
+export const metadata: Metadata = { title: "About", description: "Who's behind the lab, what it believes, and how it operates." };
 
 export default async function AboutPage() {
-  const [intro, beliefs, operations] = await Promise.all([
+  const [intro, bio, beliefs, operations] = await Promise.all([
     pageContent("about-intro"),
+    pageContent("about-bio"),
     pageContent("about-beliefs"),
     pageContent("about-operations"),
   ]);
@@ -20,21 +21,28 @@ export default async function AboutPage() {
       </PageTitle>
 
       <section className="pt-12">
-        <SectionHead n="01" title="What we believe" />
+        <SectionHead n="01" title="Who I am" />
+        <div className="prose text-lg">
+          <Mdx source={bio.content.replace(/\{email\}/g, site.email)} />
+        </div>
+      </section>
+
+      <section className="pt-16">
+        <SectionHead n="02" title="What we believe" />
         <div className="prose text-lg">
           <Mdx source={beliefs.content} />
         </div>
       </section>
 
       <section className="pt-16">
-        <SectionHead n="02" title="How the lab operates" />
+        <SectionHead n="03" title="How the lab operates" />
         <div className="prose text-lg">
           <Mdx source={operations.content} />
         </div>
       </section>
 
       <section className="pt-16">
-        <SectionHead n="03" title="Contact" />
+        <SectionHead n="04" title="Contact" />
         <div className="prose text-lg">
           <p>
             <a href={`mailto:${site.email}`}>{site.email}</a> · <a href={site.github}>GitHub</a> ·{" "}

@@ -19,7 +19,7 @@ function artifactButtonLabel(label: string): string {
  * button (only when there's a primary, linkable artifact) → the big featured image —
  * then straight into the body. Summary, area, draft status, caveats, corrections and the
  * full artifact list all moved to PostMeta at the foot of the post; see
- * docs/blog-style-notes.md.
+ * docs/style-notes.md.
  */
 export function PostHeader({ post }: { post: Post }) {
   const primary = post.artifacts[0];

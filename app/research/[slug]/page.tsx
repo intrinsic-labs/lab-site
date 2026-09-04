@@ -5,7 +5,6 @@ import { Mdx } from "@/lib/mdx/render";
 import { PostHeader } from "@/components/research/PostHeader";
 import { PostMeta } from "@/components/research/PostMeta";
 import { SystemPrimer } from "@/components/research/SystemPrimer";
-import { cardo } from "@/components/research/fonts";
 import { site } from "@/lib/site";
 
 export const dynamicParams = false;
@@ -40,8 +39,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
       <PostHeader post={post} />
       <div className="mx-auto max-w-[68ch]">
         {post.primer === "agent-ops" && <SystemPrimer />}
-        {/* Cardo — latent-spaces-web's reading face, scoped to the body only. See docs/blog-style-notes.md. */}
-        <div className={`prose prose-post py-12 ${cardo.className}`}>
+        <div className="prose prose-post py-12">
           <Mdx source={post.body} />
         </div>
         <PostMeta post={post} />

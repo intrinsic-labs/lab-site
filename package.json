@@ -9,6 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@shikijs/rehype": "^4.4.3",
     "feed": "^6.0.0",
     "gray-matter": "^4.0.3",
     "js-yaml": "^5.4.1",
@@ -16,9 +17,15 @@
     "next-mdx-remote-client": "^2.1.12",
     "react": "19.2.8",
     "react-dom": "19.2.8",
+    "rehype-stringify": "^10.0.1",
     "remark": "^15.0.1",
     "remark-gfm": "^4.0.1",
     "remark-html": "^16.0.1",
+    "remark-parse": "^11.0.0",
+    "remark-rehype": "^11.1.2",
+    "shiki": "^4.4.3",
+    "three": "^0.184.0",
+    "unified": "^11.0.5",
     "zod": "^4.5.4"
   },
   "devDependencies": {
@@ -27,6 +34,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/three": "^0.185.4",
     "eslint": "^9",
     "eslint-config-next": "16.3.4",
     "tailwindcss": "^4",

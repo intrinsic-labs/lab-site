@@ -3,16 +3,23 @@
 import { useEffect, useRef } from "react";
 
 /**
- * Ported from intrinsiclabs.co's interactive spirograph hero
- * (src/components/home/RetinaCanvas.tsx in the intrinsiclabs-co-v3 repo).
- * Same hypotrochoid/epitrochoid/hypocycloid math, recoloured for the paper/ink
- * theme: thin, low-opacity ink strokes on a transparent ground so the cream
- * page shows through and body copy laid over it stays readable. The pointer
- * still nudges the curve forward (as it did on the original, via a
- * window-level listener rather than one scoped to the canvas, so the effect
- * works no matter what sits visually on top); left alone it drifts on its
- * own at a slow, print-like pace. Static on prefers-reduced-motion, paused
- * off-screen and while the tab is hidden.
+ * The masthead spirograph — ported from intrinsiclabs.co's hero
+ * (`src/components/home/RetinaCanvas.tsx` in the intrinsiclabs-co-v3 repo) and given
+ * back the two things that made the original worth sitting in front of:
+ *
+ *   1. It is the whole viewport. The canvas is sized to its section, which is
+ *      `100vw × 100svh` (see Masthead.tsx), and every curve is scaled so its extent is
+ *      larger than the section's diagonal — so the lines always run off all four edges
+ *      instead of stopping at a container's border.
+ *   2. Moving the pointer draws it. Each pixel of pointer travel advances the trace, so
+ *      the curve draws itself on while you move and unwinds back off when it reaches the
+ *      end; at zero it re-rolls new parameters and starts a different figure. Left
+ *      completely alone it drifts very slowly on its own, so the page is never dead.
+ *
+ * Colour comes from the semantic tokens (`--color-ink`, `--color-ink-2`, `--color-accent`)
+ * read off the document at draw time, never hardcoded, so the skin — cream or black —
+ * carries straight through. Static on `prefers-reduced-motion`, paused off-screen and
+ * while the tab is hidden.
  */
 
 interface CurveParams {
@@ -24,10 +31,7 @@ interface CurveParams {
   allRotation: number;
 }
 
-// --color-ink and --color-ink-3 from app/globals.css, as rgb triples so we
-// can drive the alpha channel per stroke.
-const INK = "27, 25, 21";
-const INK_3 = "138, 131, 119";
+type CurveKind = "hypotrochoid" | "epitrochoid" | "hypocycloid";
 
 function gcd(a: number, b: number): number {
   a = Math.abs(Math.floor(a));
@@ -41,12 +45,42 @@ function gcd(a: number, b: number): number {
 }
 
 function traceEndPoint(R: number, r: number, amount: number): number {
-  const divisor = gcd(R, r);
-  return Math.ceil((2 * Math.PI * r) / divisor) * amount;
+  return Math.ceil((2 * Math.PI * r) / gcd(R, r)) * amount;
 }
 
-function drawHypotrochoid(
+/**
+ * How far the pen gets from the centre along each axis, in curve units. Both numbers
+ * matter: `min` is the radius the figure is guaranteed to reach in every direction, which
+ * is what a bleed has to be scaled from — scaling off the *widest* reach lets a curve
+ * whose x- and y-rotations differ sit entirely inside the frame on its narrow axis, which
+ * is exactly the clipped-looking hero this replaced.
+ */
+function curveReach(kind: CurveKind, { R, r, d, xRotation, yRotation }: CurveParams) {
+  const base = kind === "epitrochoid" ? R + r : Math.abs(R - r);
+  const k = kind === "hypocycloid" ? r : d;
+  const ax = base + k * Math.abs(xRotation);
+  const ay = base + k * Math.abs(yRotation);
+  return { min: Math.max(1, Math.min(ax, ay)), max: Math.max(1, Math.max(ax, ay)) };
+}
+
+function point(kind: CurveKind, p: CurveParams, theta: number): [number, number] {
+  const { R, r, d, xRotation, yRotation } = p;
+  if (kind === "epitrochoid") {
+    return [
+      (R + r) * Math.cos(theta) - d * Math.cos(((R + r) / r) * theta) * xRotation,
+      (R + r) * Math.sin(theta) - d * Math.sin(((R + r) / r) * theta) * yRotation,
+    ];
+  }
+  const k = kind === "hypocycloid" ? r : d;
+  return [
+    (R - r) * Math.cos(theta) + k * Math.cos(((R - r) / r) * theta) * xRotation,
+    (R - r) * Math.sin(theta) - k * Math.sin(((R - r) / r) * theta) * yRotation,
+  ];
+}
+
+function traceCurve(
   ctx: CanvasRenderingContext2D,
+  kind: CurveKind,
   params: CurveParams,
   amount: number,
   scale: number,
@@ -54,99 +88,81 @@ function drawHypotrochoid(
   centerY: number,
   rotationDegrees: number,
 ) {
-  const { R, r, d, xRotation, yRotation } = params;
-  const endPoint = traceEndPoint(R, r, amount);
+  const endPoint = traceEndPoint(params.R, params.r, amount);
+  if (endPoint <= 0) return;
+  // The original stepped a flat 0.01 radians, which on a long trace is >150k segments a
+  // frame. Cap the segment count instead: at this scale the difference is invisible.
+  const step = Math.max(0.01, endPoint / 24000);
 
   ctx.save();
   ctx.translate(centerX, centerY);
   ctx.rotate((rotationDegrees * Math.PI) / 180);
-
   ctx.beginPath();
-  for (let theta = 0; theta <= endPoint; theta += 0.01) {
-    const x =
-      ((R - r) * Math.cos(theta) + d * Math.cos(((R - r) / r) * theta) * xRotation) * scale;
-    const y =
-      ((R - r) * Math.sin(theta) - d * Math.sin(((R - r) / r) * theta) * yRotation) * scale;
-    if (theta === 0) ctx.moveTo(x, y);
-    else ctx.lineTo(x, y);
+  for (let theta = 0; theta <= endPoint; theta += step) {
+    const [x, y] = point(kind, params, theta);
+    if (theta === 0) ctx.moveTo(x * scale, y * scale);
+    else ctx.lineTo(x * scale, y * scale);
   }
   ctx.stroke();
   ctx.restore();
 }
 
-function drawEpitrochoid(
-  ctx: CanvasRenderingContext2D,
-  params: CurveParams,
-  amount: number,
-  scale: number,
-  centerX: number,
-  centerY: number,
-  rotationDegrees: number,
-) {
-  const { R, r, d, xRotation, yRotation } = params;
-  const endPoint = traceEndPoint(R, r, amount);
-
-  ctx.save();
-  ctx.translate(centerX, centerY);
-  ctx.rotate((rotationDegrees * Math.PI) / 180);
-
-  ctx.beginPath();
-  for (let theta = 0; theta <= endPoint; theta += 0.01) {
-    const x =
-      ((R + r) * Math.cos(theta) - d * Math.cos(((R + r) / r) * theta) * xRotation) * scale;
-    const y =
-      ((R + r) * Math.sin(theta) - d * Math.sin(((R + r) / r) * theta) * yRotation) * scale;
-    if (theta === 0) ctx.moveTo(x, y);
-    else ctx.lineTo(x, y);
-  }
-  ctx.stroke();
-  ctx.restore();
+/** A rotation factor that is never so near zero that the curve collapses to a line. */
+function signedRotation(): number {
+  return (Math.random() < 0.5 ? -1 : 1) * (0.38 + Math.random() * 0.62);
 }
 
-function drawHypocycloid(
-  ctx: CanvasRenderingContext2D,
-  params: CurveParams,
-  amount: number,
-  scale: number,
-  centerX: number,
-  centerY: number,
-  rotationDegrees: number,
-) {
-  const { R, r, xRotation, yRotation } = params;
-  const endPoint = traceEndPoint(R, r, amount);
-
-  ctx.save();
-  ctx.translate(centerX, centerY);
-  ctx.rotate((rotationDegrees * Math.PI) / 180);
-
-  ctx.beginPath();
-  for (let theta = 0; theta <= endPoint; theta += 0.01) {
-    const x =
-      ((R - r) * Math.cos(theta) + r * Math.cos(((R - r) / r) * theta) * xRotation) * scale;
-    const y =
-      ((R - r) * Math.sin(theta) - r * Math.sin(((R - r) / r) * theta) * yRotation) * scale;
-    if (theta === 0) ctx.moveTo(x, y);
-    else ctx.lineTo(x, y);
-  }
-  ctx.stroke();
-  ctx.restore();
-}
-
+/**
+ * The original rolled all six parameters uniformly, which most of the time is a fine
+ * figure and some of the time is four bare strands: `traceEndPoint` is `2πr / gcd(R, r)`,
+ * so a small `r` or a large common factor closes the curve after two loops, and an `R`
+ * close to `r` collapses it toward a point that then gets scaled up enormously to fill the
+ * frame. This keeps the same families and the same feel, and only rules out the
+ * degenerate corner of the parameter space: whole numbers with a small common factor, a
+ * radius far enough from `R` to have a shape, and rotations that aren't flat.
+ */
 function generateRandomParams(): CurveParams {
+  const R = Math.round(120 + Math.random() * 136);
+  let r = Math.round(30 + Math.random() * (R - 75));
+  while (r > 30 && gcd(R, r) > 3) r -= 1;
   return {
-    R: Math.random() * 256,
-    r: Math.random() * 256,
-    d: Math.random() * 256,
-    xRotation: Math.random() * 2 - 1,
-    yRotation: Math.random() * 2 - 1,
+    R,
+    r,
+    d: Math.round(30 + Math.random() * 200),
+    xRotation: signedRotation(),
+    yRotation: signedRotation(),
     allRotation: Math.random() * 360,
   };
 }
 
-// Idle drift: how much the trace advances per frame with no pointer input.
-const AMBIENT_DELTA = 0.00025;
-// How strongly pointer movement (mouse, pen, or touch) speeds the trace along.
-const POINTER_DELTA_PER_PX = 0.00006;
+/** Idle drift per frame with no pointer input — alive, but barely. */
+const AMBIENT_DELTA = 0.00012;
+/** How far a pixel of pointer travel draws the curve on. The original's figure. */
+const POINTER_DELTA_PER_PX = 0.0002;
+
+/**
+ * How far past the section's half-diagonal each curve's *narrowest* reach is scaled. A
+ * circle of exactly the half-diagonal passes through the corners, so anything above 1
+ * leaves the frame on every side, whatever the random parameters come out as. The three
+ * differ so the layers sit at different depths rather than tracing each other.
+ */
+const BLEED: Record<CurveKind, number> = {
+  hypotrochoid: 1.22,
+  epitrochoid: 1.02,
+  hypocycloid: 1.45,
+};
+
+/**
+ * …but a curve with a near-degenerate axis would otherwise be blown up until the frame
+ * held four bare strands. This caps the widest reach, so such a figure bleeds on its long
+ * axis and simply stays a narrow figure on its short one.
+ */
+const MAX_SPREAD = 1.7;
+
+function readToken(name: string, fallback: string): string {
+  const v = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  return v || fallback;
+}
 
 export function Spirograph({ className = "" }: { className?: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -160,16 +176,29 @@ export function Spirograph({ className = "" }: { className?: string }) {
     const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
 
     let params = generateRandomParams();
-    let amount = reducedMotionQuery.matches ? 0.65 : 0.05;
+    // The original opened at 0.05 — a few strands — and relied on the mouse to draw the
+    // rest. On a landing page that reads as an empty screen to anyone who arrives and
+    // doesn't move, so it opens on a figure that is already a figure and leaves the
+    // remaining two-thirds for the pointer to draw.
+    let amount = reducedMotionQuery.matches ? 0.7 : 0.26;
     let direction = 1;
     let pointerDelta = 0;
     let lastPointer: { x: number; y: number } | null = null;
     let rafId: number | null = null;
     let running = false;
     let isIntersecting = true;
+    let palette = { ink: "#ffffff", ink2: "#888888", accent: "#e0723f" };
+
+    function readPalette() {
+      palette = {
+        ink: readToken("--color-ink", palette.ink),
+        ink2: readToken("--color-ink-2", palette.ink2),
+        accent: readToken("--color-accent", palette.accent),
+      };
+    }
 
     function draw() {
-      const dpr = window.devicePixelRatio || 1;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
       const rect = canvas!.getBoundingClientRect();
       const width = Math.max(1, rect.width);
       const height = Math.max(1, rect.height);
@@ -183,20 +212,42 @@ export function Spirograph({ className = "" }: { className?: string }) {
       ctx!.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx!.clearRect(0, 0, width, height);
 
+      // Dead centre: the figure grows outward from the middle of the viewport and leaves
+      // it on every side.
       const centerX = width / 2;
-      const centerY = height / 2.9;
-      const scale = Math.min(width, height) / 600;
+      const centerY = height / 2;
+      const halfDiagonal = Math.hypot(width, height) / 2;
+      const fit = (kind: CurveKind) => {
+        const reach = curveReach(kind, params);
+        return Math.min((halfDiagonal * BLEED[kind]) / reach.min, (halfDiagonal * MAX_SPREAD) / reach.max);
+      };
 
-      ctx!.lineWidth = 0.75;
+      ctx!.lineCap = "round";
+      ctx!.lineJoin = "round";
 
-      ctx!.strokeStyle = `rgba(${INK}, 0.22)`;
-      drawHypotrochoid(ctx!, params, amount, scale, centerX, centerY, params.allRotation * 1.25);
+      // A wide, near-invisible pass under the accent curve reads as bloom on a dark
+      // ground and as nothing at all on a light one.
+      ctx!.globalAlpha = 0.07;
+      ctx!.lineWidth = 3;
+      ctx!.strokeStyle = palette.accent;
+      traceCurve(ctx!, "hypotrochoid", params, amount, fit("hypotrochoid"), centerX, centerY, params.allRotation * 1.25);
 
-      ctx!.strokeStyle = `rgba(${INK_3}, 0.16)`;
-      drawEpitrochoid(ctx!, params, amount, scale, centerX, centerY, params.allRotation * 0.5);
+      ctx!.globalAlpha = 0.42;
+      ctx!.lineWidth = 0.8;
+      ctx!.strokeStyle = palette.accent;
+      traceCurve(ctx!, "hypotrochoid", params, amount, fit("hypotrochoid"), centerX, centerY, params.allRotation * 1.25);
 
-      ctx!.strokeStyle = `rgba(${INK_3}, 0.12)`;
-      drawHypocycloid(ctx!, params, amount, scale, centerX, centerY, params.allRotation * 0.25);
+      ctx!.globalAlpha = 0.38;
+      ctx!.lineWidth = 0.7;
+      ctx!.strokeStyle = palette.ink;
+      traceCurve(ctx!, "epitrochoid", params, amount, fit("epitrochoid"), centerX, centerY, params.allRotation * 0.5);
+
+      ctx!.globalAlpha = 0.28;
+      ctx!.lineWidth = 0.65;
+      ctx!.strokeStyle = palette.ink2;
+      traceCurve(ctx!, "hypocycloid", params, amount, fit("hypocycloid"), centerX, centerY, params.allRotation * 0.25);
+
+      ctx!.globalAlpha = 1;
     }
 
     function advance() {
@@ -221,9 +272,7 @@ export function Spirograph({ className = "" }: { className?: string }) {
     }
 
     function startLoop() {
-      if (running || reducedMotionQuery.matches || !isIntersecting || document.visibilityState !== "visible") {
-        return;
-      }
+      if (running || reducedMotionQuery.matches || !isIntersecting || document.visibilityState !== "visible") return;
       running = true;
       rafId = requestAnimationFrame(tick);
     }
@@ -236,27 +285,25 @@ export function Spirograph({ className = "" }: { className?: string }) {
       }
     }
 
-    // Initial paint — a single frame even before the loop (if any) starts,
-    // so there's never a blank canvas.
+    readPalette();
+    // One frame before the loop (if any) starts, so the canvas is never blank.
     draw();
 
     function handlePointerMove(e: PointerEvent) {
       if (lastPointer) {
-        const dx = e.clientX - lastPointer.x;
-        const dy = e.clientY - lastPointer.y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
+        const distance = Math.hypot(e.clientX - lastPointer.x, e.clientY - lastPointer.y);
         pointerDelta += distance * POINTER_DELTA_PER_PX;
       }
       lastPointer = { x: e.clientX, y: e.clientY };
     }
 
-    // Window-level, like the original: the effect responds to the pointer
-    // anywhere on the page, not just while directly over the canvas — which
-    // matters here since the canvas sits behind other content and is
-    // pointer-events: none (see Masthead.tsx).
+    // Window-level, like the original: the figure answers the pointer anywhere on the
+    // page, not only while directly over the canvas — which matters because the canvas
+    // sits behind the headline and is `pointer-events: none`.
     window.addEventListener("pointermove", handlePointerMove, { passive: true });
 
     const resizeObserver = new ResizeObserver(() => {
+      readPalette();
       draw();
     });
     resizeObserver.observe(canvas);
@@ -272,8 +319,12 @@ export function Spirograph({ className = "" }: { className?: string }) {
     intersectionObserver.observe(canvas);
 
     function handleVisibilityChange() {
-      if (document.visibilityState === "visible") startLoop();
-      else stopLoop();
+      if (document.visibilityState === "visible") {
+        readPalette();
+        startLoop();
+      } else {
+        stopLoop();
+      }
     }
     document.addEventListener("visibilitychange", handleVisibilityChange);
 
