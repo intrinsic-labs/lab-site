@@ -78,14 +78,10 @@ export function OrbInteraction({
   metrics: PanelMetric[];
 }) {
   const hostRef = useRef<HTMLDivElement>(null);
-  // `hovered` is transient (pointer over / focus within); `pinned` is a tap or click and
-  // stays until the same orb is tapped again or another one is chosen. A finger has no
-  // hover — on touch, pointerover is followed by pointerout within the same tap — so the
-  // pin is what lets a phone hold one metric's explanation in the panel.
-  const [hovered, setHovered] = useState<string | null>(null);
-  const [pinned, setPinned] = useState<string | null>(null);
-  // Hover previews, a pin holds, and with neither the lead metric stands — the panel is never empty.
-  const active = hovered ?? pinned ?? defaultKey;
+  // One piece of state: the most recently hovered, focused or tapped orb. Nothing clears it
+  // on pointer-out — leaving an orb keeps its explanation up until another orb is touched —
+  // and before anyone has touched one the lead metric stands, so the panel is never empty.
+  const [active, setActive] = useState<string>(defaultKey);
 
   // --- the panel: hover, focus and tap all resolve to the same "which orb" ---------------
   useEffect(() => {
@@ -93,29 +89,17 @@ export function OrbInteraction({
     if (!host) return;
     const keyFrom = (t: EventTarget | null) =>
       t instanceof Element ? (t.closest("[data-orb-hit]") as HTMLElement | null)?.dataset.orbHit ?? null : null;
-    const enter = (e: Event) => {
+    const select = (e: Event) => {
       const key = keyFrom(e.target);
-      if (key) setHovered(key);
+      if (key) setActive(key);
     };
-    const leave = (e: Event) => {
-      const key = keyFrom(e.target);
-      if (key) setHovered((cur) => (cur === key ? null : cur));
-    };
-    const tap = (e: Event) => {
-      const key = keyFrom(e.target);
-      if (key) setPinned((cur) => (cur === key ? null : key));
-    };
-    host.addEventListener("pointerover", enter);
-    host.addEventListener("pointerout", leave);
-    host.addEventListener("focusin", enter);
-    host.addEventListener("focusout", leave);
-    host.addEventListener("click", tap);
+    host.addEventListener("pointerover", select);
+    host.addEventListener("focusin", select);
+    host.addEventListener("click", select);
     return () => {
-      host.removeEventListener("pointerover", enter);
-      host.removeEventListener("pointerout", leave);
-      host.removeEventListener("focusin", enter);
-      host.removeEventListener("focusout", leave);
-      host.removeEventListener("click", tap);
+      host.removeEventListener("pointerover", select);
+      host.removeEventListener("focusin", select);
+      host.removeEventListener("click", select);
     };
   }, []);
 
