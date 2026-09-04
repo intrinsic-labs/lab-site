@@ -115,7 +115,7 @@ const TOUCH_DELTA_PER_PX = 0.002;
 const TOUCH_DEAD_ZONE_PX = 10;
 const STROKE_WIDTH = 0.5;
 /** Opacity of the cream stroke only; copper and blue draw at 1. */
-const CREAM_ALPHA = 0.6;
+const CREAM_ALPHA = 0.75;
 
 function readToken(name: string, fallback: string): string {
   const v = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
