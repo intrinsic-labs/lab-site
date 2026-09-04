@@ -53,7 +53,14 @@ function supportsWebGL(): boolean {
   return webglSupport;
 }
 
-export function useWireframeScene(build: BuildScene) {
+/**
+ * `zoom` is applied to the camera's own `zoom` (1 = the scene's authored framing) on every
+ * size pass, so a call site can show the same scene larger without each scene knowing.
+ * The case-study hero asks for it: a 16:9 box on a phone is SHORTER than the 4:3 card on
+ * /work, and a perspective camera's vertical FOV is fixed, so the same object rendered
+ * smaller on its own page than in the list (Asher, 2026-09-04).
+ */
+export function useWireframeScene(build: BuildScene, zoom = 1) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -89,6 +96,7 @@ export function useWireframeScene(build: BuildScene) {
         const w = root.clientWidth, h = root.clientHeight;
         if (!w || !h || !renderer) return;
         camera.aspect = w / h;
+        camera.zoom = zoom;
         camera.updateProjectionMatrix();
         renderer.setSize(w, h);
       };
@@ -146,7 +154,7 @@ export function useWireframeScene(build: BuildScene) {
       const canvas = root.querySelector("canvas");
       if (canvas?.parentNode === root) root.removeChild(canvas);
     };
-  }, [build]);
+  }, [build, zoom]);
 
   return containerRef;
 }

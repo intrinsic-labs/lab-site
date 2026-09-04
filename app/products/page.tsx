@@ -29,18 +29,21 @@ export default async function ProductsPage() {
     <div>
       <SnapSections />
 
-      <header className="mx-auto max-w-6xl px-6 pt-16 pb-8 sm:pt-24" style={{ scrollSnapAlign: "start" }}>
+      <header className="mx-auto max-w-6xl px-6 pt-8 pb-2 sm:pt-24 sm:pb-8" style={{ scrollSnapAlign: "start" }}>
         <p className="label mb-4">Products</p>
         <h1 className="font-sans text-4xl font-medium leading-[1.05] tracking-tight sm:text-5xl">
           What the workshop is building for itself.
         </h1>
-        <p className="mt-6 max-w-2xl text-lg text-ink-2">
+        <p className="mt-4 max-w-2xl text-lg text-ink-2 sm:mt-6">
           The company&rsquo;s own product bets — each listed with its real status, not left off until it ships.
         </p>
       </header>
 
+      {/* The first stage sits closer to the header on a phone (Asher, 2026-09-04: "the
+          vertical spacing between individual products is good" — it is the header→first
+          gap that was slack). Between-product spacing is untouched. */}
       {features.map((i, n) => (
-        <ProductFeature key={i.slug} product={i} images={i.images} flip={n % 2 === 1} priority={n === 0} />
+        <ProductFeature key={i.slug} product={i} images={i.images} flip={n % 2 === 1} priority={n === 0} className={n === 0 ? "-mt-4 sm:mt-0" : undefined} />
       ))}
 
       {tail.length > 0 && (

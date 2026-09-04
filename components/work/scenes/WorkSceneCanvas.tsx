@@ -15,7 +15,7 @@ import type { WorkSceneId, WorkTint } from "@/lib/content/schema";
  * Suspense wiring), not just a client-side flash, and it's on screen for at most one chunk
  * fetch, so the seed mismatch is never noticed.
  */
-const SCENES: Record<WorkSceneId, ComponentType<{ tint?: WorkTint }>> = {
+const SCENES: Record<WorkSceneId, ComponentType<{ tint?: WorkTint; zoom?: number }>> = {
   "dog-head": dynamic(() => import("./WireframeDogHead").then((m) => m.WireframeDogHead), {
     ssr: false,
     loading: () => <GenerativeCover seed="dog-head" className="h-full w-full" />,
@@ -49,18 +49,21 @@ export function WorkSceneCanvas({
   scene,
   seed,
   tint,
+  zoom,
   className,
 }: {
   scene?: WorkSceneId;
   seed: string;
   tint?: WorkTint;
+  /** Camera zoom, 1 = authored framing. The case-study hero passes >1 (see useWireframeScene). */
+  zoom?: number;
   className?: string;
 }) {
   if (!scene) return <GenerativeCover seed={seed} className={className} />;
   const Scene = SCENES[scene];
   return (
     <div className={className}>
-      <Scene tint={tint} />
+      <Scene tint={tint} zoom={zoom} />
     </div>
   );
 }

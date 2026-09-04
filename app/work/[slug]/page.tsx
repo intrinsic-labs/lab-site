@@ -19,9 +19,9 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
   if (!c) notFound();
   return (
     <article className="mx-auto max-w-6xl px-6">
-      <div className="mt-10 aspect-[16/9] w-full overflow-hidden">
+      <div className="mt-6 aspect-[4/3] w-full overflow-hidden sm:mt-10 sm:aspect-[16/9]">
         {c.scene ? (
-          <WorkSceneCanvas scene={c.scene} seed={c.slug} tint={c.tint} className="h-full w-full" />
+          <WorkSceneCanvas scene={c.scene} seed={c.slug} tint={c.tint} zoom={1.35} className="h-full w-full" />
         ) : c.cover ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={c.cover} alt={c.name} className="h-full w-full object-cover" />
@@ -29,7 +29,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
           <GenerativeCover seed={c.slug} className="h-full w-full" />
         )}
       </div>
-      <header className="pt-10 pb-10 border-b border-rule mx-auto max-w-[68ch]">
+      <header className="pt-4 pb-8 sm:pt-10 sm:pb-10 border-b border-rule mx-auto max-w-[68ch]">
         {c.client && c.client !== c.name && <p className="label">{c.client}</p>}
         <h1 className="font-serif text-4xl sm:text-5xl font-medium tracking-tight leading-[1.05] mt-2">{c.name}</h1>
         <p className="mt-5 text-xl text-ink-2 max-w-2xl leading-snug">{c.line}</p>

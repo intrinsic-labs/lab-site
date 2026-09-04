@@ -29,6 +29,7 @@ export function ProductFeature({
   flip = false,
   quiet = false,
   priority = false,
+  className = "",
 }: {
   product: Product;
   images: ProductImages;
@@ -36,6 +37,8 @@ export function ProductFeature({
   quiet?: boolean;
   /** The first section on the page: its image is above the fold and must not be lazy. */
   priority?: boolean;
+  /** Extra classes on the outer section — the page uses it to pull the first stage up on phones. */
+  className?: string;
 }) {
   const glow = accentVar(product.accent);
 
@@ -50,8 +53,8 @@ export function ProductFeature({
       // scroll on a phone. Same reason `ProductHero` clips.
       className={
         quiet
-          ? "relative overflow-hidden py-12 sm:py-16"
-          : "relative overflow-hidden py-14 sm:py-20 lg:py-24"
+          ? `relative overflow-hidden py-12 sm:py-16 ${className}`
+          : `relative overflow-hidden py-14 sm:py-20 lg:py-24 ${className}`
       }
     >
       <div

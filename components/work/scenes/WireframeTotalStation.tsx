@@ -294,11 +294,11 @@ function build(THREE: ThreeModule, root: HTMLDivElement, tint?: WorkTint): Built
   return { scene, camera, group: stationGroup, disposables: [ptGeo, ptMat] };
 }
 
-export function WireframeTotalStation({ tint }: { tint?: WorkTint }) {
+export function WireframeTotalStation({ tint, zoom }: { tint?: WorkTint; zoom?: number }) {
   const buildWithTint = useMemo(
     () => (THREE: ThreeModule, root: HTMLDivElement) => build(THREE, root, tint),
     [tint],
   );
-  const containerRef = useWireframeScene(buildWithTint);
+  const containerRef = useWireframeScene(buildWithTint, zoom);
   return <div ref={containerRef} className="relative h-full w-full overflow-hidden" aria-hidden="true" />;
 }

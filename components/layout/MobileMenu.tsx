@@ -52,7 +52,9 @@ export function MobileMenu({
   links: readonly MobileMenuLink[];
 }) {
   const [open, setOpen] = useState(false);
-  const [researchOpen, setResearchOpen] = useState(true);
+  // Collapsed by default (Asher, 2026-09-04): the five area rows pushed the rest of the
+  // nav below the fold on a phone; the chevron is one tap away.
+  const [researchOpen, setResearchOpen] = useState(false);
   const panelId = useId();
   const researchPanelId = useId();
   const buttonRef = useRef<HTMLButtonElement>(null);
