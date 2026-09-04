@@ -377,6 +377,26 @@ h1, h2, h3, h4, h5, h6 { font-family: var(--font-sans); }
   outline: 1px solid var(--color-rule);
 }
 
+/* ── Duotone plate ───────────────────────────────────────────────────────────
+   The home Products row (Asher, 2026-09-04: four raw screenshots in a row "look like a
+   huge mess"). Every card image is desaturated, then multiplied by the product's accent
+   — so its lights take the accent and its darks stay black — and vignetted to the same
+   ground, which is the tinted-monochrome language the Work page's point-clouds already
+   speak. `--duotone` is set inline from PRODUCT_ACCENTS; the accent is pulled ~20%
+   toward black so a bright screenshot (a cream dashboard) reads as a plate, not a
+   poster. Swap a better source image in and the treatment still holds. */
+.duotone { position: relative; background: #000; isolation: isolate; }
+.duotone > img { filter: grayscale(1) contrast(1.15) brightness(0.92); }
+.duotone::before {
+  content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; /* z-index: pseudo-elements paint under a later <img> otherwise */
+  background: color-mix(in srgb, var(--duotone, var(--color-accent)) 80%, #000);
+  mix-blend-mode: multiply;
+}
+.duotone::after {
+  content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 40%, rgba(0, 0, 0, 0.7) 100%);
+}
+
 /* The OpenLoom banner's version pill. This one IS a stroked capsule — it is the
    one place latent-spaces uses that shape (OpenLoomHeader:
    `text-md font-calling-code text-neutral-300 border border-neutral-400

@@ -66,7 +66,7 @@ export async function AutonomyOrbs() {
           strip above the orbs is gone; the date rides with the target). Three cells so the
           title sits dead centre at md+; on a phone the three stack. */}
       <div className="mx-auto max-w-6xl px-6">
-        <div className="grid gap-y-2 border-t border-rule pt-3 text-center md:grid-cols-3 md:items-baseline md:text-left">
+        <div className="mt-8 grid gap-y-3 border-t border-rule pt-6 text-center md:mt-6 md:grid-cols-3 md:items-baseline md:pt-4 md:text-left">
           <p className="text-sm text-ink-2 leading-snug">
             Measured {data.generated}. Target: {data.goal.low}–{data.goal.high}%.
           </p>

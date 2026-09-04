@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { Product, ProductImages } from "@/lib/content/products";
-import { STATUS_LABEL } from "@/lib/content/products";
+import { STATUS_LABEL, accentVar } from "@/lib/content/products";
 import { Chip } from "./Chip";
 import { GenerativeCover } from "./GenerativeCover";
 
@@ -13,13 +13,20 @@ import { GenerativeCover } from "./GenerativeCover";
  *  hero uncropped, so a 16:9 hero often loses its subject in the card. Dropping a `card.png`
  *  into the folder is the whole fix — no code change, no front-matter field (Asher, 2026-09-04:
  *  "the images on the home row don't work, I just need different images"). Neither present
- *  falls back to the seeded `GenerativeCover`. See public/products/README.md. */
+ *  falls back to the seeded `GenerativeCover`. See public/products/README.md.
+ *
+ *  The image wears the `.duotone` plate (app/globals.css) in the product's own accent, so
+ *  four unrelated screenshots sit in one row as one system (Asher, 2026-09-04). */
 export function ProductCard({ item, images, blurb }: { item: Product; images: ProductImages; blurb?: React.ReactNode }) {
   const href = `/products/${item.slug}`;
   const cover = images.card ?? images.hero;
   return (
     <li className="flex flex-col bg-paper">
-      <Link href={href} className="group relative block aspect-[4/3] w-full overflow-hidden">
+      <Link
+        href={href}
+        className="group duotone relative block aspect-[4/3] w-full overflow-hidden"
+        style={{ "--duotone": accentVar(item.accent) } as React.CSSProperties}
+      >
         {cover ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={cover.src} alt={item.name} width={cover.width} height={cover.height} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" />

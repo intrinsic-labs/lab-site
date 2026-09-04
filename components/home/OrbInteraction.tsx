@@ -277,16 +277,18 @@ export function OrbInteraction({
     };
   }, []);
 
+  // Every paragraph occupies the same grid cell, so the panel is exactly as tall as the
+  // longest blurb and a swap never moves the page — no guessed min-height.
   const line =
-    "absolute inset-x-0 top-0 mx-auto max-w-[72ch] text-center text-sm sm:text-base leading-snug text-ink-2 transition-opacity duration-300 ease-out motion-reduce:transition-none";
+    "col-start-1 row-start-1 mx-auto max-w-[72ch] text-center text-sm sm:text-base leading-snug text-ink-2 transition-opacity duration-300 ease-out motion-reduce:transition-none";
 
   return (
     <div ref={hostRef}>
       {children}
 
       <div className="mx-auto max-w-6xl px-6">
-      {/* Fixed height, so a swap never moves the page. */}
-      <div className="relative mt-6 min-h-[9.5rem] sm:min-h-[7rem] md:min-h-[5.5rem]">
+      {/* Stacked in one grid cell: height = the tallest blurb, so a swap never moves the page. */}
+      <div className="mt-6 grid">
         {metrics.map((m) => (
           <p
             key={m.key}
@@ -303,7 +305,7 @@ export function OrbInteraction({
           (Asher, 2026-09-04: paragraph first, then the bullets), and it is the same hit
           target the orbs are on a desktop. The list is a centred block whose rows stay
           left-aligned to each other: `w-fit mx-auto`, never `text-center`. */}
-      <ul className="mx-auto mt-6 flex w-fit flex-col gap-1.5 md:hidden">
+      <ul className="mx-auto mt-8 flex w-fit flex-col gap-1.5 md:hidden">
         {metrics.map((m) => (
           <li key={m.key}>
             <button
