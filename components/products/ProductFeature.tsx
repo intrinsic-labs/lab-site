@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { accentVar, STATUS_LABEL, type Product, type ProductImages } from "@/lib/content/products";
 import { GenerativeCover } from "@/components/ui/GenerativeCover";
+import { containedImageStyle } from "@/components/ui/containedImageStyle";
 
 /**
  * One product, given a full-width stage of its own on `/products`.
@@ -27,11 +28,14 @@ export function ProductFeature({
   images,
   flip = false,
   quiet = false,
+  priority = false,
 }: {
   product: Product;
   images: ProductImages;
   flip?: boolean;
   quiet?: boolean;
+  /** The first section on the page: its image is above the fold and must not be lazy. */
+  priority?: boolean;
 }) {
   const glow = accentVar(product.accent);
 
@@ -64,11 +68,27 @@ export function ProductFeature({
             style={{ background: `radial-gradient(50% 50% at 50% 50%, ${glow} 0%, transparent 72%)` }}
           />
           {images.hero ? (
+            // `width`/`height` are the intrinsic pixels read off the file at build time
+            // (lib/content/image-size.ts), NOT a rendered size — `w-auto h-auto max-*`
+            // below still decide that. They are here so the browser knows the aspect ratio
+            // before the bytes arrive; without them this box laid out at zero and then
+            // shoved the whole two-column grid when the image landed (measured 0.068 CLS
+            // on /products, the largest shift on the site).
             // eslint-disable-next-line @next/next/no-img-element
             <img
-              src={images.hero}
+              src={images.hero.src}
               alt={product.name}
-              loading="lazy"
+              width={images.hero.width}
+              height={images.hero.height}
+              // The first section is above the fold, so lazy-loading it delays the page's
+              // largest paint and guarantees the shift it is meant to avoid.
+              loading={priority ? "eager" : "lazy"}
+              fetchPriority={priority ? "high" : undefined}
+              decoding="async"
+              // Definite width + the two caps that `w-auto max-w-full max-h-*` used to
+              // express, so the box is the right size before the image loads rather than
+              // after. The classes stay as the fallback for an image we could not measure.
+              style={containedImageStyle(images.hero, quiet ? 34 : 58)}
               className={`relative mx-auto h-auto w-auto max-w-full rounded-xl object-contain ${
                 quiet ? "max-h-[34vh]" : "max-h-[58vh]"
               }`}

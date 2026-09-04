@@ -24,6 +24,35 @@ import type { BuildScene, ThreeModule } from "./types";
  * page full of these never taxes mobile scroll performance. `prefers-reduced-motion: reduce`
  * renders exactly one static frame and never starts the loop at all.
  */
+/**
+ * WebGL feature detection, memoized for the lifetime of the document and — critically —
+ * releasing the context it opens.
+ *
+ * This used to run per mount, inside the effect: every scene that mounted called
+ * `getContext("webgl2")` on a throwaway canvas and then dropped the canvas on the floor.
+ * A WebGL context is not garbage in the ordinary sense — the browser holds a fixed budget
+ * of them (Chrome: 16) and reclaims one only when it is explicitly lost or the canvas is
+ * finally collected, which can be many seconds later. So the probe alone doubled every
+ * scene's context cost, and /work mounts five of them.
+ *
+ * The answer is the same one the renderer teardown below uses: ask WEBGL_lose_context to
+ * drop it the moment the answer is known, and cache the boolean so it is asked once.
+ */
+let webglSupport: boolean | undefined;
+function supportsWebGL(): boolean {
+  if (webglSupport !== undefined) return webglSupport;
+  const probe = document.createElement("canvas");
+  const gl = (probe.getContext("webgl2") ||
+    probe.getContext("webgl") ||
+    probe.getContext("experimental-webgl")) as WebGLRenderingContext | null;
+  if (gl) {
+    // Hand the context straight back rather than waiting for the canvas to be collected.
+    gl.getExtension("WEBGL_lose_context")?.loseContext();
+  }
+  webglSupport = Boolean(gl);
+  return webglSupport;
+}
+
 export function useWireframeScene(build: BuildScene) {
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -31,11 +60,7 @@ export function useWireframeScene(build: BuildScene) {
     const root = containerRef.current;
     if (!root) return;
 
-    const probe = document.createElement("canvas");
-    const hasWebGL = Boolean(
-      probe.getContext("webgl2") || probe.getContext("webgl") || probe.getContext("experimental-webgl"),
-    );
-    if (!hasWebGL) return;
+    if (!supportsWebGL()) return;
 
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -107,7 +132,17 @@ export function useWireframeScene(build: BuildScene) {
       cancelAnimationFrame(frameId);
       cleanup?.();
       for (const d of disposables) d.dispose();
-      renderer?.dispose();
+      // `dispose()` frees the GPU-side resources three allocated, but it does NOT hand the
+      // WebGL CONTEXT back — that lives on the canvas and survives until the browser
+      // collects it. Chrome caps a page at 16 live contexts and silently kills the oldest
+      // past that ("Too many active WebGL contexts"), which is what turned a few client-side
+      // trips between /work and a case study into a grid of dead black cards that a reload
+      // could not fix. Losing the context first, while the extension registry is still
+      // wired up, returns it immediately; `dispose()` then tears down the rest.
+      if (renderer) {
+        renderer.forceContextLoss();
+        renderer.dispose();
+      }
       const canvas = root.querySelector("canvas");
       if (canvas?.parentNode === root) root.removeChild(canvas);
     };

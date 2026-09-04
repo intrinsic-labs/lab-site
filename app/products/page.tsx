@@ -40,7 +40,7 @@ export default async function ProductsPage() {
       </header>
 
       {features.map((i, n) => (
-        <ProductFeature key={i.slug} product={i} images={i.images} flip={n % 2 === 1} />
+        <ProductFeature key={i.slug} product={i} images={i.images} flip={n % 2 === 1} priority={n === 0} />
       ))}
 
       {tail.length > 0 && (

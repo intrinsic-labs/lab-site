@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import type { SizedImage } from "@/lib/content/products";
 
 /**
  * The product gallery, as a carousel rather than a stack.
@@ -22,7 +23,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
  * phone screenshots (Aspen Grove's fourteen) from dominating the page: portrait frames
  * come out narrow and several are visible at once, landscape frames come out wide.
  */
-export function Gallery({ images, label = "Gallery" }: { images: string[]; label?: string }) {
+export function Gallery({ images, label = "Gallery" }: { images: SizedImage[]; label?: string }) {
   const scroller = useRef<HTMLUListElement>(null);
   const [index, setIndex] = useState(0);
 
@@ -86,10 +87,10 @@ export function Gallery({ images, label = "Gallery" }: { images: string[]; label
         }}
         className="mt-5 flex snap-x snap-mandatory gap-5 overflow-x-auto scroll-smooth px-[max(1.5rem,calc((100vw-72rem)/2))] pb-3 outline-none [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
-        {images.map((src, i) => {
+        {images.map((img, i) => {
           const focused = i === index;
           return (
-            <li key={src} className="shrink-0 snap-center">
+            <li key={img.src} className="shrink-0 snap-center">
               <button
                 type="button"
                 onClick={() => goTo(i)}
@@ -101,11 +102,20 @@ export function Gallery({ images, label = "Gallery" }: { images: string[]; label
                   focused ? "opacity-100" : "opacity-55 hover:opacity-80"
                 }`}
               >
+                {/* A slide is a FIXED HEIGHT and `w-auto`, so until the bytes arrive its
+                    width is zero — fourteen of those in one flex row means the whole strip
+                    re-lays-out as they stream in, which both jumps the page and makes
+                    `syncIndex` (it measures `offsetLeft`) pick the wrong focused slide.
+                    The intrinsic dimensions give each slide its aspect ratio, and therefore
+                    its width, before a single byte of image has loaded. */}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src={src}
+                  src={img.src}
                   alt=""
+                  width={img.width}
+                  height={img.height}
                   loading={i < 2 ? "eager" : "lazy"}
+                  decoding="async"
                   className="h-[380px] w-auto object-contain sm:h-[520px]"
                 />
                 {/* The arrow overlay: one direction, only on a slide that is NOT centred,
@@ -129,9 +139,9 @@ export function Gallery({ images, label = "Gallery" }: { images: string[]; label
       {/* The indicator is centred under the strip, always — it is the only chrome left. */}
       <div className="mx-auto mt-6 flex max-w-6xl flex-wrap items-center justify-center gap-3 px-6">
         <div className="flex flex-wrap items-center justify-center gap-2">
-          {images.map((src, i) => (
+          {images.map((img, i) => (
             <button
-              key={src}
+              key={img.src}
               type="button"
               aria-label={`Go to image ${i + 1}`}
               aria-current={i === index}

@@ -1,5 +1,6 @@
 import type { Product, ProductImages } from "@/lib/content/products";
 import { GenerativeCover } from "@/components/ui/GenerativeCover";
+import { containedImageStyle } from "@/components/ui/containedImageStyle";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 
 /**
@@ -55,8 +56,16 @@ export function ProductHero({ product, images }: { product: Product; images: Pro
           {images.hero ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
-              src={images.hero}
+              src={images.hero.src}
               alt={product.name}
+              // Intrinsic pixels, so the box holds its aspect ratio before the bytes land;
+              // `w-auto`/`h-auto` + `max-h-[64vh]` still decide the rendered size. This is
+              // the page's LCP image, hence eager + high priority rather than the default.
+              width={images.hero.width}
+              height={images.hero.height}
+              fetchPriority="high"
+              decoding="async"
+              style={containedImageStyle(images.hero, 64)}
               className="relative mx-auto h-auto max-h-[64vh] w-auto max-w-full sm:rounded-xl"
             />
           ) : (

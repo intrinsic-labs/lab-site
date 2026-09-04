@@ -3,6 +3,7 @@ import { promises as fsp } from "node:fs";
 import path from "node:path";
 import { z } from "zod";
 import { readDir } from "./fs";
+import { imageSize } from "./image-size";
 import { productFrontMatter, type ProductFrontMatter, type ProductStatus } from "./schema";
 
 /**
@@ -60,13 +61,28 @@ export async function productBySlug(slug: string): Promise<Product | undefined> 
   return (await allProducts()).find((p) => p.slug === slug);
 }
 
+/**
+ * One image, with the intrinsic size read off its header at build time (`imageSize`).
+ *
+ * The dimensions are carried alongside the URL rather than looked up in the component,
+ * because the components that render these are the un-cropped slots — a `object-contain`
+ * hero, a fixed-height gallery slide — which reserve no space of their own and reflow the
+ * page when the bytes land unless the tag states an aspect ratio. `width`/`height` are
+ * optional: an image whose header cannot be parsed renders exactly as it did before.
+ */
+export interface SizedImage {
+  src: string;
+  width?: number;
+  height?: number;
+}
+
 export interface ProductImages {
   /** `public/products/<slug>/hero.{png,jpg,jpeg,webp}` — the big centred image on the product page. */
-  hero?: string;
+  hero?: SizedImage;
   /** `public/products/<slug>/card.*` — the 4:3-croppable image for `ProductCard`. Falls back to `hero`. */
-  card?: string;
+  card?: SizedImage;
   /** Every other image in that folder, filename order (`01-…png`, `02-…png`) — the carousel. */
-  gallery: string[];
+  gallery: SizedImage[];
 }
 
 const PRODUCTS_PUBLIC_DIR = path.join(process.cwd(), "public", "products");
@@ -93,11 +109,16 @@ export const productImages = cache(async (slug: string): Promise<ProductImages> 
   const files = names.filter((n) => IMAGE_EXT.test(n)).sort();
   const heroFile = files.find((n) => /^hero\./i.test(n));
   const cardFile = files.find((n) => /^card\./i.test(n));
-  const url = (n: string) => `/products/${slug}/${n}`;
-  const gallery = files.filter((n) => n !== heroFile && n !== cardFile).map(url);
-  return {
-    hero: heroFile ? url(heroFile) : undefined,
-    card: cardFile ? url(cardFile) : undefined,
-    gallery,
-  };
+  // Read each header once, here, so a component never has to touch the filesystem — and
+  // so the whole folder is measured in parallel rather than one file at a time.
+  const sized = async (n: string): Promise<SizedImage> => ({
+    src: `/products/${slug}/${n}`,
+    ...(await imageSize(path.join(dir, n))),
+  });
+  const [hero, card, gallery] = await Promise.all([
+    heroFile ? sized(heroFile) : undefined,
+    cardFile ? sized(cardFile) : undefined,
+    Promise.all(files.filter((n) => n !== heroFile && n !== cardFile).map(sized)),
+  ]);
+  return { hero, card, gallery };
 });

@@ -22,7 +22,7 @@ export function ProductCard({ item, images, blurb }: { item: Product; images: Pr
       <Link href={href} className="group relative block aspect-[4/3] w-full overflow-hidden">
         {cover ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={cover} alt={item.name} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" />
+          <img src={cover.src} alt={item.name} width={cover.width} height={cover.height} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" />
         ) : (
           <GenerativeCover seed={item.slug} className="h-full w-full transition-transform duration-500 group-hover:scale-[1.03]" />
         )}

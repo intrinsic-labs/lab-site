@@ -92,6 +92,44 @@ flips `status`, merges. Production promotion is a human act — there is no agen
 - Category/kind labels are **not stroked pills** — text on a low-opacity fill, small radius,
   no border (`.pill` in `globals.css`, `components/ui/Chip.tsx`). Ruled 2026-09-04.
 
+## Working in this repo while Asher's dev server is running (standing, 2026-09-04)
+
+He runs `pnpm dev` on **:3000** from this checkout and leaves it up. Two facts settle what
+that costs, both measured on 2026-09-04 rather than assumed:
+
+- **`pnpm build` does NOT clobber the dev server.** Next 16 isolates the dev output at
+  `.next/dev/`; a production build writes `.next/` root and leaves `.next/dev/` intact.
+  Verified by running `VERCEL_ENV=production pnpm build` in a copy with `next dev` live in
+  the same checkout: `.next/dev/` survived and every route kept serving 200. So no
+  `distDir` split or `prebuild` guard is needed, and none was added. **Still build in a
+  copy**, because a build saturates the CPU the dev server needs and rewrites files a
+  co-running agent may be reading.
+- **What actually breaks is concurrent EDITING.** Several agents writing components while
+  one `next dev` watches them is a stream of partial trees through Fast Refresh: a page
+  can be assembled from two different revisions of the same component set, which looks
+  exactly like "everything is jumbled". It is not a code defect and a hard refresh clears
+  it only once the writes have stopped. If more than one agent is editing, either stop the
+  dev server for the duration or expect the mid-flight renders to be meaningless.
+- **Never start a second `next dev` in this checkout.** Two of them contend on
+  `.next/dev/lock`. Use a copy (`rsync -a --exclude node_modules --exclude .next …`) and
+  your own port.
+
+## Rendering rules learned the hard way (2026-09-04 audit)
+
+- **A WebGL scene must hand its context back on unmount.** `renderer.dispose()` frees
+  three's GPU objects but not the context; Chrome caps a page at 16 live contexts and kills
+  the oldest past that. Call `renderer.forceContextLoss()` first — `useWireframeScene` does,
+  and so must anything else that creates a `WebGLRenderer`. Same for a feature-detect probe
+  canvas: probe once, memoized, and lose the context immediately. Before this, three round
+  trips between `/work` and a case study left **219 live contexts** and a grid of dead cards.
+- **Every `<img>` reserves its box.** Either an aspect-ratio wrapper (`aspect-[4/3]` +
+  `object-cover`, what the cards do) or intrinsic `width`/`height` from
+  `lib/content/image-size.ts` plus `containedImageStyle()` (`components/ui/`), which is what
+  the un-cropped `object-contain` heroes and the gallery slides need — attributes alone are
+  not enough there, because their `width: auto` resolves to zero before the image loads and a
+  ratio applied to zero is still zero. The first image on a page is `loading="eager"` +
+  `fetchPriority="high"`, never lazy.
+
 ## Commands
 
 `pnpm dev` · `pnpm build` · `pnpm lint` · `VERCEL_ENV=production pnpm build` (rail check)
