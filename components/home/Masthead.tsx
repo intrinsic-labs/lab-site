@@ -29,17 +29,9 @@ export function Masthead({ children, className = "" }: { children: ReactNode; cl
         <Spirograph className="block h-full w-full" />
       </div>
 
-      {/* A soft well of page colour under the type, so the headline holds its contrast
-          wherever the curves happen to fall this second. */}
-      <div
-        className="pointer-events-none absolute inset-0 -z-10"
-        aria-hidden
-        style={{
-          background:
-            "radial-gradient(58% 46% at 50% 50%, color-mix(in oklab, var(--color-paper) 88%, transparent) 0%, color-mix(in oklab, var(--color-paper) 62%, transparent) 34%, color-mix(in oklab, var(--color-paper) 24%, transparent) 66%, transparent 100%)",
-        }}
-      />
-
+      {/* No contrast well under the type (Asher, 2026-09-04: "I don't want there to be any
+          shadow covering up the spirograph"). The curves run straight under the headline;
+          the 0.5px strokes are thin enough that the type still reads. */}
       <div className={`relative flex ${HERO_HEIGHT} flex-col items-center justify-center`}>{children}</div>
     </section>
   );
