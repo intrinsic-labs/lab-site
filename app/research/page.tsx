@@ -31,7 +31,6 @@ export default async function ResearchPage() {
 
   const [featured, ...behind] = items;
   const next = behind.slice(0, 3);
-  const rest = behind.slice(3);
 
   return (
     <div className="mx-auto max-w-6xl px-6 pb-8">
@@ -41,7 +40,7 @@ export default async function ResearchPage() {
       {items.length > 0 && (
         <section>
           <SectionHead n="03" title="All research" />
-          <ResearchIndex items={items} defaultItems={rest.length > 0 ? rest : items} />
+          <ResearchIndex items={items} />
         </section>
       )}
     </div>

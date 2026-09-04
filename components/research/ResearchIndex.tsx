@@ -21,18 +21,14 @@ type FilterValue = "all" | Kind | Area;
  * has to LOOK like one. These are `.pill`s: Calling Code, small, a wash rather than a
  * stroke (the same shape a kind label on a card wears), the selected one in the accent.
  *
- * Two sets, one control. `items` is everything; `defaultItems` is what "All" shows —
- * the landing passes the posts the featured row didn't already display, so the same
- * post never appears twice on one screen. Choosing a kind or an area switches to the
- * full matching set, because a filter that quietly excluded the four newest posts would
- * be lying about what it filtered.
+ * "All" means all. It used to show only the posts the featured row above hadn't already
+ * displayed, so nothing appeared twice on one screen — but that made "All" list FEWER
+ * posts than "Note", which reads as a bug (Asher, 2026-09-04). The archive is the
+ * archive; the four newest appearing twice on the page is the lesser cost.
  */
-export function ResearchIndex({ items, defaultItems }: { items: IndexItem[]; defaultItems?: IndexItem[] }) {
+export function ResearchIndex({ items }: { items: IndexItem[] }) {
   const [filter, setFilter] = useState<FilterValue>("all");
-  const shown =
-    filter === "all"
-      ? (defaultItems ?? items)
-      : items.filter((i) => i.kind === filter || i.area === filter);
+  const shown = filter === "all" ? items : items.filter((i) => i.kind === filter || i.area === filter);
 
   const options: { value: FilterValue; label: string }[] = [
     { value: "all", label: "All" },
