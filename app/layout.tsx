@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { site } from "@/lib/site";
+import { site, metadataBase } from "@/lib/site";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 
@@ -12,7 +12,7 @@ import { Footer } from "@/components/layout/Footer";
  * The two faces that paint first-paint text are preloaded below.
  */
 export const metadata: Metadata = {
-  metadataBase: new URL(site.url),
+  metadataBase,
   title: { default: site.name, template: `%s · ${site.name}` },
   description: site.description,
   alternates: { types: { "application/rss+xml": "/feed.xml" } },
