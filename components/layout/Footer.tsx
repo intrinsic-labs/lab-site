@@ -12,7 +12,7 @@ export function Footer() {
         <div className="flex flex-col gap-2">
           <Link href="/feed.xml" className="label hover:text-ink">RSS feed</Link>
           <Link href="/about/editorial" className="label hover:text-ink">Editorial policy</Link>
-          <a href={site.github} className="label hover:text-ink" rel="me">GitHub ↗</a>
+          <a href={site.github} className="label hover:text-ink" rel="me">GitHub ↗︎</a>
         </div>
         <div className="flex flex-col gap-2 sm:text-right">
           <a href={`mailto:${site.email}`} className="label hover:text-ink">{site.email}</a>

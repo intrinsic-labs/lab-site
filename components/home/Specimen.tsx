@@ -10,7 +10,7 @@ export async function Specimen() {
   const raw = await fs.readFile(path.join(process.cwd(), "content/specimen/lab-12.md"), "utf8");
   return (
     <Frame className="bg-paper-2">
-      <div className="flex items-center justify-between border-b border-rule px-5 py-2.5">
+      <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 border-b border-rule px-5 py-2.5">
         <span className="label normal-case tracking-normal">Projects/meta/lab/tasks/lab-12.md</span>
         <span className="label text-ink-3 whitespace-nowrap">specimen · 2026-09-03</span>
       </div>

@@ -11,11 +11,11 @@ const NAV = [
 export function Header() {
   return (
     <header className="border-b border-rule">
-      <div className="mx-auto max-w-6xl px-6 h-16 flex items-center justify-between gap-6">
+      <div className="mx-auto max-w-6xl px-6 py-4 sm:h-16 sm:py-0 flex flex-wrap items-center justify-between gap-x-6 gap-y-3">
         <Link href="/" className="flex items-center gap-3 no-underline">
           <Wordmark />
         </Link>
-        <nav className="flex items-center gap-5 sm:gap-8">
+        <nav className="flex items-center gap-4 sm:gap-8 w-full sm:w-auto">
           {NAV.map(([label, href]) => (
             <Link key={href} href={href} className="label hover:text-ink transition-colors">
               {label}

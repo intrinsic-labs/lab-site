@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { PageTitle } from "@/components/ui/PageTitle";
 import { Chip } from "@/components/ui/Chip";
+import { ButtonLink } from "@/components/ui/ButtonLink";
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = { title: "Work", description: "What the workshop has built." };
@@ -41,10 +42,15 @@ export default function WorkPage() {
           <li key={p.name} className="border-b border-rule py-7 grid gap-3 sm:grid-cols-[4rem_1fr_auto] sm:gap-8">
             <span className="label pt-2">0{i + 1}</span>
             <div>
-              <h2 className="font-serif text-2xl font-medium tracking-tight">
-                <a href={p.href} className="hover:underline decoration-1 underline-offset-4">{p.name}{p.href.startsWith("http") && " ↗"}</a>
-              </h2>
+              <h2 className="font-serif text-2xl font-medium tracking-tight">{p.name}</h2>
               <p className="text-ink-2 mt-2 max-w-2xl leading-snug">{p.line}</p>
+              <div className="mt-4">
+                {p.href.startsWith("http") ? (
+                  <ButtonLink href={p.href} tone="green" external>Visit</ButtonLink>
+                ) : (
+                  <ButtonLink href={p.href} tone="green">Read more</ButtonLink>
+                )}
+              </div>
             </div>
             <div className="pt-2"><Chip tone="muted">{p.status}</Chip></div>
           </li>

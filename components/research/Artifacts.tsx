@@ -12,7 +12,7 @@ export function Artifacts({ post }: { post: Post }) {
           {post.artifacts.map((a, i) => (
             <li key={i} className="border border-rule p-3 text-[0.95rem]">
               {a.href ? (
-                <a href={a.href} className="font-medium underline decoration-1 underline-offset-3">{a.label} ↗</a>
+                <a href={a.href} className="font-medium underline decoration-1 underline-offset-3">{a.label} ↗︎</a>
               ) : (
                 <span className="font-medium">{a.label}</span>
               )}

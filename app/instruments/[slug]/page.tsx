@@ -28,7 +28,7 @@ export default async function InstrumentPage({ params }: { params: Promise<{ slu
         <h1 className="font-serif text-4xl sm:text-5xl font-medium tracking-tight leading-[1.05] mt-6">{i.name}</h1>
         <p className="mt-5 text-xl text-ink-2 max-w-2xl leading-snug">{i.measures}</p>
         {i.statusNote && <p className="mt-4 label">{i.statusNote}</p>}
-        {i.href && <a href={i.href} className="mt-4 inline-block label text-accent hover:underline">Repository ↗</a>}
+        {i.href && <a href={i.href} className="mt-4 inline-block label text-accent hover:underline">Repository ↗︎</a>}
       </header>
       <div className="py-12 prose"><Mdx source={i.body} /></div>
     </article>

@@ -31,7 +31,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
     <article className="mx-auto max-w-6xl px-6">
       <PostHeader post={post} />
       <div className="py-12 lg:grid lg:grid-cols-[1fr_20rem] lg:gap-16">
-        <div className="prose">
+        <div className="prose min-w-0">
           <Mdx source={post.body} />
           <Artifacts post={post} />
           <Corrections post={post} />

@@ -10,6 +10,7 @@
   --color-rule: #cbc2af;
   --color-accent: #b5471f;
   --color-marker: #f4d58a;
+  --color-verdant: #3d6b4f;
 
   --font-serif: var(--font-newsreader), "Iowan Old Style", Georgia, serif;
   --font-mono: var(--font-plex-mono), ui-monospace, "SF Mono", Menlo, monospace;
@@ -25,6 +26,8 @@ html {
   text-rendering: optimizeLegibility;
   font-feature-settings: "kern", "liga", "onum";
 }
+
+body { overflow-x: clip; }
 
 ::selection { background: var(--color-marker); color: var(--color-ink); }
 
@@ -62,9 +65,9 @@ html {
 .prose blockquote { border-left: 1px solid var(--color-ink); padding-left: 1.2em; font-style: italic; color: var(--color-ink-2); }
 .prose hr { border: 0; border-top: 1px solid var(--color-rule); margin: 2.5em 0; }
 .prose code { font-family: var(--font-mono); font-size: 0.82em; background: var(--color-paper-2); padding: 0.1em 0.35em; border-radius: 2px; }
-.prose pre { font-family: var(--font-mono); font-size: 0.78rem; line-height: 1.55; background: var(--color-paper-2); border: 1px solid var(--color-rule); padding: 1rem 1.2rem; overflow-x: auto; }
+.prose pre { max-width: 100%; font-family: var(--font-mono); font-size: 0.78rem; line-height: 1.55; background: var(--color-paper-2); border: 1px solid var(--color-rule); padding: 1rem 1.2rem; overflow-x: auto; }
 .prose pre code { background: none; padding: 0; font-size: inherit; }
-.prose table { width: 100%; border-collapse: collapse; font-size: 0.9rem; font-variant-numeric: tabular-nums; }
+.prose table { display: block; overflow-x: auto; width: 100%; border-collapse: collapse; font-size: 0.9rem; font-variant-numeric: tabular-nums; }
 .prose th { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 500; text-align: left; color: var(--color-ink-2); border-bottom: 1px solid var(--color-ink); padding: 0.5em 0.8em 0.5em 0; }
 .prose td { border-bottom: 1px solid var(--color-rule); padding: 0.45em 0.8em 0.45em 0; vertical-align: top; }
 .prose td:first-child code, .prose td code { white-space: nowrap; }
