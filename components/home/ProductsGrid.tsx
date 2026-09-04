@@ -5,7 +5,7 @@ import { ProductCard } from "@/components/ui/ProductCard";
  *  the vault is excluded (its status is "internal", not a home-page pitch) and the
  *  product list is already ordered, so this is just a slice. */
 export async function ProductsGrid({ items }: { items: Product[] }) {
-  const featured = items.filter((i) => i.slug !== "vault").slice(0, 4);
+  const featured = items.filter((i) => i.slug !== "intrinsic-os").slice(0, 4);
   const withImages = await Promise.all(featured.map(async (i) => ({ item: i, images: await productImages(i.slug) })));
   return (
     <ul className="card-grid sm:grid-cols-2 lg:grid-cols-4">

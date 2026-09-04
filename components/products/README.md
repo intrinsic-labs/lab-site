@@ -11,7 +11,7 @@ The products surface. Two shapes live here, and they are deliberately different:
 
 | File | What it is |
 |---|---|
-| `ProductFeature.tsx` | One product's stage on `/products`: name huge (sans), the one-line `line`, the hero image large over a soft accent glow, a quiet mono status line, and a `See <name> →` button. Desktop alternates image-left / image-right; below `lg` it is image over text. `quiet` is the vault's smaller treatment. Server component. |
+| `ProductFeature.tsx` | One product's stage on `/products`: name huge (sans), the one-line `line`, the hero image large over a soft accent glow, a quiet mono status line, and a `See <name> →` button. Desktop alternates image-left / image-right; below `lg` it is image over text. `quiet` is IntrinsicOS's smaller treatment. Server component. |
 | `SnapSections.tsx` | Sets `scroll-snap-type: y proximity` on the **document element** for as long as `/products` is mounted, desktop only, and removes it on unmount. Client component; the only reason it exists is that the document is the scroller, so a wrapper `div` cannot carry the property, and a rule in `globals.css` would leak onto every route. |
 | `ProductHero.tsx` | The landing screen: name (huge, sans), the one sentence from front matter's `line`, then the hero image centred over a soft accent glow. The title is Neue Montreal (`font-sans`) at `clamp(2.75rem, 12vw, 8.5rem)`, so it scales with the viewport and cannot overflow a phone. **No status chip** — "just say Visit" (Asher, 2026-09-04); `Visit` is the only control. Server component. |
 | `Gallery.tsx` | The gallery as a scroll-snap carousel — native horizontal scroll (so touch and trackpad are free), arrow keys, dot indicator. No carousel library. Client component. |

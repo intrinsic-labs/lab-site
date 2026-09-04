@@ -35,38 +35,44 @@ export function ProductHero({ product, images }: { product: Product; images: Pro
           {product.line}
         </p>
 
-        {/* Full-bleed on a phone (the section clips, so the negative margin cannot widen
-            the page), inset again from `sm` up. */}
-        <div className="relative -mx-6 mt-10 sm:mx-0 sm:mt-14">
-          {/* Vignette: the image sinks into the ground rather than sitting on a card. */}
-          <div
-            aria-hidden
-            className="pointer-events-none absolute -inset-x-10 -inset-y-6 opacity-60 blur-2xl"
-            style={{
-              background: "radial-gradient(50% 50% at 50% 50%, var(--color-paper-3) 0%, transparent 75%)",
-            }}
-          />
-          {images.hero ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={images.hero.src}
-              alt={product.name}
-              // Intrinsic pixels, so the box holds its aspect ratio before the bytes land;
-              // `w-auto`/`h-auto` + `max-h-[64vh]` still decide the rendered size. This is
-              // the page's LCP image, hence eager + high priority rather than the default.
-              width={images.hero.width}
-              height={images.hero.height}
-              fetchPriority="high"
-              decoding="async"
-              style={containedImageStyle(images.hero, 64)}
-              className="relative mx-auto h-auto max-h-[64vh] w-auto max-w-full sm:rounded-xl"
+        {/* The hero image is a STAND-IN for a gallery, not a companion to one (Asher,
+            2026-09-04: "drop the header image and just feature the screenshots"). A product
+            with slides shows none here; IntrinsicOS, which has no screenshots, keeps its
+            plate. */}
+        {images.gallery.length === 0 && (
+          // Full-bleed on a phone (the section clips, so the negative margin cannot widen
+          // the page), inset again from `sm` up.
+          <div className="relative -mx-6 mt-10 sm:mx-0 sm:mt-14">
+            {/* Vignette: the image sinks into the ground rather than sitting on a card. */}
+            <div
+              aria-hidden
+              className="pointer-events-none absolute -inset-x-10 -inset-y-6 opacity-60 blur-2xl"
+              style={{
+                background: "radial-gradient(50% 50% at 50% 50%, var(--color-paper-3) 0%, transparent 75%)",
+              }}
             />
-          ) : (
-            <div className="relative mx-auto aspect-[16/9] w-full max-w-4xl overflow-hidden sm:rounded-xl">
-              <GenerativeCover seed={product.slug} className="h-full w-full" />
-            </div>
-          )}
-        </div>
+            {images.hero ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={images.hero.src}
+                alt={product.name}
+                // Intrinsic pixels, so the box holds its aspect ratio before the bytes land;
+                // `w-auto`/`h-auto` + `max-h-[64vh]` still decide the rendered size. This is
+                // the page's LCP image, hence eager + high priority rather than the default.
+                width={images.hero.width}
+                height={images.hero.height}
+                fetchPriority="high"
+                decoding="async"
+                style={containedImageStyle(images.hero, 64)}
+                className="relative mx-auto h-auto max-h-[64vh] w-auto max-w-full sm:rounded-xl"
+              />
+            ) : (
+              <div className="relative mx-auto aspect-[16/9] w-full max-w-4xl overflow-hidden sm:rounded-xl">
+                <GenerativeCover seed={product.slug} className="h-full w-full" />
+              </div>
+            )}
+          </div>
+        )}
 
         {product.url && (
           <div className="mt-10 flex items-center justify-center">

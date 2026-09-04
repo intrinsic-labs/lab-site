@@ -4,6 +4,13 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       {
+        // "The vault" became IntrinsicOS (2026-09-04) and its slug followed. Permanent: the
+        // old URL was linked from the home page and a post.
+        source: "/products/vault",
+        destination: "/products/intrinsic-os",
+        permanent: true,
+      },
+      {
         // The Ghost is no longer an instrument of its own — it is what Tycho produces,
         // and lives as a section of Tycho's dossier. Permanent: the old URL was published.
         // Listed before the general /instruments/:slug rule below, since redirects are

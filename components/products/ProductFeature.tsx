@@ -67,37 +67,40 @@ export function ProductFeature({
             className="pointer-events-none absolute -inset-8 opacity-25 blur-3xl"
             style={{ background: `radial-gradient(50% 50% at 50% 50%, ${glow} 0%, transparent 72%)` }}
           />
-          {images.hero ? (
-            // `width`/`height` are the intrinsic pixels read off the file at build time
-            // (lib/content/image-size.ts), NOT a rendered size — `w-auto h-auto max-*`
-            // below still decide that. They are here so the browser knows the aspect ratio
-            // before the bytes arrive; without them this box laid out at zero and then
-            // shoved the whole two-column grid when the image landed (measured 0.068 CLS
-            // on /products, the largest shift on the site).
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={images.hero.src}
-              alt={product.name}
-              width={images.hero.width}
-              height={images.hero.height}
-              // The first section is above the fold, so lazy-loading it delays the page's
-              // largest paint and guarantees the shift it is meant to avoid.
-              loading={priority ? "eager" : "lazy"}
-              fetchPriority={priority ? "high" : undefined}
-              decoding="async"
-              // Definite width + the two caps that `w-auto max-w-full max-h-*` used to
-              // express, so the box is the right size before the image loads rather than
-              // after. The classes stay as the fallback for an image we could not measure.
-              style={containedImageStyle(images.hero, quiet ? 34 : 58)}
-              className={`relative mx-auto h-auto w-auto max-w-full rounded-xl object-contain ${
-                quiet ? "max-h-[34vh]" : "max-h-[58vh]"
-              }`}
-            />
-          ) : (
-            <div className="relative mx-auto aspect-[16/9] w-full overflow-hidden rounded-xl">
-              <GenerativeCover seed={product.slug} className="h-full w-full" />
-            </div>
-          )}
+          {/* The image is a link to the product page too (Asher, 2026-09-04). */}
+          <Link href={`/products/${product.slug}`} aria-label={`See ${product.name}`} className="relative block no-underline">
+            {images.hero ? (
+              // `width`/`height` are the intrinsic pixels read off the file at build time
+              // (lib/content/image-size.ts), NOT a rendered size — `w-auto h-auto max-*`
+              // below still decide that. They are here so the browser knows the aspect ratio
+              // before the bytes arrive; without them this box laid out at zero and then
+              // shoved the whole two-column grid when the image landed (measured 0.068 CLS
+              // on /products, the largest shift on the site).
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={images.hero.src}
+                alt={product.name}
+                width={images.hero.width}
+                height={images.hero.height}
+                // The first section is above the fold, so lazy-loading it delays the page's
+                // largest paint and guarantees the shift it is meant to avoid.
+                loading={priority ? "eager" : "lazy"}
+                fetchPriority={priority ? "high" : undefined}
+                decoding="async"
+                // Definite width + the two caps that `w-auto max-w-full max-h-*` used to
+                // express, so the box is the right size before the image loads rather than
+                // after. The classes stay as the fallback for an image we could not measure.
+                style={containedImageStyle(images.hero, quiet ? 34 : 58)}
+                className={`relative mx-auto h-auto w-auto max-w-full rounded-xl object-contain ${
+                  quiet ? "max-h-[34vh]" : "max-h-[58vh]"
+                }`}
+              />
+            ) : (
+              <div className="relative mx-auto aspect-[16/9] w-full overflow-hidden rounded-xl">
+                <GenerativeCover seed={product.slug} className="h-full w-full" />
+              </div>
+            )}
+          </Link>
         </div>
 
         {/* Text. */}

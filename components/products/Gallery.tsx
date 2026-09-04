@@ -48,6 +48,11 @@ export function Gallery({ images, label = "Gallery" }: { images: SizedImage[]; l
   useEffect(() => {
     const el = scroller.current;
     if (!el) return;
+    // Half-viewport padding on both ends is what lets the FIRST and LAST slides reach the
+    // centre at all — with the old gutter, `scrollTo` clamped at 0 and clicking either end
+    // slide did nothing (Asher, 2026-09-04, Aspen Grove). Land on slide 0 centred.
+    const first = el.children[0] as HTMLElement | undefined;
+    if (first) el.scrollLeft = first.offsetLeft - (el.clientWidth - first.offsetWidth) / 2;
     syncIndex();
     el.addEventListener("scroll", syncIndex, { passive: true });
     return () => el.removeEventListener("scroll", syncIndex);
@@ -85,7 +90,7 @@ export function Gallery({ images, label = "Gallery" }: { images: SizedImage[]; l
             goTo(index - 1);
           }
         }}
-        className="mt-5 flex snap-x snap-mandatory items-center gap-5 overflow-x-auto scroll-smooth px-[max(1.5rem,calc((100vw-72rem)/2))] py-12 sm:py-16 outline-none [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        className="mt-5 flex snap-x snap-mandatory items-center gap-5 overflow-x-auto scroll-smooth px-[50%] py-12 sm:py-16 outline-none [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
         {images.map((img, i) => {
           const focused = i === index;

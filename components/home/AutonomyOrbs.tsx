@@ -71,7 +71,7 @@ export async function AutonomyOrbs() {
             Measured {data.generated}. Target: {data.goal.low}–{data.goal.high}%.
           </p>
           <h2 className="label text-ink md:text-center">Company autonomy rate</h2>
-          <Link href="/products/vault" className="label text-accent hover:underline underline-offset-4 md:text-right">
+          <Link href="/products/intrinsic-os" className="label text-accent hover:underline underline-offset-4 md:text-right">
             How these are computed →
           </Link>
         </div>
