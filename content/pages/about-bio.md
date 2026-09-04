@@ -1,4 +1,4 @@
-### Who I Am
+### About Asher
 
 I'm a self-taught software engineer with a little over 4 years of building behind me. I grew up playing in rock bands and being obsessed with Apple; the junction of incredible art and technology is my favorite space to work. I strive to understand how the inspirational figures in my domains work, then translate that to something that makes sense for my current scale.
 

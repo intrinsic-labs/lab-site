@@ -440,10 +440,24 @@ html:has([data-theme="light"]) {
   --color-surface-hover: rgba(33, 32, 31, 0.11);
 }
 
-/* The wrapper paints its own ground too, so the light page is already cream
-   before `html`'s background is considered — no seam at the top of the main
-   column on a client-side navigation. */
-[data-theme="light"] { background: var(--color-paper); color: var(--color-ink); }
+/* ── Theme cross-fade ────────────────────────────────────────────────────────
+   Entering or leaving the research surfaces flips the tokens above in one style
+   pass; these transitions turn that cut into a fade (Asher, 2026-09-04). A
+   transition on a property whose value comes from a custom property still runs,
+   because it is the element's computed colour that changes. Scoped to the ground
+   (html/body/header/footer) and to the utilities that paint tokens directly, not
+   `*`, so hover states elsewhere keep their own timing. */
+html, body, header, footer,
+[class~="bg-paper"], [class~="bg-paper/90"], [class~="bg-paper-2"], .card-grid,
+[class~="text-ink"], [class~="text-ink-2"], [class~="text-ink-3"], .label, .prose, .prose *,
+[class~="border-rule"], [class~="border-t"], [class~="border-b"], [class~="border-l"], [class~="border-ink"] {
+  transition-property: background-color, color, border-color, outline-color;
+  transition-duration: 450ms;
+  transition-timing-function: ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  html, body, header, footer, [class~="bg-paper"], .card-grid, .prose, .prose * { transition-duration: 0ms; }
+}
 
 /* ── Light-mode corrections ───────────────────────────────────────────────────
    Every rule below exists because the dark stylesheet hardcodes a #fff or a

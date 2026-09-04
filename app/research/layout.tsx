@@ -10,14 +10,17 @@
  * live in the ROOT layout and are unreachable from a wrapper class. Because it is
  * a plain CSS selector it matches during the first style pass — there is no
  * `useEffect` setting a dataset attribute, and so no flash of black on either a
- * hard load or a client-side navigation. The wrapper paints `bg-paper` itself as
- * well, so the column is cream even before `html`'s own background is composited.
+ * hard load or a client-side navigation. The wrapper deliberately paints NOTHING
+ * itself: `html`/`body` own the ground, and the `.theme-fade` rules in globals.css
+ * transition it, so entering or leaving the research surfaces cross-fades black↔cream
+ * (Asher, 2026-09-04) instead of cutting. A wrapper that painted its own cream would
+ * mount at full cream on frame one and break the fade.
  *
  * No component below needs to know: every one of them already reads the tokens.
  */
 export default function ResearchLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div data-theme="light" className="bg-paper text-ink">
+    <div data-theme="light">
       {children}
     </div>
   );

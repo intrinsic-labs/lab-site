@@ -140,7 +140,7 @@ export function MobileMenu({
   }, [open]);
 
   const rowClass =
-    "block font-sans text-3xl font-light py-4 pl-1 no-underline text-ink transition-colors duration-300 hover:text-accent";
+    "block font-sans text-3xl font-normal py-4 pl-1 no-underline text-ink transition-colors duration-300 hover:text-accent";
 
   return (
     <>
@@ -232,7 +232,7 @@ export function MobileMenu({
                         <Link
                           href={item.href}
                           onClick={close}
-                          className="block border-l border-rule py-2.5 pl-5 font-sans text-[1.05rem] font-light leading-snug text-ink-2 no-underline transition-colors hover:text-accent"
+                          className="block py-2.5 pl-6 font-sans text-[1.1rem] font-normal leading-snug text-ink no-underline transition-colors hover:text-accent"
                         >
                           {item.label}
                         </Link>

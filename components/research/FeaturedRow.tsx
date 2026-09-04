@@ -26,7 +26,7 @@ function Cover({ item, className }: { item: IndexItem; className?: string }) {
 export function FeaturedRow({ featured, next }: { featured: IndexItem; next: IndexItem[] }) {
   return (
     <section className="pb-16">
-      <SectionHead n="02" title="Latest" rule={false} />
+      <SectionHead title="Latest" rule={false} />
       <div className="grid gap-10 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] lg:gap-12">
         <article className="grid gap-6 sm:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] sm:items-center sm:gap-8">
           <Link

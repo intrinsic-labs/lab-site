@@ -42,7 +42,7 @@ export function ResearchIndex({ items, defaultItems }: { items: IndexItem[]; def
 
   return (
     <div>
-      <div className="flex flex-wrap items-center gap-2 border-b border-rule pb-5">
+      <div className="flex flex-wrap items-center gap-2">
         {options.map((o) => (
           <button
             key={o.value}
