@@ -49,7 +49,7 @@ export function ResearchIndex({ items, defaultItems }: { items: IndexItem[]; def
             type="button"
             aria-pressed={filter === o.value}
             onClick={() => setFilter(o.value)}
-            className={`pill transition-colors ${filter === o.value ? "pill-accent" : ""}`}
+            className={`pill ${filter === o.value ? "pill-accent" : ""}`}
           >
             {o.label}
           </button>

@@ -316,6 +316,17 @@ h1, h2, h3, h4, h5, h6 { font-family: var(--font-sans); }
 .pill-marker { background: color-mix(in srgb, var(--color-marker) 16%, transparent); color: var(--color-marker); }
 .pill-muted { background: rgba(255, 255, 255, 0.05); color: var(--color-ink-3); }
 
+/* Only a pill that DOES something gets a hover — the filter buttons on /research
+   (Asher, 2026-09-04) — never a caption chip on a card. Selecting on the element
+   type keeps that distinction structural rather than a class somebody forgets. */
+:is(button, a).pill {
+  cursor: pointer;
+  transition: background-color 150ms ease, color 150ms ease;
+}
+:is(button, a).pill:hover { background: var(--color-surface-hover); color: var(--color-ink); }
+:is(button, a).pill-accent:hover { background: color-mix(in srgb, var(--color-accent) 28%, transparent); color: var(--color-accent); }
+:is(button, a).pill:focus-visible { outline: 1px solid var(--color-ink-3); outline-offset: 2px; }
+
 /* ── Buttons ──────────────────────────────────────────────────────────────────
    latent-spaces' CTA shape: a full-radius capsule with a translucent accent fill
    and a 1px accent border, the LABEL in the light accent so it always reads.
