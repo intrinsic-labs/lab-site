@@ -85,7 +85,7 @@ export function Gallery({ images, label = "Gallery" }: { images: SizedImage[]; l
             goTo(index - 1);
           }
         }}
-        className="mt-5 flex snap-x snap-mandatory gap-5 overflow-x-auto scroll-smooth px-[max(1.5rem,calc((100vw-72rem)/2))] pb-3 outline-none [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        className="mt-5 flex snap-x snap-mandatory items-center gap-5 overflow-x-auto scroll-smooth px-[max(1.5rem,calc((100vw-72rem)/2))] py-12 sm:py-16 outline-none [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
         {images.map((img, i) => {
           const focused = i === index;
@@ -98,8 +98,11 @@ export function Gallery({ images, label = "Gallery" }: { images: SizedImage[]; l
                 aria-current={focused}
                 // Not a control when it is already centred: the pointer says so, and the
                 // click is a no-op scroll to where the strip already is.
-                className={`group relative block cursor-pointer overflow-hidden rounded-xl outline-none transition-opacity duration-300 focus-visible:ring-1 focus-visible:ring-accent ${
-                  focused ? "opacity-100" : "opacity-55 hover:opacity-80"
+                // The centred slide is scaled up 20% (Asher, 2026-09-04) with a transform, so
+                // the strip's layout — and `syncIndex`'s offsetLeft measurements — never
+                // change; the `py-*` on the list is the room the scale needs vertically.
+                className={`group relative block cursor-pointer overflow-hidden rounded-xl outline-none transition-[opacity,transform] duration-300 focus-visible:ring-1 focus-visible:ring-accent ${
+                  focused ? "z-10 scale-[1.2] opacity-100" : "opacity-55 hover:opacity-80"
                 }`}
               >
                 {/* A slide is a FIXED HEIGHT and `w-auto`, so until the bytes arrive its

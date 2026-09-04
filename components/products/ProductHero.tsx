@@ -8,7 +8,8 @@ import { ButtonLink } from "@/components/ui/ButtonLink";
  *
  * The reference is a product page, not a document — the name is the largest thing on the
  * screen, the `line` from front matter is the only prose above the fold, and the hero
- * image sits centred over a soft accent glow that fades into the ground.
+ * image sits centred on the plain ground (the accent bloom behind the title was removed
+ * 2026-09-04 at Asher's request).
  *
  * There is NO status chip here (Asher, 2026-09-04: "just say Visit"). The status is stated
  * once on the page, as a quiet mono line at the top of the reading column — see
@@ -23,14 +24,6 @@ import { ButtonLink } from "@/components/ui/ButtonLink";
 export function ProductHero({ product, images }: { product: Product; images: ProductImages }) {
   return (
     <section className="relative overflow-hidden">
-      {/* Soft glow behind the plate — one radial wash of the accent token, blurred. */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-0 h-[70%] opacity-20 blur-3xl"
-        style={{
-          background: "radial-gradient(55% 60% at 50% 42%, var(--color-accent) 0%, transparent 72%)",
-        }}
-      />
 
       <div className="relative mx-auto max-w-6xl px-6 pt-14 pb-14 text-center sm:pt-20 sm:pb-20">
         {/* Neue Montreal via `font-sans`, sized off the viewport so it never overflows. */}
