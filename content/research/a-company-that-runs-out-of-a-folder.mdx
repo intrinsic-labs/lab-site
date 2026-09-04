@@ -33,19 +33,23 @@ No hardcoded prompts. Every prompt is a Markdown file in the folder, read fresh 
 
 ## What's enforced in code
 
-**Autonomy is a declaration.** Each project's brief carries one line:
+**Autonomy is a declaration.** Each project's brief opens with YAML front matter, and that block is the whole contract between the project and the agents:
 
-```
+```yaml
+---
 autonomy: gated
+repo: ~/dev/web/liturgos
+start: pnpm dev
+---
 ```
 
-`locked` — agent drafts, human commits. `gated` — agent builds to a boundary, queues a decision. `open` — agent runs to completion. No line means never executes. A guard reverts the line if a session touches it, keeping other edits.
+`autonomy:` is the execution grant. `locked` — agent drafts, human commits. `gated` — agent builds to a boundary, queues a decision. `open` — agent runs to completion. No line means never executes, and only the founder writes it; a guard snapshots every brief before a session spawns and reverts the line if the session touched it, keeping the session's other edits. The grant can be scoped by task tag — `autonomy: "gated · open: #docs #tests · locked: #release"` — with the most restrictive matching clause winning and a malformed clause failing the whole line closed.
+
+`repo:` names the workspace the agent may write to (a list for multi-repo projects, first entry primary). A repo mentioned anywhere else in the brief is read-only context; no `repo:` line means vault-only work; a declared path not cloned on this machine blocks the project rather than degrading silently. `start:` is the command that brings the project up, and unlike the other two any agent may record it — it is a fact about the world, not a grant. An optional `tracker:` line points at a backlog that lives elsewhere and is read, never written.
 
 **No repository work publishes unreviewed.** Every executor session is supposed to end with a review from a fresh session that never saw the author's conversation — 51 of 58 branches in the measured window did. Author fixes what comes back, at most twice. High-severity findings force PR instead of auto-landing.
 
 **Nothing outward-facing has an agent path.** Production deploys, sends, publishes, purchases need explicit human approval. Narrow exceptions: push a specific branch, open PR, deploy preview, append to decision queue.
-
-**Sundays, nothing runs.** Saturday evening to Monday morning: everything stands down by code. One file every job reads.
 
 ## Progress
 
