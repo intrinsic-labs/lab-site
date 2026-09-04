@@ -70,7 +70,8 @@ export async function AutonomyOrbs() {
           <p className="label text-ink-2">
             Measured {data.generated}. Target: {data.goal.low}–{data.goal.high}%.
           </p>
-          <h2 className="label text-ink md:text-center">Company autonomy rate</h2>
+          {/* First on a phone, centre cell at md+ (Asher, 2026-09-04). */}
+          <h2 className="label order-first text-ink md:order-none md:text-center">Company autonomy rate</h2>
           <Link href="/products/intrinsic-os" className="label text-accent hover:underline underline-offset-4 md:text-right">
             How these are computed →
           </Link>
