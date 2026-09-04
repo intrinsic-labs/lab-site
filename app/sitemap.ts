@@ -13,12 +13,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   return [
     { url: u("/") },
     { url: u("/research") },
-    { url: u("/instruments") },
+    { url: u("/products") },
     { url: u("/work") },
     { url: u("/about") },
     { url: u("/about/editorial") },
     ...AREAS.map((a) => ({ url: u(`/research/areas/${a}`) })),
     ...posts.map((p) => ({ url: u(`/research/${p.slug}`), lastModified: p.date })),
-    ...instruments.map((i) => ({ url: u(`/instruments/${i.slug}`) })),
+    ...instruments.map((i) => ({ url: u(`/products/${i.slug}`) })),
   ];
 }

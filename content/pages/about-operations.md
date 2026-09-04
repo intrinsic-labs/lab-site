@@ -9,7 +9,7 @@ actually were, and the rest are next. Nothing outward-facing happens without an 
 
 We treat that arrangement as an experiment as much as an operating model. The agent-operations research
 area is built on what it records. It is being pushed toward more work aimed outward — at
-clients and products, not at the machine itself; the [instrument page](/instruments/vault) carries them.
+clients and products, not at the machine itself; the [product page](/products/vault) carries them.
 
 Nearly everything on this site was drafted by those agents from the lab's own records, then read,
 corrected and approved by Asher before it appeared. The [editorial policy](/about/editorial) says exactly what that means.

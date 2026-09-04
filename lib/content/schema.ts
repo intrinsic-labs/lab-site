@@ -29,6 +29,9 @@ export const postFrontMatter = z.object({
   corrections: z.array(correctionSchema).default([]),
   /** Renders the shared-vocabulary SystemPrimer box between the header and the body. */
   primer: z.enum(["agent-ops"]).optional(),
+  /** Card + post-header image, path under /public/covers/. Absent → GenerativeCover. */
+  cover: z.string().optional(),
+  coverAlt: z.string().optional(),
 });
 export type PostFrontMatter = z.infer<typeof postFrontMatter>;
 

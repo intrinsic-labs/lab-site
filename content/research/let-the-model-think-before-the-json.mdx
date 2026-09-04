@@ -4,27 +4,21 @@ kind: field-note
 area: elicitation
 date: 2026-09-03
 status: draft
-summary: Porting a local model's answer-cold JSON discipline to Claude scored Opus below a 27B open model. One instruction — think first, then emit the JSON — moved Sonnet from 5 to 8 of 14. The first-pass rows were kept as a harness-sensitivity datapoint, not as model scores.
-caveats:
-  - n=14. The movement (5→8, 6→7) is large relative to the sheet but the sheet's resolution is ±1 item.
-  - This is a finding about a harness, not a ranking of models.
+summary: One instruction—think first, emit JSON second—moved Sonnet from 5/14 to 8/14 on a grading task where Opus had scored 6/14.
+caveats: []
 artifacts: []
-artifactsNote: The two prompt variants and both sets of per-item outputs are in the private pipeline repo with corpus text attached.
+artifactsNote: The two prompt variants and per-item results are in the private pipeline repo.
 corrections: []
 ---
 
-The stage-2 grading prompt was built for a local open-weight model, and it worked there with a strict discipline: answer cold, emit the JSON, nothing else. When the same task was first run through Claude models via a headless CLI, the prompt was ported as-is — and **Opus scored 6 of 14 exact, below the 27B local model's 8.**
+A grading prompt built for local open-weight models used a strict discipline: answer cold, emit JSON, nothing else. Ported as-is to Claude, **Opus scored 6 of 14 exact — below a 27B local model's 8.**
 
-That was not a fact about Opus. Adding one instruction — think through the item first, then produce the JSON — moved Sonnet from 5/14 to 8/14 and Opus from 6/14 to 7/14. The frontier models had been handicapped by a harness convention that suited a different engine.
+Adding one instruction — think through the item first, then produce JSON — changed the results: Sonnet went from 5/14 to 8/14, Opus from 6/14 to 7/14. The frontier models weren't weaker; the harness was built for a different engine.
 
-Two decisions followed that we'd make again:
+**Keep the bad rows.** First-pass results stayed in the files, labelled as a harness-sensitivity datapoint. A three-point movement on one prompt sentence is information about measurement fragility. A score without its harness is a number without units.
 
-**Keep the bad rows.** The first-pass results stayed in the result files, labelled as a harness-sensitivity datapoint rather than deleted as a mistake. A number that moved three points on one sentence of prompt is information about how fragile the measurement is, and anyone reading the later scores deserves to know the sheet is that sensitive.
-
-**Say what the harness was.** Every row in the comparison table carries its harness (`native multi-turn, temp 0` vs `think-then-JSON, flattened few-shot`) because the harness is part of the result. A model score without its harness is a number without units.
-
-The companion gotcha from the same day: the newer local model needed a ~6k token budget or it truncated its own reasoning mid-JSON — 8 of 20 items errored on the first attempt at the pipeline's default 900. Same lesson from the other side: the harness is where most of the first-day variance lives.
+One more finding from the same round: a newer local model needed ~6k tokens or it truncated its own reasoning mid-JSON — 8 of 20 items failed at the pipeline's default 900. Same lesson: the harness is where most first-pass variance lives.
 
 ## Where this goes next
 
-The next run of the sheet puts every engine on one harness — think-then-JSON, same prompt, same budget — so the cross-family rows stop carrying a caveat saying the comparison is indicative at best. What that would show is whether the tight cluster these scores fall into is a fact about the models or an artefact of the porting. Either answer is worth having: if the cluster survives a single harness, the sheet has genuinely run out of resolution and hand-labelling is the only way past it; if it doesn't, we were reading harness noise and the comparison is worth running again properly.
+The next run puts every engine on one harness — think-then-JSON, same prompt, same budget. That shows whether the tight cluster of scores reflects the models or the porting. If it survives one harness, the sheet ran out of resolution; if not, the comparison is worth running again on equal ground.

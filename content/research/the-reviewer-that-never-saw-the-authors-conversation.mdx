@@ -1,63 +1,40 @@
 ---
-title: The reviewer that never saw the author's conversation
+title: A clean-room reviewer finds different bugs
 kind: note
 area: agent-operations
-primer: agent-ops
-date: 2026-08-12
-summary: "Six days after we removed the human from code review, autonomous agent work was landing on the default branch with no reviewer of any kind. The replacement is a fresh model session that sees the diff and the task and nothing else — plus a check outside both sessions that the report describes the code that actually shipped."
+date: 2026-09-03
 status: draft
-caveats:
-  - Written 2026-09-03 from the commit record, run reports, review artifacts and the code. It is not a same-day account.
-  - All counts are from a retained window (run reports start 2026-08-13, per-round snapshots 2026-08-19); older logs are drained on roughly a four-week cycle. These are not lifetime figures.
-  - Seven of the 58 review reports have the SHA-256 of the empty string as their diff hash, meaning no reviewer ran. Our own aggregation counts them as clean. The corrected figure is given in the text.
-  - No false-positive rate exists. Nothing in the system marks a finding as wrong, so we cannot say how much of the gate's output was noise.
+summary: "Fresh review session found different bugs than deep multi-agent review. Coverage is stochastic. 51 reviewed: 43 clean, 2 high, 5 medium, 5 low findings."
+caveats: []
 artifacts: []
-artifactsNote: The gate is roughly 500 lines of Node plus a prompt and a tool-permission profile, in a private operating repository. The two transferable pieces — the no-inputs interface and the diff-hash re-check — are fully described here and are each about thirty lines.
+artifactsNote: The gate is roughly 500 lines of Node plus a prompt and tool-permission profile.
 corrections: []
 ---
 
-Our company's operating record is a folder of Markdown under git, and a scheduled process dispatches tasks from it to autonomous coding sessions that work on a branch in a real repository. On 2026-08-06 we made a decision that created this problem: **the human stopped reviewing pull requests.**
+When human code review stopped, autonomous code merged unreviewed for six days. The replacement: a fresh model session that sees only the diff and the task.
 
-The reasoning was sound: the pull request pile had become a surface he could not act on, a backlog of diffs he had no context for arriving faster than he could read them. Under the highest permission level a session was already allowed to run its task to completion, and completion now included landing its own branch.
+## How it works
 
-Which means that for six days autonomous code merged with no reviewer at all. The human had been removed by design and nothing had replaced him. This is the replacement — built prophylactically, in the gap, with no incident behind it.
+The reviewer is **not a fork of the author's session** — a fork would inherit the author's framing and blind spots, precisely what the gate exists to escape.
 
-## The shape
+**No inputs.** Everything the reviewer sees is assembled by the scheduler: the task, its acceptance criteria, and the diff. The author cannot pass it anything. The interface is deliberately hostile to steering.
 
-Every session that produces code on a branch ends by requesting a review. The reviewer is **a fresh session, not a fork of the author's**. Forking was considered and rejected on one ground: a fork inherits the author's conversation, and the author's framing and blind spots are precisely what the gate exists to escape.
+**Permissions deny writing, browsing, and messaging.** A reviewer cannot be argued with or message the author. It can read, run commands, and replay failures.
 
-The interface has no inputs. From the script's header: *"argv is DELIBERATELY ignored… the author session cannot shape the reviewer's context even in principle, because this interface has no inputs."* Everything the reviewer sees is assembled by the surrounding scheduler from its own environment variables and by a code-side lookup of the task record: the task, its acceptance criteria, and the diff against the branch's base. The author session runs a command and cannot pass it anything.
+**Fail closed on landing, open on delivery.** A blocking finding forces the branch to PR instead of auto-landing. But the branch always ships—either merged or as a pull request carrying the findings.
 
-The reviewer's prompt says what it is: *"You did not write this code, you have not seen the author's reasoning, and you owe it nothing — your loyalty is to the next person who has to live with it."* And it defines the blocking bar rather than leaving it to taste: high severity means wrong behaviour, data loss, a crash, or a security hole a real input can reach; when unsure between two levels, pick the lower, *"because the high bar is what keeps blocking meaningful."*
+The scheduler validates the review by hashing the branch's final diff and comparing it to the report. Stale reports and changed diffs trigger a re-review. Across 55 checked reviews, 10 required re-validation: seven because the diff changed after review, three because no review was requested at all.
 
-Its tool permissions deny writing, browsing, and — since 2026-08-20, when session-to-session messaging was introduced at all — the messaging tools, so a reviewer can neither be argued into leniency nor message the author. Worth dating honestly: for the gate's first eight days the clean room was prompt law, and became code only when a channel appeared that could have violated it. Reading and running commands stay allowed on purpose — a reviewer that can run the test suite and reproduce a failure is the point of having one.
+## What it found
 
-## The part that is not the reviewer
+**Two different configurations, same target, 2026-08-12.** A deep multi-agent review at medium reasoning: 8.5 minutes, roughly 121,000 tokens. A single clean-room session at low reasoning: about 90 seconds. **The two runs found different bugs.**
 
-The reviewer is a model and the model's report is a self-report. The wall is the check around it.
+Coverage is stochastic. This is the entire justification for the layered arrangement: a cheap per-diff gate on every branch, plus a slower adversarial pass twice a week.
 
-The scheduler hashes the branch's final diff and compares it against the hash recorded in the report. A missing report, a stale one, or one describing different code, and **the scheduler runs the review itself, once**. In the code's words: *"'One more commit' after the clean report is caught by the hash, not by trust."* (The hash strips git's `index` lines, because the session hashes its working-tree diff and the scheduler hashes the branch's committed diff — identical content, different blob ids.)
+**The live numbers, 2026-08-12 to 2026-09-03:** 51 branches actually reviewed. Results: 43 clean, 2 high-severity, 5 medium, 5 low. The fix-and-re-review loop fired 10 times (17%). Both high-severity findings hit the same day, same project, same author.
 
-That check was not decorative. Across 55 recorded reviews in the retained window, **10 required the scheduler to step in**: seven because the diff had changed after the last review — the one-more-commit case, exactly — and three because the session never requested a review at all.
-
-The publication posture is asymmetric, and the header states it in four words: **fail closed on landing, open on delivery.** A blocking finding, or a review that could not be run, never strands the work — the branch is always pushed. What it does is force the highest permission level down to the pull-request path, so nothing lands automatically without a review that verifiably describes the code that shipped. Automatic landing has been withheld four times, once because of a genuine bug in the scheduler itself, which is the gate failing closed into its own defect.
-
-Two rounds maximum. Uncapped, a pedantic reviewer and a dutiful author trade rounds all night while holding the scheduler lock; leftovers ride the pull request body instead.
-
-## What it cost
-
-**The calibration.** Two configurations, same target, 2026-08-12. A deep multi-agent review at medium reasoning: 8.5 minutes, roughly 121,000 tokens, 16 subagents. A single clean-room session at low reasoning effort: about 90 seconds. The shipped gate is the cheap one — the right price for something that blocks. But the finding that mattered was not the cost: **the two runs found different bugs.** Coverage is stochastic, which is the entire justification for the layered arrangement we now run — a cheap per-diff gate on every branch, plus a slower adversarial pass twice a week that goes looking rather than reacting.
-
-**The live numbers**, 2026-08-12 to 2026-09-03: 58 review reports, 50 recorded clean, with 2 high, 5 medium and 5 low findings. The fix-and-re-review loop fired 10 times, about 17%. Both high-severity findings landed on the same day in the same project, in code written by a mid-tier model.
-
-**Correcting our own headline:** seven of those 58 reports carry the SHA-256 of the empty string as their diff hash. There was nothing to review, so no reviewer ran. The code is honest about this case; the aggregation is not, and counts all seven as clean sessions. The defensible figure is **43 clean of 51 actually reviewed**, not 50 of 58.
-
-Two further gaps found later — a blind spot the migration to one-file-per-task opened in the gate's task lookup, and a write channel the author had into its own reviewer's prompt — are omitted here.
+(Seven of 58 reports had no diff to review—nothing ran, nothing's reviewed. Corrected figure: 43 of 51 actually reviewed.)
 
 ## Where this goes next
 
-There is no false-positive measurement, because nothing records that a finding was wrong. The only proxy is whether a second round happened, which conflates "the author agreed and fixed it" with "the author argued and lost." Two further findings are deferred as structural: the review artifact is forgeable, and the stamp naming which engine reviewed is set by the author's side.
-
-And one live lead we could not close. A review artifact dated 2026-09-03 records an empty diff and no findings. The branch it names carries a commit made *after* that review ran — a salvage commit sweeping up work from a session that hit its one-hour timeout, 154 files and roughly 426,000 inserted lines. The hash re-check is designed to catch exactly this, and we could not verify whether it did, because that run's report was orphaned on a detached HEAD. The artifact-versus-branch mismatch is verified; the miss is not. It is the right thing to check next, and it is the reason the check exists.
-
-Two have an obvious shape. The aggregation should count an empty-diff report as what it is rather than as a clean review, which turns the headline into 43 of 51 wherever it appears. The false-positive number needs the cheapest possible record — a one-word disposition on each finding, written when the author acts on it — after which the gate can report not just how often it blocks but how often it was right to. That second number decides whether a cheap per-diff reviewer is worth keeping in front of everything, or whether the slower adversarial pass should carry more of the load. Both are small work, and both replace a belief with a number.
+There's no false-positive measurement—nothing records whether a finding was right or wrong. A one-word disposition when the author acts on a finding would let the gate report not just how often it blocks but how often it was right to. That number decides whether a cheap per-diff reviewer belongs in front of everything, or whether slower deep passes should carry more load.

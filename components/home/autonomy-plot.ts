@@ -25,10 +25,10 @@ const Z_TOP = 1.12;
 
 export interface PlotMetric {
   key: string;
-  /** 0–100, already inverted for `down` metrics. */
+  /** Plain words drawn under the column — not the mono key. */
+  label: string;
+  /** 0–100. */
   height: number;
-  /** True when the plotted height is the complement of the stated figure. */
-  inverted: boolean;
 }
 
 export interface PlotInput {
@@ -162,42 +162,44 @@ export function draw(ctx: CanvasRenderingContext2D, w: number, h: number, pal: P
   }
 
   // ── The columns. Three faces, flat paper fills, ink outlines, an accent lid.
+  const colW = P(1, 0, 0)[0] - P(0, 0, 0)[0];
   input.metrics.forEach((m, i) => {
     const t = input.progress[i] ?? 1;
     const z = Math.max((m.height / 100) * t, 0.003);
     const cx = i + 0.5;
     const x0 = cx - BAR_W / 2, x1 = cx + BAR_W / 2;
-    const outline = m.inverted ? pal.ink2 : pal.ink;
 
-    poly(ctx, [P(x1, 0, 0), P(x1, D, 0), P(x1, D, z), P(x1, 0, z)], pal.paper3, outline, 1);
-    poly(ctx, [P(x0, 0, z), P(x1, 0, z), P(x1, D, z), P(x0, D, z)], pal.paper2, outline, 1);
-    poly(ctx, [P(x0, 0, 0), P(x1, 0, 0), P(x1, 0, z), P(x0, 0, z)], pal.paper, outline, 1);
-    if (m.inverted) {
-      // Hatched face: this column plots the complement of its stated figure.
-      ctx.save();
-      ctx.beginPath();
-      ([P(x0, 0, 0), P(x1, 0, 0), P(x1, 0, z), P(x0, 0, z)] as Pt[])
-        .forEach(([px, py], k) => (k ? ctx.lineTo(px, py) : ctx.moveTo(px, py)));
-      ctx.closePath();
-      ctx.clip();
-      ctx.globalAlpha = 0.6;
-      const [, yTop] = P(x0, 0, z);
-      const [, yBot] = P(x0, 0, 0);
-      for (let py = yBot; py > yTop; py -= 4) line(ctx, [P(x0, 0, 0)[0], py], [P(x1, 0, 0)[0], py], pal.rule, 1);
-      ctx.restore();
-      ctx.globalAlpha = 1;
-    }
+    poly(ctx, [P(x1, 0, 0), P(x1, D, 0), P(x1, D, z), P(x1, 0, z)], pal.paper3, pal.ink, 1);
+    poly(ctx, [P(x0, 0, z), P(x1, 0, z), P(x1, D, z), P(x0, D, z)], pal.paper2, pal.ink, 1);
+    poly(ctx, [P(x0, 0, 0), P(x1, 0, 0), P(x1, 0, z), P(x0, 0, z)], pal.paper, pal.ink, 1);
     line(ctx, P(x0, 0, z), P(x1, 0, z), pal.accent, 1.5);
 
-    // The reading, above the column; its key, on the baseline beneath it.
+    // The reading, above the column; its plain-word label, wrapped, on the baseline beneath it.
     const [lx, ly] = P(cx, 0, z);
     ctx.font = mono(readout);
     ctx.fillStyle = pal.ink;
     ctx.textAlign = "center";
     ctx.fillText(`${Math.round(m.height * t)}`, lx, ly - readout - 3);
+
     const [kx, ky] = P(cx, 0, 0);
     ctx.font = mono(tick);
     ctx.fillStyle = pal.ink3;
-    ctx.fillText(m.key.toUpperCase().slice(0, 10) + (m.inverted ? " ▽" : ""), kx, ky + tick + 2);
+    const lines = wrapLabel(ctx, m.label, colW * 0.95);
+    lines.forEach((ln, li) => ctx.fillText(ln, kx, ky + tick + 2 + li * (tick + 2)));
   });
+}
+
+/** Greedy word-wrap into at most two lines, measured against the actual font. */
+function wrapLabel(ctx: CanvasRenderingContext2D, text: string, maxWidth: number): string[] {
+  if (ctx.measureText(text).width <= maxWidth) return [text];
+  const words = text.split(" ");
+  let line1 = "";
+  let i = 0;
+  for (; i < words.length; i++) {
+    const test = line1 ? `${line1} ${words[i]}` : words[i];
+    if (line1 && ctx.measureText(test).width > maxWidth) break;
+    line1 = test;
+  }
+  const line2 = words.slice(i).join(" ");
+  return line2 ? [line1, line2] : [line1];
 }

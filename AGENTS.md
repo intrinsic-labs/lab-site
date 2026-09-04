@@ -96,7 +96,7 @@ context, and must not read as marketing.
 
 Related house rules from the same session: never narrate honesty ("and we say so") — state
 the fact and stop; never assert "every" where the site's own numbers say otherwise; The
-Ghost is always "The Ghost" and lives under Tycho; `/instruments/tycho` is the one dark
+Ghost is always "The Ghost" and lives under Tycho; `/products/tycho` is the one dark
 page (`theme: dark` in its front matter), never a site-wide toggle.
 
 <!-- BEGIN:nextjs-agent-rules -->

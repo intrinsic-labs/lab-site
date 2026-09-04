@@ -3,7 +3,7 @@ import { Wordmark } from "./Wordmark";
 
 const NAV = [
   ["Research", "/research"],
-  ["Instruments", "/instruments"],
+  ["Products", "/products"],
   ["Work", "/work"],
   ["About", "/about"],
 ] as const;

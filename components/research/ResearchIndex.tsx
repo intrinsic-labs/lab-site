@@ -1,77 +1,55 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { KINDS, KIND_LABEL, type Kind } from "@/lib/content/kinds";
 import { AREAS, AREA_INFO, type Area } from "@/lib/content/areas";
-import { formatDate } from "@/lib/content/format";
-import { KindLabel } from "./KindLabel";
+import { PostCard, type PostCardItem } from "./PostCard";
 
-/** The serialisable slice of a post an index needs. */
-export interface IndexItem {
-  slug: string;
-  title: string;
-  summary: string;
-  kind: Kind;
+/** The serialisable slice of a post the newsroom grid needs. */
+export interface IndexItem extends PostCardItem {
   area: Area;
-  date: string;
-  draft: boolean;
 }
 
+type FilterValue = "all" | Kind | Area;
+
+/**
+ * The newsroom grid (ref 02, Design/refs/lab-site): one flat filter row of plain words —
+ * no "KIND"/"AREA" mono labels — then a 3-col card grid, 1-col on mobile.
+ */
 export function ResearchIndex({ items }: { items: IndexItem[] }) {
-  const [kind, setKind] = useState<Kind | "all">("all");
-  const [area, setArea] = useState<Area | "all">("all");
-  const shown = items.filter((i) => (kind === "all" || i.kind === kind) && (area === "all" || i.area === area));
+  const [filter, setFilter] = useState<FilterValue>("all");
+  const shown = items.filter((i) => filter === "all" || i.kind === filter || i.area === filter);
+  const options: { value: FilterValue; label: string }[] = [
+    { value: "all", label: "All" },
+    ...KINDS.map((k) => ({ value: k as FilterValue, label: KIND_LABEL[k] })),
+    ...AREAS.map((a) => ({ value: a as FilterValue, label: AREA_INFO[a].name })),
+  ];
 
   return (
     <div>
-      <div className="flex flex-wrap gap-x-10 gap-y-3 py-5 border-b border-rule">
-        <Filter label="Kind" value={kind} onChange={(v) => setKind(v as Kind | "all")}
-          options={KINDS.map((k) => [k, KIND_LABEL[k]] as const)} />
-        <Filter label="Area" value={area} onChange={(v) => setArea(v as Area | "all")}
-          options={AREAS.map((a) => [a, AREA_INFO[a].name] as const)} />
+      <div className="flex flex-wrap gap-x-6 gap-y-2 border-b border-rule py-5">
+        {options.map((o) => (
+          <button
+            key={o.value}
+            type="button"
+            onClick={() => setFilter(o.value)}
+            className={`border-b pb-0.5 text-[0.95rem] transition-colors ${
+              filter === o.value ? "border-ink text-ink" : "border-transparent text-ink-2 hover:text-ink"
+            }`}
+          >
+            {o.label}
+          </button>
+        ))}
       </div>
       {shown.length === 0 ? (
-        <p className="text-ink-2 italic py-8">Nothing under that filter yet.</p>
+        <p className="py-10 text-ink-2 italic">Nothing under that filter yet.</p>
       ) : (
-        <ul className="border-b border-rule">
-          {shown.map((p) => (
-            <li key={p.slug} className="py-5 grid gap-2 sm:grid-cols-[9rem_1fr] sm:gap-8">
-              <div className="flex items-center gap-3 sm:flex-col sm:items-start sm:gap-2">
-                <KindLabel kind={p.kind} />
-                <time dateTime={p.date} className="label">{formatDate(p.date)}</time>
-                {p.draft && <span className="label text-accent">draft</span>}
-              </div>
-              <div>
-                <h3 className="font-serif text-xl leading-snug">
-                  <Link href={`/research/${p.slug}`} className="hover:underline decoration-1 underline-offset-4">{p.title}</Link>
-                </h3>
-                <p className="text-ink-2 mt-1 leading-snug">{p.summary}</p>
-                <p className="label mt-3">{AREA_INFO[p.area].name}</p>
-              </div>
-            </li>
+        <ul className="mt-px grid gap-px border border-rule bg-rule sm:grid-cols-3">
+          {shown.map((item) => (
+            <PostCard key={item.slug} item={item} />
           ))}
         </ul>
       )}
-      <p className="label mt-6">{shown.length} of {items.length}</p>
-    </div>
-  );
-}
-
-function Filter<T extends string>({ label, value, onChange, options }: {
-  label: string; value: T | "all"; onChange: (v: string) => void; options: readonly (readonly [T, string])[];
-}) {
-  const btn = (v: string, text: string) => (
-    <button key={v} type="button" onClick={() => onChange(v)}
-      className={`label pb-0.5 border-b transition-colors ${value === v ? "border-ink text-ink" : "border-transparent hover:text-ink"}`}>
-      {text}
-    </button>
-  );
-  return (
-    <div className="flex flex-wrap items-center gap-4">
-      <span className="label text-ink-3">{label}</span>
-      {btn("all", "All")}
-      {options.map(([v, text]) => btn(v, text))}
     </div>
   );
 }
