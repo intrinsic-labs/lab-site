@@ -66,10 +66,12 @@ So when *every* local-only commit carries one of three scheduled-job prefixes, *
 
 Two boundaries were drawn deliberately. The human's own manual-checkpoint prefix is **excluded** from the allowlist, so a commit made by his hand always refuses. And the rebase proves it lost nothing before pushing: it counts local-only commits before and after and hard-resets if the count *shrank* — deliberately not if it grew, since the watchdog doesn't hold the run's lock and can legitimately land a commit mid-rebase.
 
-## What it cost, and what is still open
+## What it cost, and where this goes next
 
 The escalation — the mechanism built to make a silent failure loud — **failed silently for its first eight days**. It filed its human task into a project's `tasks.md`, and two days after it shipped that file was frozen by an unrelated migration to one-file-per-task. Our documentation warns twice that a hand-edit to a frozen backlog file is a silent failure; the escalation was doing exactly that, automatically. Its task never reached the to-do surface, its id collided with an unrelated completed task, and it then muted itself on a marker written into a file nothing reads. Fixed nine days later.
 
 Nine days on, the exception has **declined eight times and fired zero times**, and both refusal classes it exercised were correct; the only real reconciliation in the record was still performed by hand. What we'd measure is the count — fast-forwards and reconciles versus refusals — over a window containing at least one self-merge with no human commits in it. We don't have that window yet.
 
 Still open, and the more interesting question: the exception treats the fifteen-minute watchdog commits as noise to be rebased around. They are noise. Squashing them at push time, or keeping them on a separate ref entirely, would remove the condition instead of managing it — and nobody has costed that.
+
+That is the direction worth taking. The exception manages a divergence the watchdog manufactures; move those commits off the branch and the fast-forward window the original rule was written for reopens, at which point the catch-up gets to succeed for the first time in its life and the escalation goes quiet because there is nothing to escalate. The measurement that would show it is the one this post says we don't have yet: fast-forwards and reconciles against refusals, over a window containing at least one self-merge. A run of that window with no human hand in it is what "working" looks like here.

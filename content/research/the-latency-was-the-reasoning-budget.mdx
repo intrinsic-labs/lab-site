@@ -26,3 +26,7 @@ Three things worth keeping from the retest:
 **"MLX is faster on Apple Silicon" is a rule of thumb, not a fact about your machine.** MLX quantizations for this model landed hours after the GGUF ones. Measured head-to-head on the same slice, the MLX 4-bit build ran ~40 s/item against the GGUF's ~29 — and worse, **it could not be made to stop reasoning**: the MLX runtime accepted both knobs and silently ignored them. Only the llama.cpp/GGUF path honoured them. The GGUF build also ships speculative decoding (the API confirms it in `stats.accepted_draft_tokens_count`), which accounts for most of its win. The round ran on the GGUF.
 
 **A 4× headline is relative to its own default.** The earlier round had noted that dropping to `reasoning_effort: low` made one item go from 152 s to 34 s. That was one lucky item; over a wider run "low" still measured 38–256 s, tracking the length of the excerpt being classified. The 4× was real *relative to the default tier*. It did not make the model fast. Off did.
+
+## Where this goes next
+
+Latency was only half the question. Accuracy with reasoning off was measured on the same 300-item slice and has not been put beside these timings, so the trade the retest bought is still unpriced. That comparison is the next thing to run, and it settles something concrete: if turning reasoning off costs little in agreement, the full 3,800-item pass runs locally at the speeds above, on hardware we own. If it costs a lot, the report is that this engine is fast or accurate and not both, and the pass goes elsewhere.

@@ -24,3 +24,7 @@ Two decisions followed that we'd make again:
 **Say what the harness was.** Every row in the comparison table carries its harness (`native multi-turn, temp 0` vs `think-then-JSON, flattened few-shot`) because the harness is part of the result. A model score without its harness is a number without units.
 
 The companion gotcha from the same day: the newer local model needed a ~6k token budget or it truncated its own reasoning mid-JSON — 8 of 20 items errored on the first attempt at the pipeline's default 900. Same lesson from the other side: the harness is where most of the first-day variance lives.
+
+## Where this goes next
+
+The next run of the sheet puts every engine on one harness — think-then-JSON, same prompt, same budget — so the cross-family rows stop carrying a caveat saying the comparison is indicative at best. What that would show is whether the tight cluster these scores fall into is a fact about the models or an artefact of the porting. Either answer is worth having: if the cluster survives a single harness, the sheet has genuinely run out of resolution and hand-labelling is the only way past it; if it doesn't, we were reading harness noise and the comparison is worth running again properly.

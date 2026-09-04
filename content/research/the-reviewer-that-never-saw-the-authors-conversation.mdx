@@ -54,8 +54,10 @@ Two rounds maximum. Uncapped, a pedantic reviewer and a dutiful author trade rou
 
 Two further gaps found later — a blind spot the migration to one-file-per-task opened in the gate's task lookup, and a write channel the author had into its own reviewer's prompt — are omitted here.
 
-## What is open
+## Where this goes next
 
 There is no false-positive measurement, because nothing records that a finding was wrong. The only proxy is whether a second round happened, which conflates "the author agreed and fixed it" with "the author argued and lost." Two further findings are deferred as structural: the review artifact is forgeable, and the stamp naming which engine reviewed is set by the author's side.
 
 And one live lead we could not close. A review artifact dated 2026-09-03 records an empty diff and no findings. The branch it names carries a commit made *after* that review ran — a salvage commit sweeping up work from a session that hit its one-hour timeout, 154 files and roughly 426,000 inserted lines. The hash re-check is designed to catch exactly this, and we could not verify whether it did, because that run's report was orphaned on a detached HEAD. The artifact-versus-branch mismatch is verified; the miss is not. It is the right thing to check next, and it is the reason the check exists.
+
+Two have an obvious shape. The aggregation should count an empty-diff report as what it is rather than as a clean review, which turns the headline into 43 of 51 wherever it appears. The false-positive number needs the cheapest possible record — a one-word disposition on each finding, written when the author acts on it — after which the gate can report not just how often it blocks but how often it was right to. That second number decides whether a cheap per-diff reviewer is worth keeping in front of everything, or whether the slower adversarial pass should carry more of the load. Both are small work, and both replace a belief with a number.

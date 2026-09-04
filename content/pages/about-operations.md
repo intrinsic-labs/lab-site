@@ -5,10 +5,11 @@ surfacing the handful of decisions that need a human. Every project declares in 
 those agents may do — draft only, build to a boundary and stop, or run to completion — and the
 declaration is enforced in code. Every change to a code repository is supposed to be reviewed by a
 second session that never saw the first one's conversation; in the measured window, 51 of 58 branches
-actually were. Nothing outward-facing happens without an explicit human yes.
+actually were, and the rest are next. Nothing outward-facing happens without an explicit human yes.
 
 We treat that arrangement as an experiment as much as an operating model. The agent-operations research
-area is built on what it records.
+area is built on what it records. It is being pushed toward more work aimed outward — at
+clients and products, not at the machine itself; the [instrument page](/instruments/vault) carries them.
 
 Nearly everything on this site was drafted by those agents from the lab's own records, then read,
 corrected and approved by Asher before it appeared. The [editorial policy](/about/editorial) says exactly what that means.

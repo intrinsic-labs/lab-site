@@ -70,8 +70,10 @@ The repair was to stop asking about HEAD: snapshot the working tree into a git t
 
 The second cost is still being paid. Since the autosave shipped, 374 of 584 commits (64%, 2026-08-19 to 2026-09-03) are 15-minute autosaves; because they commit without pushing, local is ahead of the remote at essentially every scheduled run. That broke history reconciliation for a week, unnoticed — [its own post](/research/the-loop-diverged-from-itself).
 
-## What we would measure, and what is open
+## Where this goes next
 
 Whether the exposure window actually fell — the median and 90th-percentile commit gap, recomputed over a comparable window. Cheap, and we haven't run it. What we cannot measure at all is whether the refusal has ever fired: it writes to the calling session's stderr and nowhere central, so there's no count — a guard with no telemetry is one you believe in, not one you know about.
+
+Both have cheap fixes. The first is one recomputation over a comparable window; if the median and the 90th percentile have moved to something near the heartbeat, the guard's whole job becomes catching the rare case rather than covering a routine gap. The second is a line of logging: route the refusal's message to the same place every other event goes, and in a month the question stops being a matter of belief. What we expect either way is a small number — this is a class of failure that should be visible perhaps a handful of times a year, and the point of the count is knowing which kind of zero we have.
 
 Still open: the human's own terminal is covered by the autosave floor alone, by design — no tool-layer hook sees a command typed into a shell.

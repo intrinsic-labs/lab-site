@@ -29,6 +29,10 @@ Every one of those sessions writes a run report. Every review gate records what 
 
 No repository work publishes unreviewed. Every executor session ends by requesting a review from a fresh, read-only session that never saw the author's conversation — its only context is the diff and the task. The author fixes what comes back, at most twice. The reviewer's tool permissions deny it any way to be messaged, so it cannot be argued into leniency; that isolation is code, not instruction. High-severity findings withhold automatic landing and the work ships as a PR carrying the findings instead.
 
+## Where the numbers stand
+
+Four figures are recomputed from that record and published on the front page: 73% of agent sessions ran to completion with no human in the loop; 37% of the sessions that left a run report were aimed at client or product work rather than at the system itself; 9.5% of material decisions were made without the founder; and 17.7% of documentation claims no longer matched the code when audited. The stated goal is a company that runs 90–95% of itself, and the second figure is the one being steered next. For two months the crew has mostly been improving the machine it runs on while the person it works for was consumed by client work, which is exactly what a 37% outward share records. The lever sits upstream of everything described above — how much client and product work is filed for agents to pick up, rather than how much autonomy they hold once it is — so none of the walls have to move to raise it.
+
 ## What is not released
 
 The code, for now, and everything in the folder — it is one company's operating state. What we publish is the design, the measurements, and the failures.

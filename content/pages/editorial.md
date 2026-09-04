@@ -4,7 +4,8 @@ Each item declares which it is and wears the label everywhere it appears.
 
 <KindsList />
 
-There are no papers yet.
+There are no papers yet; the first will come out of the elicitation work, once its held-out numbers
+rest on enough hand-labelled pairs to quote.
 
 ## 2. Negative results publish, with their caveats attached
 
@@ -29,8 +30,7 @@ is one of the three things we study, and this site is produced by that pipeline.
 ## 5. Corrections are appended and dated
 
 When something turns out to be wrong, the correction is added beneath the post with its date. The original
-text is not silently edited. Every post shows its corrections block even when it is empty, so the promise is
-visible.
+text is not silently edited. Every post shows its corrections block even when it is empty.
 
 ## 6. What we don't do
 

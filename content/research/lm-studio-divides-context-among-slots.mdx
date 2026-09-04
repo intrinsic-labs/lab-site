@@ -17,3 +17,7 @@ Loading a 27B model with `-c 16384 --parallel 4` reads as "16k of context, four 
 The working shape for a 27B on a 32 GB machine turned out to be `-c 32768 --parallel 2`: 16k per slot, two in flight. Halving parallelism to double per-request context was the whole fix.
 
 Two small lessons. First, budget context **per slot**, and write the arithmetic down where the next person loading the model will see it — this one went into the repository's agent instructions the same day. Second, a harness that "makes real inference calls" and a harness that "fails before inference" produce the same red test; read the error string before concluding anything about the model.
+
+## Where this goes next
+
+The arithmetic is written down, so the test is whether it survives the next runtime upgrade — the behaviour is plausibly the upstream server's and may change under us. The cheap check is the one that caught it: run a small parallel probe first and look at what the failures say, so a misconfiguration announces itself before a long pass burns an evening. Working looks like a probe that fails on the model rather than before inference, which is the only kind of red test worth reading.

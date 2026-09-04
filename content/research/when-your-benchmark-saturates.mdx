@@ -85,3 +85,7 @@ The splits also aren't evenly spread across the stage-1 detectors that surfaced 
 2. **Shared misses are data about the task, not just the model.** Check whether the residual is contestable before spending it on prompt engineering.
 3. **Mine disagreement instead of scoring agreement.** Where competent engines disagree is exactly where a human label is worth the most, and the *shape* of the disagreement (threshold vs. category) tells you what to fix.
 4. **Freeze the slice and nest it.** Reproducibility is one salt and one prefix property.
+
+## Where this goes next
+
+The 60 binary splits are the labelling queue, and they go to a hand-grading bench where the person whose record it is settles what the engines drew differently. That sheet needs fifty labelled pairs before its number means anything, and stands at zero, so the immediate work is filling it. What it buys is specific: the labels place the HIT/WEAK line, and whichever engine sits on the right side of it runs the full pass over roughly 3,800 candidates. If the line falls near 46% the local model runs it on hardware we own; if near 34%, it doesn't. Either way the question stops being which model is better and becomes where the boundary is.
