@@ -99,6 +99,14 @@ the fact and stop; never assert "every" where the site's own numbers say otherwi
 Ghost is always "The Ghost" and lives under Tycho; `/products/tycho` is the one dark
 page (`theme: dark` in its front matter), never a site-wide toggle.
 
+Rules from the 2026-09-03 outsider pivot (Asher's feedback on v1.1): **Haiku writes
+posts** (or the coordinating session itself) — never Opus, whose drafts ran long; Asher
+edits. Posts are short, forward-looking and searching, never self-flagellating, and
+never an internal bug report dressed as research — the LM Studio field note is the bar.
+**Caveats, corrections and artifacts render only when non-empty.** **Cards, not lists**,
+for any collection. Landing page is one sentence + the plate + three grids, ≤120 words
+of prose. Post pages match latent-spaces-web's reading column (`docs/blog-style-notes.md`).
+
 <!-- BEGIN:nextjs-agent-rules -->
 
 # This is NOT the Next.js you know
