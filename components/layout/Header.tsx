@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Wordmark } from "./Wordmark";
 import { NavDropdown } from "./NavDropdown";
+import { MobileMenu } from "./MobileMenu";
 import { AREAS, AREA_INFO } from "@/lib/content/areas";
 
 const NAV = [
@@ -24,11 +25,11 @@ const RESEARCH_ITEMS = [
 export function Header() {
   return (
     <header className="sticky top-0 z-40 border-b border-rule bg-paper/90 backdrop-blur-sm">
-      <div className="mx-auto max-w-6xl px-6 py-4 sm:h-16 sm:py-0 flex flex-wrap items-center justify-between gap-x-6 gap-y-3">
+      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-x-6 px-6">
         <Link href="/" className="flex items-center gap-3 no-underline">
           <Wordmark />
         </Link>
-        <nav className="flex items-center gap-4 sm:gap-8 w-full sm:w-auto">
+        <nav className="hidden items-center gap-8 md:flex">
           <NavDropdown label="Research" href="/research" items={RESEARCH_ITEMS} />
           {NAV.map(([label, href]) => (
             <Link key={href} href={href} className="label hover:text-ink transition-colors">
@@ -36,6 +37,12 @@ export function Header() {
             </Link>
           ))}
         </nav>
+        <MobileMenu
+          researchLabel="Research"
+          researchHref="/research"
+          researchItems={RESEARCH_ITEMS}
+          links={NAV.map(([label, href]) => ({ label, href }))}
+        />
       </div>
     </header>
   );

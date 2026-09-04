@@ -253,3 +253,57 @@ Only the places the dark sheet hardcodes a `#fff` or `#000` the token remap can'
 - **`components/research/PostHeader.tsx`** — two measures on purpose: the type block keeps
   the reading column's 68ch, the hero image breaks out to `max-w-5xl` at `rounded-2xl`.
   The `GenerativeCover` fallback renders at the identical size.
+
+---
+
+## The mobile menu (2026-09-04)
+
+Below `md` the four-item nav is replaced by a hamburger; at `md+` nothing changed and
+`NavDropdown.tsx` is untouched. `components/layout/MobileMenu.tsx` is a port of
+latent-spaces-web's `src/components/Navigation.tsx` — its only mobile-menu implementation.
+
+### What was taken from latent-spaces
+
+| Thing | latent-spaces | Here |
+|---|---|---|
+| icon | inline 24px SVG, `stroke-width 2`, round caps; the three bars are **swapped** for an X (`M6 18L18 6M6 6l12 12`), not tweened | same SVG, same two paths, same swap |
+| panel | `fixed left-0 right-0`, framer-motion `height: 0 → 100vh` + `opacity: 0 → 1`, `duration: 0.3` | same motion as a CSS transition on `height`/`opacity`, `300ms ease-out`, against `calc(100dvh - 4rem)` — there is no framer-motion in this repo and none was added |
+| ground | solid `bg-ls-background` + `backdrop-blur-md`, `overflow-y-auto` | solid `bg-paper` + `backdrop-blur-md`, `overflow-y-auto overscroll-contain` |
+| rows | `text-3xl font-light py-4` block links, `hover:text-accent`, hairline divider between rows | `font-sans text-3xl font-light py-4`, `hover:text-accent`, `border-b border-rule` between rows |
+| bottom | a CTA button + a social-icon strip pushed down with `mt-auto` | `mt-auto` row with the two contact points the footer already carries (email, GitHub), in `.label` |
+| behaviour | Escape closes · `body.style.overflow = 'hidden'` while open · every link closes it | same, plus the additions below |
+
+**What is ours.** latent-spaces has no accordion, no focus management and no `inert`:
+
+- **Research is an indented accordion.** The row itself is a real `<Link href="/research">`;
+  a separate chevron `<button aria-expanded aria-controls>` discloses the areas — the same
+  link/disclosure split `NavDropdown` uses at `md+`, so a tap is never ambiguous between
+  "navigate" and "disclose". Items come from `AREA_INFO` (`lib/content/areas.ts`), the same
+  source the desktop dropdown reads, so a new area appears in both. **Expanded by default**
+  — with only four sub-items the panel still reads at a glance and the section's map is the
+  point. The height animation is the `grid-template-rows: 0fr → 1fr` trick, so nothing has
+  to be measured.
+- **Accessibility.** Focus trapped between the trigger and the panel; Escape closes and
+  returns focus to the trigger; `<main>`/`<footer>` carry `inert` while it is open and the
+  panel carries `inert` while it is closed; body scroll locked with the scrollbar's width
+  added back as `padding-right` (no shift on open) and both inline values *restored*, on
+  unmount as well as on close; a route change closes it (`usePathname`, adjusted during
+  render rather than in an effect — the `react-hooks/set-state-in-effect` lint rule).
+  `motion-reduce:transition-none` on both the panel and the accordion.
+- **It inverts for free.** Every surface is a semantic token (`bg-paper`, `text-ink`,
+  `border-rule`, `hover:text-accent`), so the overlay is cream-on-dark-ink on the light
+  research routes with no per-theme code — the `html:has([data-theme="light"])` remap
+  reaches it like everything else.
+- **Header markup.** `Header.tsx`'s container is now a plain `flex h-16` row at every width;
+  it used to be `flex-wrap` with `py-4` so the nav could wrap onto a second line below `sm`.
+  Nothing wraps any more, so mobile header height is a constant 4rem — which is also the
+  panel's `top` and the subtrahend in its height.
+
+### Verified
+
+`pnpm exec tsc --noEmit` and `pnpm lint` clean. Headless Chrome at **390** (Pixel phone) and
+**820** (Pixel Tablet portrait) on `/` (black) and `/research` (cream), plus **767** (just
+under the breakpoint) and **1400**: no horizontal overflow in any state (`scrollWidth` vs
+`clientWidth`), scroll lock and `inert` assert on open and release on close/Escape/navigate,
+the Tab cycle stays inside the panel, and `prefers-reduced-motion: reduce` resolves
+`transition-property: none`. At 820 and 1400 the desktop nav is unchanged.
