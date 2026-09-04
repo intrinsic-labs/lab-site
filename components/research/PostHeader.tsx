@@ -31,7 +31,7 @@ function artifactButtonLabel(label: string): string {
 export function PostHeader({ post }: { post: Post }) {
   const primary = post.artifacts[0];
   return (
-    <header className="mx-auto max-w-5xl pt-14 pb-10">
+    <header className="mx-auto max-w-5xl pt-10 pb-4 sm:pt-14 sm:pb-10">
       <div className="mx-auto max-w-[68ch] text-center">
         <KindLabel kind={post.kind} />
         <h1 className="mt-6 font-serif text-4xl font-medium tracking-tight leading-[1.05] sm:text-5xl">{post.title}</h1>
@@ -46,7 +46,7 @@ export function PostHeader({ post }: { post: Post }) {
         )}
       </div>
 
-      <div className="mt-12 aspect-[16/9] w-full overflow-hidden rounded-2xl border border-rule">
+      <div className="mt-8 aspect-[16/9] w-full overflow-hidden rounded-2xl border border-rule sm:mt-12">
         {post.cover ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={post.cover} alt={post.coverAlt ?? ""} className="h-full w-full object-cover" />

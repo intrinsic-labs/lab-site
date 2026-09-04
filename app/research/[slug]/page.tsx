@@ -39,7 +39,8 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
       <PostHeader post={post} />
       <div className="mx-auto max-w-[68ch]">
         {post.primer === "agent-ops" && <SystemPrimer />}
-        <div className="prose prose-post py-12">
+        {/* Tighter on phones (Asher, 2026-09-04): cover→body was 88px of air on a 390px screen. */}
+        <div className="prose prose-post pt-4 pb-12 sm:pt-12">
           <Mdx source={post.body} />
         </div>
         <PostMeta post={post} />

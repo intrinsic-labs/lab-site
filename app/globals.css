@@ -265,6 +265,12 @@ h1, h2, h3, h4, h5, h6 { font-family: var(--font-sans); }
   padding: 0.1em 0.35em;
   border-radius: 0.25rem;
 }
+/* An inline code span has no spaces to break at, so a long identifier
+   (`completion_tokens_details.reasoning_tokens`) used to widen the page past the
+   viewport on a phone and give the whole post a horizontal scroll (Asher,
+   2026-09-04). Let it break anywhere. Fenced blocks are excluded — they scroll in
+   their own box. */
+.prose :not(pre) > code { overflow-wrap: anywhere; }
 
 /* Code blocks — latent-spaces highlights with react-syntax-highlighter's Prism
    `vscDarkPlus` at `borderRadius: 1rem`. Same theme here via shiki's `dark-plus`
