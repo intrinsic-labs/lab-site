@@ -13,6 +13,8 @@ artifactsNote: The two prompt variants and per-item results are in the private p
 corrections: []
 ---
 
+This field note comes out of [Tycho](/products/tycho), the program that builds [The Ghost](/products/tycho#the-ghost): the grading prompt in question is the one Tycho's pipeline uses to score candidate decisions.
+
 A grading prompt built for local open-weight models used a strict discipline: answer cold, emit JSON, nothing else. Ported as-is to Claude, **Opus scored 6 of 14 exact — below a 27B local model's 8.**
 
 Adding one instruction — think through the item first, then produce JSON — changed the results: Sonnet went from 5/14 to 8/14, Opus from 6/14 to 7/14. The frontier models weren't weaker; the harness was built for a different engine.

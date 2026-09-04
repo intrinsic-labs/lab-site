@@ -13,6 +13,8 @@ artifactsNote: Per-call timings and reasoning-token audit live in the private pi
 corrections: []
 ---
 
+This field note comes out of the local-model grading round for [Tycho](/products/tycho), the program that builds [The Ghost](/products/tycho#the-ghost).
+
 Qwen3.8-27B ran at default "high" reasoning and measured **38–256 seconds per item**, clustering near two minutes. Its predecessor did the same items in about 31 seconds. The natural read: the newer model was too slow.
 
 A colleague said it "smells like we haven't gotten the model working properly yet." Fair point. Same slice, same prompt, reasoning off.

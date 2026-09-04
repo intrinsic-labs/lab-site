@@ -14,6 +14,8 @@ artifactsNote: Nothing to release; the finding is the sentence.
 corrections: []
 ---
 
+This field note comes out of running [Tycho](/products/tycho)'s grading pipeline — the stage that builds [The Ghost](/products/tycho#the-ghost) — on local open-weight models.
+
 Loading a 27B model with `-c 16384 --parallel 4` doesn't give 16k context per request — it divides the budget among slots, so each gets about 4k. That's under half what a grading prompt with few-shot examples needs. A four-item probe failed all four with `Context size has been exceeded` before any inference ran.
 
 The fix: `-c 32768 --parallel 2` on 32 GB gave 16k per slot. Halving parallelism to double per-request context solved it.
