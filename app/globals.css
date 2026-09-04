@@ -139,8 +139,8 @@
      the sand/yellow pair is the highlight band (`.marker`, selection, the Draft
      pill) — it was also the prose-link colour until 2026-09-04, when links went
      blue (`--color-link`). Ember is the OpenLoom page's dark inline-code colour. */
-  --color-accent: #51a2ff;   /* TRIAL: Tailwind blue-400 as the UI accent (was ls.accentLight green #6cba78) */
-  --color-verdant: #155dfc;  /* TRIAL: blue-600 as the fill (was ls.accent green #4d8c56) */
+  --color-accent: #51a2ff;   /* Tailwind blue-400 — the UI accent since 2026-09-04 (Asher: "ship blue"); was ls.accentLight green #6cba78 */
+  --color-verdant: #155dfc;  /* blue-600 — the fill; was ls.accent green #4d8c56 */
   --color-marker: #c9b374;   /* ls.yellowLight — rgb(201,179,116) */
   --color-marker-2: #a4915c; /* ls.yellow — rgb(164,145,92) */
   --color-ember: #e07a55;    /* latent-spaces `orange` — its dark inline-code colour */
@@ -473,8 +473,8 @@ html:has([data-theme="light"]) {
      The light/dark pair SWAPS ROLES here: on black the light green is the text
      and the dark green the fill, so on cream `accent` is the dark tone and
      `verdant` the light one. */
-  --color-accent: #1447e6;   /* TRIAL: blue-700 on cream, 5.4:1 (was green #2d7038) */
-  --color-verdant: #51a2ff;  /* TRIAL: blue-400 as the pale fill (was green #5EA36B) */
+  --color-accent: #1447e6;   /* blue-700 on cream, 5.4:1; was green #2d7038 */
+  --color-verdant: #51a2ff;  /* blue-400 — the pale fill; was green #5EA36B */
   --color-marker: #6f5f2e;   /* ls.yellow darkened for cream — 5.8:1 (was the prose-link colour until 2026-09-04) */
   --color-marker-2: #a4915c; /* ls.yellow verbatim — the highlight band, never text */
   --color-ember: #a8481d;    /* latent-spaces --orange #E07A55, darkened to 5.4:1 */
