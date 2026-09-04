@@ -40,7 +40,7 @@ export default async function ResearchPage() {
       {featured && <FeaturedRow featured={featured} next={next} />}
       {items.length > 0 && (
         <section>
-          <SectionHead title="All research" />
+          <SectionHead n="03" title="All research" />
           <ResearchIndex items={items} defaultItems={rest.length > 0 ? rest : items} />
         </section>
       )}

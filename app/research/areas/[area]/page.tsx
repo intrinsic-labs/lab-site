@@ -25,7 +25,7 @@ export default async function AreaPage({ params }: { params: Promise<{ area: str
         <p className="mt-4">{a.body}</p>
       </PageTitle>
       <section className="pt-12">
-        <SectionHead title="Published" rule={false} />
+        <SectionHead n="01" title="Published" rule={false} />
         <PostList posts={posts} empty="This area is declared before it is full. Nothing published under it yet." />
       </section>
     </div>

@@ -16,7 +16,7 @@ import { SectionHead } from "@/components/ui/SectionHead";
 export function AreaBlocks() {
   return (
     <section className="pb-20">
-      <SectionHead title="Research areas" rule={false} />
+      <SectionHead n="01" title="Research areas" rule={false} />
       <ul className="card-grid sm:grid-cols-3">
         {AREAS.map((a) => {
           const info = AREA_INFO[a];

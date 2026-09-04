@@ -2,7 +2,7 @@ import Link from "next/link";
 
 /**
  * Section heading, optionally numbered (`03 — Latest`), with an optional right-hand link.
- * The research surfaces pass no `n` (Asher, 2026-09-04: drop the 01/02/03 there); About keeps them. `rule={false}`
+ * Every current caller passes `n`; it is optional so a surface can drop the numbers without a fork. `rule={false}`
  * drops the top hairline — use it when a card grid sits directly below, whose own gap-px
  * seam already reads as the divider (too many hairlines was a standing note).
  */
