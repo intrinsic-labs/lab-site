@@ -13,6 +13,12 @@ const isoDate = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "ISO date (YYYY-MM-DD)")
 export const autonomyMetric = z.object({
   key: z.string().min(1),
   label: z.string().min(1),
+  /** The plain phrase set under the drawing. `label` is a footnote sentence, not a caption. */
+  shortLabel: z.string().min(1).optional(),
+  /** One or two sentences explaining the metric to somebody who has never seen this site. */
+  blurb: z.string().min(1).optional(),
+  /** What the numerator and denominator count — "270 of 369 <sessions>". */
+  countNoun: z.string().min(1).default("of these"),
   value: z.number(),
   numerator: z.number(),
   denominator: z.number(),
@@ -27,11 +33,18 @@ export const autonomyData = z.object({
   generated: isoDate,
   window: z.object({ from: isoDate, to: isoDate, days: z.number() }),
   goal: z.object({ low: z.number(), high: z.number(), text: z.string() }),
+  /** Copy for the figure itself — the sentence the context panel rests on. */
+  figure: z.object({ intro: z.string().min(1) }).optional(),
   metrics: z.array(autonomyMetric).min(1),
 });
 
 export type AutonomyMetric = z.infer<typeof autonomyMetric>;
 export type AutonomyData = z.infer<typeof autonomyData>;
+
+/** The raw counts behind a percentage, as the context panel says them: "270 of 369 sessions". */
+export function fraction(m: AutonomyMetric): string {
+  return `${m.numerator} of ${m.denominator} ${m.countNoun}`;
+}
 
 /** Height a metric is plotted at: for `down` metrics the complement, so up is always better. */
 export function plotted(m: AutonomyMetric): number {

@@ -144,6 +144,7 @@
   --color-marker: #c9b374;   /* ls.yellowLight — rgb(201,179,116) */
   --color-marker-2: #a4915c; /* ls.yellow — rgb(164,145,92) */
   --color-ember: #e07a55;    /* latent-spaces `orange` — its dark inline-code colour */
+  --color-sky: #5c91e7;      /* latent-spaces-web's `--accent` blue, also the old Intrinsic Labs blue — added for work-page scene tints (docs/style-notes.md) */
 
   /* Low-opacity fills. latent-spaces: ls.surface / ls.surfaceHover, raised a
      little because pure black shows less of a 3% white wash than #121212 does. */
@@ -381,3 +382,124 @@ h1, h2, h3, h4, h5, h6 { font-family: var(--font-sans); }
   color: #d4d4d4;                      /* neutral-300 */
   backdrop-filter: blur(12px);
 }
+
+/* ── LIGHT THEME — the research surfaces only ─────────────────────────────────
+   Ruling (Asher, 2026-09-04): "Instead of doing a switch, let's just make it a
+   light theme — the cream color, same fonts and everything, just invert the
+   colors." It applies to /research, /research/areas/* and every post; the rest
+   of the site stays black. This is NOT a toggle — the D7 ruling of 2026-09-03
+   still stands. It is a route-scoped remap of the same semantic tokens.
+
+   HOW IT REACHES THE HEADER AND FOOTER. Those live in the ROOT layout, above
+   any route-group wrapper, so a wrapper class can't restyle them. Rather than
+   set the attribute with JS on mount (which flashes black on a hard load), the
+   selector reaches UP: `html:has([data-theme="light"])`. app/research/layout.tsx
+   renders one wrapper carrying that attribute, the `:has()` matches at first
+   paint with no client JS, and the override lands on `html` — so `html`'s own
+   background, the sticky header's `bg-paper/90`, and the footer all invert
+   together. Same trick the retired `html:has(.dossier-dark)` rule used.
+   Specificity: 0,1,1 beats @theme's `:root` at 0,1,0.
+
+   VALUES. The dark palette is latent-spaces-web's `ls.*` scale; this is that
+   same site's LIGHT theme (`:root` in its globals.css) — #f9f6f2 ground,
+   #21201f ink, its own green and orange — with the three text-bearing accents
+   darkened, because latent-spaces only ever paints those on its dark theme and
+   the light-theme values it does define (green #5EA36B at 2.8:1) don't clear
+   AA on cream. Every tone below clears 4.5:1 on #f9f6f2.
+   ───────────────────────────────────────────────────────────────────────────── */
+
+html:has([data-theme="light"]) {
+  color-scheme: light;
+
+  /* Ground. Same three steps as the dark palette, inverted: paper is the page,
+     -2 is a raised surface (card plates, the generative cover), -3 is the dot
+     grid and hover fill. */
+  --color-paper: #f9f6f2;   /* latent-spaces light --background */
+  --color-paper-2: #ffffff; /* latent-spaces light --secondary */
+  --color-paper-3: #ddd4c4; /* ours — the step between -2 and --color-rule; carries the dot grid */
+
+  /* Type. */
+  --color-ink: #21201f;     /* latent-spaces light --foreground — 15.1:1 */
+  --color-ink-2: #55524d;   /* 7.2:1 — the secondary step */
+  --color-ink-3: #87837c;   /* 3.5:1 — dates, markers, decorative only */
+  --color-rule: #ded7ca;
+
+  /* Accents, same two jobs as on black. Green is the UI accent; sand is the
+     reading accent (prose links, the highlight band); ember is inline code.
+     The light/dark pair SWAPS ROLES here: on black the light green is the text
+     and the dark green the fill, so on cream `accent` is the dark tone and
+     `verdant` the light one. */
+  --color-accent: #2d7038;   /* latent-spaces light --terminal-green #3B9A4B, darkened to 5.6:1 */
+  --color-verdant: #5EA36B;  /* latent-spaces light --green, verbatim — the fill */
+  --color-marker: #6f5f2e;   /* ls.yellow darkened for cream — 5.8:1, prose links */
+  --color-marker-2: #a4915c; /* ls.yellow verbatim — the highlight band, never text */
+  --color-ember: #a8481d;    /* latent-spaces --orange #E07A55, darkened to 5.4:1 */
+
+  /* Low-opacity fills, mirrored: a wash of the INK rather than of white. */
+  --color-surface: rgba(33, 32, 31, 0.06);
+  --color-surface-hover: rgba(33, 32, 31, 0.11);
+}
+
+/* The wrapper paints its own ground too, so the light page is already cream
+   before `html`'s background is considered — no seam at the top of the main
+   column on a client-side navigation. */
+[data-theme="light"] { background: var(--color-paper); color: var(--color-ink); }
+
+/* ── Light-mode corrections ───────────────────────────────────────────────────
+   Every rule below exists because the dark stylesheet hardcodes a #fff or a
+   #000 that the token remap above cannot reach. Nothing else needs touching:
+   the rest of the sheet reads tokens. */
+
+/* `.btn-ink` is ink-on-black up top; on cream the label must be the paper. */
+html:has([data-theme="light"]) .btn-ink { color: var(--color-paper); }
+html:has([data-theme="light"]) .btn-ink:hover { background: transparent; color: var(--color-ink); }
+/* `.btn-green:hover` fills with --color-verdant and writes white on it; on the
+   light palette verdant is the PALE green, so white on it is 3:1. Fill with the
+   dark tone instead. */
+html:has([data-theme="light"]) .btn-green:hover { background: var(--color-accent); color: var(--color-paper); }
+
+/* Selection and the highlight band both use the sand. On cream the readable
+   sand is dark, so both switch to `marker-2` (the untouched ls.yellow) as a
+   wash under dark text — same shape as the dark rule, opposite polarity. */
+html:has([data-theme="light"]) ::selection { background: color-mix(in srgb, var(--color-marker-2) 55%, transparent); color: var(--color-ink); }
+html:has([data-theme="light"]) .marker {
+  background: linear-gradient(
+    transparent 55%,
+    color-mix(in srgb, var(--color-marker-2) 48%, transparent) 55%,
+    color-mix(in srgb, var(--color-marker-2) 48%, transparent) 92%,
+    transparent 92%
+  );
+  box-shadow: inset 0 -1px 0 color-mix(in srgb, var(--color-marker-2) 80%, transparent);
+}
+
+/* Prose. The link hover goes to white on black; here it goes to ink. */
+html:has([data-theme="light"]) .prose a:hover { color: var(--color-ink); background: color-mix(in srgb, var(--color-marker-2) 30%, transparent); }
+html:has([data-theme="light"]) .prose blockquote { border-left-color: rgba(33, 32, 31, 0.25); }
+
+/* INLINE CODE — latent-spaces' own LIGHT-theme treatment, verbatim from
+   BlogPostContent.tsx: `bg-neutral-300 text-neutral-800 rounded px-1.5 py-0.5
+   font-calling-code`, i.e. its tailwind neutral-300 #E0E0E0 under neutral-800
+   #424242. It does NOT use the orange on cream — that colour is the dark
+   page's. Shape (radius, padding, face, size) is unchanged from the dark rule.
+
+   `:not(pre) >` IS LOad-BEARING, and it is not belt-and-braces. The dark sheet
+   already resets fenced code with `.prose pre code { background: none }` — but
+   that is specificity (0,1,2), and an unscoped `html:has([data-theme="light"])
+   .prose code` is (0,2,2), because `:has()` counts its attribute argument in the
+   CLASS column. So the light rule outranked the reset and painted the #e0e0e0
+   wash across the inside of the shiki plate, leaving dark-plus tokens on a pale
+   bar in a black frame. The dark rule never had this problem because plain
+   `.prose code` is (0,1,1) and loses to the reset. Scoping it structurally is the
+   fix rather than raising the reset's specificity: a child combinator cannot
+   match a fenced block at any specificity. */
+html:has([data-theme="light"]) .prose :not(pre) > code { background: #e0e0e0; color: #424242; }
+
+/* CODE BLOCKS stay dark on purpose, and that is a mirror rather than an
+   omission: latent-spaces renders its cream blog page's fenced code with
+   react-syntax-highlighter's Prism `vscDarkPlus` — the SAME dark theme it uses
+   on its dark pages (BlogPostContent.tsx line 57). Our shiki `dark-plus` is
+   that same VS Code Dark+ token set, so a dark #1e1e1e plate on cream IS the
+   light-mode styling being mirrored. lib/mdx/highlight.ts is untouched. */
+
+/* `.pill-muted` washes with white. */
+html:has([data-theme="light"]) .pill-muted { background: rgba(33, 32, 31, 0.05); color: var(--color-ink-3); }

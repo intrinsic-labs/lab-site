@@ -21,7 +21,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
     <article className="mx-auto max-w-6xl px-6">
       <div className="mt-10 aspect-[16/9] w-full overflow-hidden">
         {c.scene ? (
-          <WorkSceneCanvas scene={c.scene} seed={c.slug} className="h-full w-full" />
+          <WorkSceneCanvas scene={c.scene} seed={c.slug} tint={c.tint} className="h-full w-full" />
         ) : c.cover ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={c.cover} alt={c.name} className="h-full w-full object-cover" />

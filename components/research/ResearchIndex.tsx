@@ -5,7 +5,7 @@ import { KINDS, KIND_LABEL, type Kind } from "@/lib/content/kinds";
 import { AREAS, AREA_INFO, type Area } from "@/lib/content/areas";
 import { PostCard, type PostCardItem } from "./PostCard";
 
-/** The serialisable slice of a post the newsroom grid needs. */
+/** The serialisable slice of a post the research index needs. */
 export interface IndexItem extends PostCardItem {
   area: Area;
 }
@@ -13,12 +13,27 @@ export interface IndexItem extends PostCardItem {
 type FilterValue = "all" | Kind | Area;
 
 /**
- * The newsroom grid (ref 02, Design/refs/lab-site): one flat filter row of plain words —
- * no "KIND"/"AREA" mono labels — then a 3-col card grid, 1-col on mobile.
+ * The archive grid at the foot of the research landing.
+ *
+ * The filter row used to be a serif sentence of plain words, which read as a subtitle
+ * rather than a control. Ruling (Asher, 2026-09-04): kind is no longer the primary way
+ * into the page — the area blocks and the featured row are — so if a filter survives it
+ * has to LOOK like one. These are `.pill`s: Calling Code, small, a wash rather than a
+ * stroke (the same shape a kind label on a card wears), the selected one in the accent.
+ *
+ * Two sets, one control. `items` is everything; `defaultItems` is what "All" shows —
+ * the landing passes the posts the featured row didn't already display, so the same
+ * post never appears twice on one screen. Choosing a kind or an area switches to the
+ * full matching set, because a filter that quietly excluded the four newest posts would
+ * be lying about what it filtered.
  */
-export function ResearchIndex({ items }: { items: IndexItem[] }) {
+export function ResearchIndex({ items, defaultItems }: { items: IndexItem[]; defaultItems?: IndexItem[] }) {
   const [filter, setFilter] = useState<FilterValue>("all");
-  const shown = items.filter((i) => filter === "all" || i.kind === filter || i.area === filter);
+  const shown =
+    filter === "all"
+      ? (defaultItems ?? items)
+      : items.filter((i) => i.kind === filter || i.area === filter);
+
   const options: { value: FilterValue; label: string }[] = [
     { value: "all", label: "All" },
     ...KINDS.map((k) => ({ value: k as FilterValue, label: KIND_LABEL[k] })),
@@ -27,15 +42,14 @@ export function ResearchIndex({ items }: { items: IndexItem[] }) {
 
   return (
     <div>
-      <div className="flex flex-wrap gap-x-6 gap-y-2 border-b border-rule py-5">
+      <div className="flex flex-wrap items-center gap-2 border-b border-rule pb-5">
         {options.map((o) => (
           <button
             key={o.value}
             type="button"
+            aria-pressed={filter === o.value}
             onClick={() => setFilter(o.value)}
-            className={`border-b pb-0.5 text-[0.95rem] transition-colors ${
-              filter === o.value ? "border-ink text-ink" : "border-transparent text-ink-2 hover:text-ink"
-            }`}
+            className={`pill transition-colors ${filter === o.value ? "pill-accent" : ""}`}
           >
             {o.label}
           </button>
@@ -44,7 +58,7 @@ export function ResearchIndex({ items }: { items: IndexItem[] }) {
       {shown.length === 0 ? (
         <p className="py-10 text-ink-2 italic">Nothing under that filter yet.</p>
       ) : (
-        <ul className="mt-px card-grid sm:grid-cols-3">
+        <ul className="mt-8 card-grid sm:grid-cols-3">
           {shown.map((item) => (
             <PostCard key={item.slug} item={item} />
           ))}

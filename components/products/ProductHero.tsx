@@ -1,7 +1,5 @@
 import type { Product, ProductImages } from "@/lib/content/products";
-import { STATUS_LABEL } from "@/lib/content/products";
 import { GenerativeCover } from "@/components/ui/GenerativeCover";
-import { Chip } from "@/components/ui/Chip";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 
 /**
@@ -9,8 +7,11 @@ import { ButtonLink } from "@/components/ui/ButtonLink";
  *
  * The reference is a product page, not a document — the name is the largest thing on the
  * screen, the `line` from front matter is the only prose above the fold, and the hero
- * image sits centred over a soft accent glow that fades into the ground. Everything else
- * (status, Visit) is deliberately quiet and sits under the image, not over it.
+ * image sits centred over a soft accent glow that fades into the ground.
+ *
+ * There is NO status chip here (Asher, 2026-09-04: "just say Visit"). The status is stated
+ * once on the page, as a quiet mono line at the top of the reading column — see
+ * `app/products/[slug]/page.tsx`. The only control under the image is Visit.
  *
  * The image slot degrades: `public/products/<slug>/hero.*` when it exists, the seeded
  * `GenerativeCover` at the same size when it doesn't, so a product whose screenshots
@@ -65,14 +66,13 @@ export function ProductHero({ product, images }: { product: Product; images: Pro
           )}
         </div>
 
-        <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-          <Chip tone={product.status === "released" ? "accent" : "muted"}>{STATUS_LABEL[product.status]}</Chip>
-          {product.url && (
+        {product.url && (
+          <div className="mt-10 flex items-center justify-center">
             <ButtonLink href={product.url} tone="green" external>
               Visit
             </ButtonLink>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </section>
   );

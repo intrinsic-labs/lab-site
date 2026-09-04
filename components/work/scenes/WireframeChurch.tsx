@@ -1,9 +1,12 @@
 "use client";
 
+import { useMemo } from "react";
+
 import type { BuiltScene, ThreeModule } from "./lib/types";
 import { useWireframeScene } from "./lib/useWireframeScene";
 import { sampleInto, mkMatrix } from "./lib/primitiveSampler";
-import { readCssColor } from "./lib/pointColor";
+import { readTintColor } from "./lib/pointColor";
+import type { WorkTint } from "@/lib/content/schema";
 
 /**
  * Point-cloud small chapel for the church-ops case study — ported from
@@ -11,14 +14,14 @@ import { readCssColor } from "./lib/pointColor";
  * custom gable-roof prism, surface-sampled and merged into a single THREE.Points draw call.
  */
 
-function build(THREE: ThreeModule, root: HTMLDivElement): BuiltScene {
+function build(THREE: ThreeModule, root: HTMLDivElement, tint?: WorkTint): BuiltScene {
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(34, root.clientWidth / root.clientHeight, 0.1, 100);
   camera.position.set(0, 0.8, 10.8);
   camera.lookAt(0, 1.0, 0);
 
   const ptMat = new THREE.PointsMaterial({
-    color: new THREE.Color(readCssColor("--color-ink-2")),
+    color: new THREE.Color(readTintColor(tint)).lerp(new THREE.Color(0xffffff), 0.15), // tinted light on black, not flat paint
     size: 0.024,
     sizeAttenuation: true,
     transparent: true,
@@ -179,7 +182,11 @@ function build(THREE: ThreeModule, root: HTMLDivElement): BuiltScene {
   return { scene, camera, group: churchGroup, disposables: [ptGeo, ptMat] };
 }
 
-export function WireframeChurch() {
-  const containerRef = useWireframeScene(build);
+export function WireframeChurch({ tint }: { tint?: WorkTint }) {
+  const buildWithTint = useMemo(
+    () => (THREE: ThreeModule, root: HTMLDivElement) => build(THREE, root, tint),
+    [tint],
+  );
+  const containerRef = useWireframeScene(buildWithTint);
   return <div ref={containerRef} className="relative h-full w-full overflow-hidden" aria-hidden="true" />;
 }

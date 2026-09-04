@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { allProducts, productBySlug, productImages } from "@/lib/content/products";
+import { allProducts, productBySlug, productImages, STATUS_LABEL } from "@/lib/content/products";
 import { Mdx } from "@/lib/mdx/render";
 import { ProductHero } from "@/components/products/ProductHero";
 import { Gallery } from "@/components/products/Gallery";
@@ -16,9 +16,12 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 /**
  * A product page is a landing screen, then a carousel, then the document — in that order.
  * The hero carries the name, the one sentence and the image; nothing else goes above the
- * fold. `statusNote` (the "built for one person, source is private" kind of caveat) opens
- * the reading column instead of the hero, because it qualifies the thing rather than
- * introducing it — the hero's job is the hook.
+ * fold. The status opens the reading column instead of the hero, because it qualifies the
+ * thing rather than introducing it — the hero's job is the hook, and it carries no chip
+ * (Asher, 2026-09-04: "just say Visit"). This line is therefore the ONE place the status is
+ * stated: `statusNote` when the front matter has one (the "built for one person, source is
+ * private" kind of caveat, which already says the status in prose), the plain `STATUS_LABEL`
+ * otherwise — so a product like GlyphDeck with no note still says "In development" somewhere.
  */
 export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
   const p = await productBySlug((await params).slug);
@@ -36,7 +39,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
 
         <div className="mx-auto max-w-6xl px-6">
           <div className="mx-auto max-w-[68ch] border-t border-rule py-14">
-            {p.statusNote && <p className="label mb-8">{p.statusNote}</p>}
+            <p className="label mb-8">{p.statusNote ?? STATUS_LABEL[p.status]}</p>
             <div className="prose prose-post"><Mdx source={p.body} /></div>
           </div>
         </div>

@@ -1,3 +1,5 @@
+import fs from "node:fs";
+import path from "node:path";
 import type { Metadata } from "next";
 import { PageTitle } from "@/components/ui/PageTitle";
 import { SectionHead } from "@/components/ui/SectionHead";
@@ -7,6 +9,19 @@ import { site } from "@/lib/site";
 
 export const metadata: Metadata = { title: "About", description: "Who's behind the lab, what it believes, and how it operates." };
 
+// `public/about/portrait.{jpg,png,webp}` — dropped in by hand (see public/about/README.md),
+// never sourced by an agent. Checked at build time; absent renders no placeholder at all.
+const PORTRAIT_EXTENSIONS = ["jpg", "jpeg", "png", "webp"] as const;
+
+function findPortrait(): string | undefined {
+  for (const ext of PORTRAIT_EXTENSIONS) {
+    if (fs.existsSync(path.join(process.cwd(), "public", "about", `portrait.${ext}`))) {
+      return `/about/portrait.${ext}`;
+    }
+  }
+  return undefined;
+}
+
 export default async function AboutPage() {
   const [intro, bio, beliefs, operations] = await Promise.all([
     pageContent("about-intro"),
@@ -14,6 +29,7 @@ export default async function AboutPage() {
     pageContent("about-beliefs"),
     pageContent("about-operations"),
   ]);
+  const portrait = findPortrait();
   return (
     <div className="mx-auto max-w-6xl px-6">
       <PageTitle kicker="About" title="A small lab that shows its work.">
@@ -22,8 +38,20 @@ export default async function AboutPage() {
 
       <section className="pt-12">
         <SectionHead n="01" title="Who I am" />
-        <div className="prose text-lg">
-          <Mdx source={bio.content.replace(/\{email\}/g, site.email)} />
+        <div className={portrait ? "flex flex-col gap-8 md:flex-row md:items-start md:gap-10" : undefined}>
+          {portrait && (
+            <div className="order-first flex-none md:order-last md:w-80">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={portrait}
+                alt="Asher Pope"
+                className="aspect-[4/5] w-full max-w-[320px] rounded-2xl object-cover"
+              />
+            </div>
+          )}
+          <div className="prose text-lg">
+            <Mdx source={bio.content.replace(/\{email\}/g, site.email)} />
+          </div>
         </div>
       </section>
 

@@ -159,3 +159,97 @@ all-dark site that is a no-op, so the `--color-night-*` / `--color-chalk-*` toke
 a post, `/products`, `/products/aspen-grove/open-loom`, `/work` or `/about` at **390 / 820 /
 1180 / 1400** (checked with a scripted `scrollWidth` vs `clientWidth` assertion, not by eye).
 Code blocks and wide spec tables scroll inside their own box rather than the page.
+
+---
+
+## The research surfaces are LIGHT (2026-09-04)
+
+> Asher, 2026-09-04: "Instead of doing a switch, let's just make it a light theme — the
+> cream color, same fonts and everything, just invert the colors."
+
+`/research`, `/research/areas/*` and every post `/research/[slug]` render on
+latent-spaces-web's **light** theme. The rest of the site stays pure black. This is
+**not** a toggle — the D7 no-mode-switch ruling of 2026-09-03 still stands; it is a
+route-scoped remap of the same semantic tokens, so no component changed colour by hand.
+
+### How it reaches the header and footer
+
+The Header and Footer live in the **root** layout, above any route-group wrapper, so a
+class on a research wrapper cannot restyle them. `app/research/layout.tsx` renders one
+wrapper carrying `data-theme="light"`, and `app/globals.css` selects **upward**:
+
+```css
+html:has([data-theme="light"]) { --color-paper: #f9f6f2; … }
+```
+
+Pure CSS, matched in the first style pass — no `useEffect` writing
+`documentElement.dataset`, and therefore **no flash of black** on a hard load or a
+client-side navigation. Same trick the retired `html:has(.dossier-dark)` rule used.
+Specificity 0,1,1 beats `@theme`'s `:root` at 0,1,0. The wrapper also paints `bg-paper`
+itself, so the column is cream before `html`'s background composites.
+
+### The light palette
+
+| Token | Value | Taken from |
+|---|---|---|
+| `--color-paper` | `#f9f6f2` | latent-spaces light `--background` |
+| `--color-paper-2` | `#ffffff` | latent-spaces light `--secondary` — raised surface |
+| `--color-paper-3` | `#ddd4c4` | ours — the dot grid / hover step |
+| `--color-ink` | `#21201f` | latent-spaces light `--foreground` (15.1:1) |
+| `--color-ink-2` | `#55524d` | ours — 7.2:1 |
+| `--color-ink-3` | `#87837c` | ours — 3.5:1, decorative only |
+| `--color-rule` | `#ded7ca` | ours — hairlines |
+| `--color-accent` | `#2d7038` | latent-spaces light `--terminal-green` `#3B9A4B`, darkened to 5.6:1 |
+| `--color-verdant` | `#5EA36B` | latent-spaces light `--green`, verbatim — now the FILL |
+| `--color-marker` | `#6f5f2e` | `ls.yellow` darkened for cream (5.8:1) — prose links |
+| `--color-marker-2` | `#a4915c` | `ls.yellow` verbatim — the highlight band, never text |
+| `--color-ember` | `#a8481d` | latent-spaces `--orange` `#E07A55`, darkened to 5.4:1 |
+| `--color-surface` | `rgba(33,32,31,0.06)` | mirrored — a wash of the ink, not of white |
+
+**The green pair swaps roles.** On black the light green is the text and the dark green
+the fill; on cream `accent` has to be the dark tone and `verdant` the light one.
+latent-spaces only ever paints these three accents on its *dark* theme, and the
+light-theme values it does define (`--green #5EA36B` at 2.8:1) don't clear AA on cream —
+hence the darkening. Every tone above clears 4.5:1 on `#f9f6f2`.
+
+### Code, on cream
+
+- **Inline code** is latent-spaces' own light treatment, verbatim from
+  `BlogPostContent.tsx`: `bg-neutral-300 text-neutral-800` — `#e0e0e0` under `#424242`,
+  Calling Code, same radius and padding as the dark rule. The ember **is not** used on
+  cream; that colour belongs to the dark page. The selector is
+  `.prose :not(pre) > code`, and the `:not(pre) >` is load-bearing: `:has()` counts its
+  attribute argument in the class column, so an unscoped `html:has([data-theme="light"])
+  .prose code` is (0,2,2) and **beats** the existing `.prose pre code { background: none }`
+  reset at (0,1,2) — which painted the wash across the inside of the shiki plate. The dark
+  rule never hit this because plain `.prose code` is (0,1,1) and loses to the reset.
+- **Code blocks stay dark, and that is the mirror rather than an omission.**
+  latent-spaces renders its *cream* blog page's fenced code with
+  react-syntax-highlighter's Prism **`vscDarkPlus`** — the same dark theme it uses on its
+  dark pages (`BlogPostContent.tsx` line 57). Our shiki `dark-plus` is that same VS Code
+  Dark+ token set, so a `#1e1e1e` plate on cream **is** the light-mode styling being
+  mirrored. `lib/mdx/highlight.ts` is untouched and there is no per-theme highlighter.
+
+### What else the light block corrects
+
+Only the places the dark sheet hardcodes a `#fff` or `#000` the token remap can't reach:
+`.btn-ink`'s label, `.btn-green:hover`'s fill, `::selection`, `.marker` (both switch to
+`marker-2` as a wash under dark text), `.prose a:hover`, the blockquote rule, and
+`.pill-muted`. Everything else reads tokens and inverted for free.
+
+## Research landing + nav (same session)
+
+- **`components/layout/NavDropdown.tsx`** — the header's Research menu (Overview + the
+  three areas, derived from `AREA_INFO` so a new area appears with no copy edit). Mouse
+  hover opens with a 140 ms close grace; touch and keyboard use a separate
+  `<button aria-expanded>` caret beside the link, so a tap is never ambiguous between
+  "navigate" and "disclose". Escape returns focus to the caret; the panel is absolutely
+  positioned, so opening it never moves the header.
+- **`app/research/page.tsx`** — rebuilt on anthropic.com/research's order: masthead
+  (title left, intro right, areas as inline links) → `AreaBlocks` → `FeaturedRow` (newest
+  post with a wide cover, the three behind it as a compact list) → the archive grid. The
+  old "Everything we've published, on a ladder" `PageTitle` and its serif filter row are
+  gone; the filter is now small Calling Code `.pill`s, selected one in the accent.
+- **`components/research/PostHeader.tsx`** — two measures on purpose: the type block keeps
+  the reading column's 68ch, the hero image breaks out to `max-w-5xl` at `rounded-2xl`.
+  The `GenerativeCover` fallback renders at the identical size.

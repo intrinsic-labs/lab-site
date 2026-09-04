@@ -24,7 +24,10 @@
       "window": {
         "from": "2026-07-30",
         "to": "2026-09-03"
-      }
+      },
+      "shortLabel": "Work finished without a human",
+      "blurb": "Agent sessions that ran from start to finish with nobody stepping in. Finished means the run reached an ending the system recognises, not that the work was right.",
+      "countNoun": "sessions"
     },
     {
       "key": "outward",
@@ -39,7 +42,10 @@
       "window": {
         "from": "2026-08-13",
         "to": "2026-09-03"
-      }
+      },
+      "shortLabel": "Work aimed at clients and products",
+      "blurb": "Of the sessions that left a written report, the share spent on client work and the company’s own products rather than on the system that runs them.",
+      "countNoun": "sessions"
     },
     {
       "key": "decisions",
@@ -64,7 +70,10 @@
           "date": "2026-07-31",
           "title": "Dog Body Mind: push the verified test work; port the pattern per-project, not as one sweep"
         }
-      ]
+      ],
+      "shortLabel": "Decisions made without the owner",
+      "blurb": "Entries in the decision log that were settled without Asher — a queued call that stood because he did not overrule it in time.",
+      "countNoun": "decisions"
     },
     {
       "key": "drift",
@@ -79,7 +88,13 @@
       "window": {
         "from": "2026-08-14",
         "to": "2026-09-03"
-      }
+      },
+      "shortLabel": "Documentation that had gone false",
+      "blurb": "Claims in the documentation that no longer matched the code when they were checked against it.",
+      "countNoun": "claims"
     }
-  ]
+  ],
+  "figure": {
+    "intro": "Three measures of how much of Intrinsic Labs runs without Asher. Each orb rises out of the blur by its percentage; at 90–95% the company runs itself."
+  }
 }

@@ -1,16 +1,8 @@
 import Link from "next/link";
-import { readAutonomy } from "@/lib/content/autonomy";
+import { fraction, readAutonomy } from "@/lib/content/autonomy";
 import { OrbFigure } from "./OrbFigure";
-import { OrbInteraction } from "./OrbInteraction";
+import { OrbInteraction, type PanelMetric } from "./OrbInteraction";
 import { DESKTOP, MOBILE, type OrbInput } from "./orb-geometry";
-
-/** The data file's own `label` is a full sentence written for a footnote, not something to
- *  set in 11px mono under a drawing. */
-const SHORT_LABEL: Record<string, string> = {
-  execution: "Sessions completed",
-  outward: "Aimed outward",
-  decisions: "Decisions alone",
-};
 
 /** Token names, never literal colours — the skin decides what they are. */
 const COLOR: Record<string, string> = {
@@ -18,6 +10,9 @@ const COLOR: Record<string, string> = {
   outward: "--color-ink",
   decisions: "--color-marker",
 };
+
+const FALLBACK_INTRO =
+  "Three measures of how much of Intrinsic Labs runs without Asher. Each orb rises out of the blur by its percentage.";
 
 /**
  * How much of the company runs itself, drawn as three orbs rising out of a haze.
@@ -30,44 +25,62 @@ const COLOR: Record<string, string> = {
  * Only the three "higher is better" metrics are here. Drift is a quality measure, not an
  * autonomy one, and plotting its complement once read as a claim nobody was making.
  *
- * The SVG is rendered by the server; `OrbInteraction` adds pointer response on top of a
- * drawing that is already finished. Data is a committed file
- * (content/specimen/autonomy.json), never a live vault read.
+ * The names under the numbers are plain phrases, and the panel underneath carries the
+ * explanation — a reader who has never seen this site gets a sentence about the whole
+ * figure, and one about whichever orb they point at. All of that copy lives in
+ * content/specimen/autonomy.json beside the numbers it describes, not in this file.
+ *
+ * The drawing is rendered by the server; `OrbInteraction` adds pointer response and the
+ * panel on top of a figure that is already finished. Data is a committed file, never a
+ * live vault read.
  */
 export async function AutonomyOrbs() {
   const data = await readAutonomy();
-  const metrics: OrbInput[] = data.metrics
-    .filter((m) => m.direction === "up")
-    .map((m) => ({
-      key: m.key,
-      label: SHORT_LABEL[m.key] ?? m.label,
-      value: m.value,
-      colorVar: COLOR[m.key] ?? "--color-ink",
-    }));
+  const up = data.metrics.filter((m) => m.direction === "up");
+
+  const metrics: OrbInput[] = up.map((m) => ({
+    key: m.key,
+    label: m.shortLabel ?? m.label,
+    value: m.value,
+    colorVar: COLOR[m.key] ?? "--color-ink",
+  }));
+
+  const panel: PanelMetric[] = up.map((m) => ({
+    key: m.key,
+    label: m.shortLabel ?? m.label,
+    blurb: m.blurb ?? m.label,
+    fraction: fraction(m),
+    colorVar: COLOR[m.key] ?? "--color-ink",
+  }));
 
   return (
-    <div className="mx-auto max-w-6xl px-6">
-      <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 border-b border-rule pb-3">
-        <h2 className="label normal-case tracking-normal text-ink">How much of this company runs itself</h2>
-        <span className="label text-ink-3 whitespace-nowrap">measured {data.generated}</span>
+    <>
+      <div className="mx-auto max-w-6xl px-6">
+        <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 border-b border-rule pb-3">
+          <h2 className="label normal-case tracking-normal text-ink">How much of this company runs itself</h2>
+          <span className="label text-ink-3 whitespace-nowrap">measured {data.generated}</span>
+        </div>
       </div>
 
-      <OrbInteraction>
-        <div className="mx-auto max-w-[960px]">
-          <OrbFigure uid="sm" size={MOBILE} metrics={metrics} className="sm:hidden" />
-          <OrbFigure uid="lg" size={DESKTOP} metrics={metrics} className="hidden sm:block" />
-        </div>
+      {/* The figure is full-bleed and the prose around it is not: the haze under the
+          waterline has to reach the edges of the viewport, or it ends in the hard vertical
+          edge the boxed version had. */}
+      <OrbInteraction intro={data.figure?.intro ?? FALLBACK_INTRO} metrics={panel}>
+        <OrbFigure size={MOBILE} metrics={metrics} className="md:hidden" />
+        <OrbFigure size={DESKTOP} metrics={metrics} className="hidden md:block" />
       </OrbInteraction>
 
-      <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2 border-t border-rule pt-3">
-        <p className="text-sm text-ink-2 leading-snug">
-          Target: {data.goal.low}–{data.goal.high}%.
-        </p>
-        <Link href="/products/vault" className="label text-accent hover:underline underline-offset-4">
-          How these are computed →
-        </Link>
+      <div className="mx-auto max-w-6xl px-6">
+        <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2 border-t border-rule pt-3">
+          <p className="text-sm text-ink-2 leading-snug">
+            Target: {data.goal.low}–{data.goal.high}%.
+          </p>
+          <Link href="/products/vault" className="label text-accent hover:underline underline-offset-4">
+            How these are computed →
+          </Link>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 

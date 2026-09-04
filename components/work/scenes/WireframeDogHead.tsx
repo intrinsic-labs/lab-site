@@ -1,9 +1,12 @@
 "use client";
 
+import { useMemo } from "react";
+
 import type { BuiltScene, ThreeModule } from "./lib/types";
 import { useWireframeScene } from "./lib/useWireframeScene";
 import { sampleTriangleList } from "./lib/triangleListSampler";
-import { readCssColor } from "./lib/pointColor";
+import { readTintColor } from "./lib/pointColor";
+import type { WorkTint } from "@/lib/content/schema";
 
 /**
  * Procedurally built low-poly wireframe German Shepherd head for the dog-body-mind case
@@ -133,7 +136,7 @@ const PER_TRI = 70;
 const SHIMMER_AMP = 0.004;
 const SHIMMER_FREQ = 1.1;
 
-function build(THREE: ThreeModule, root: HTMLDivElement): BuiltScene {
+function build(THREE: ThreeModule, root: HTMLDivElement, tint?: WorkTint): BuiltScene {
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(38, root.clientWidth / root.clientHeight, 0.1, 100);
   camera.position.set(0, 0.18, 4.2);
@@ -148,7 +151,7 @@ function build(THREE: ThreeModule, root: HTMLDivElement): BuiltScene {
   ptGeo.setAttribute("position", posAttr);
 
   const ptMat = new THREE.PointsMaterial({
-    color: new THREE.Color(readCssColor("--color-ink-2")),
+    color: new THREE.Color(readTintColor(tint)).lerp(new THREE.Color(0xffffff), 0.15), // tinted light on black, not flat paint
     size: 0.022,
     sizeAttenuation: true,
     transparent: true,
@@ -178,7 +181,11 @@ function build(THREE: ThreeModule, root: HTMLDivElement): BuiltScene {
   return { scene, camera, group: headGroup, disposables: [ptGeo, ptMat], onFrame };
 }
 
-export function WireframeDogHead() {
-  const containerRef = useWireframeScene(build);
+export function WireframeDogHead({ tint }: { tint?: WorkTint }) {
+  const buildWithTint = useMemo(
+    () => (THREE: ThreeModule, root: HTMLDivElement) => build(THREE, root, tint),
+    [tint],
+  );
+  const containerRef = useWireframeScene(buildWithTint);
   return <div ref={containerRef} className="relative h-full w-full overflow-hidden" aria-hidden="true" />;
 }

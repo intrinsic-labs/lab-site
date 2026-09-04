@@ -6,20 +6,27 @@ import { useCallback, useEffect, useRef, useState } from "react";
  * The product gallery, as a carousel rather than a stack.
  *
  * No carousel library: the strip is a native horizontally-scrolling flex row with CSS
- * scroll-snap, so touch and trackpad get real momentum scrolling for free and the only
- * JavaScript is the prev/next buttons, the arrow keys, and reading back which slide is
- * centred for the dots.
+ * scroll-snap, so touch and trackpad get real momentum scrolling for free.
+ *
+ * **The images are the control** (Asher, 2026-09-04). There are no arrow buttons under the
+ * strip: clicking any visible image scrolls it to the centre, and hovering a non-centred one
+ * lays a single arrow over it pointing the way it will travel (← for a slide left of centre,
+ * → for one right of it). The centred slide is full opacity, its neighbours are dimmed, so
+ * "which one is focused" is legible without a chrome element saying so. The only thing left
+ * under the strip is the indicator, and it is always centred.
+ *
+ * Keyboard still works (the strip is focusable, ← / → step it) and so does native touch
+ * snapping — the click handling is additive, never a replacement for the scroller.
  *
  * Every slide is a FIXED HEIGHT with `w-auto`, which is what keeps a folder of portrait
  * phone screenshots (Aspen Grove's fourteen) from dominating the page: portrait frames
- * come out narrow and several are visible at once, landscape frames come out wide. No
- * outlines — the images are the objects, not cards containing them.
+ * come out narrow and several are visible at once, landscape frames come out wide.
  */
 export function Gallery({ images, label = "Gallery" }: { images: string[]; label?: string }) {
   const scroller = useRef<HTMLUListElement>(null);
   const [index, setIndex] = useState(0);
 
-  /** Which slide's centre is nearest the viewport centre — the dots read from this. */
+  /** Which slide's centre is nearest the viewport centre — the dots and the dimming read from this. */
   const syncIndex = useCallback(() => {
     const el = scroller.current;
     if (!el) return;
@@ -60,11 +67,8 @@ export function Gallery({ images, label = "Gallery" }: { images: string[]; label
 
   return (
     <section aria-label={label} className="py-14">
-      <div className="mx-auto flex max-w-6xl items-baseline justify-between px-6">
+      <div className="mx-auto max-w-6xl px-6">
         <p className="label">{label}</p>
-        <p className="label tabular-nums">
-          {index + 1} / {images.length}
-        </p>
       </div>
 
       <ul
@@ -82,40 +86,49 @@ export function Gallery({ images, label = "Gallery" }: { images: string[]; label
         }}
         className="mt-5 flex snap-x snap-mandatory gap-5 overflow-x-auto scroll-smooth px-[max(1.5rem,calc((100vw-72rem)/2))] pb-3 outline-none [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
-        {images.map((src, i) => (
-          <li key={src} className="shrink-0 snap-center">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={src}
-              alt=""
-              loading={i < 2 ? "eager" : "lazy"}
-              className="h-[380px] w-auto rounded-xl object-contain sm:h-[520px]"
-            />
-          </li>
-        ))}
+        {images.map((src, i) => {
+          const focused = i === index;
+          return (
+            <li key={src} className="shrink-0 snap-center">
+              <button
+                type="button"
+                onClick={() => goTo(i)}
+                aria-label={focused ? `Image ${i + 1}, focused` : `Focus image ${i + 1}`}
+                aria-current={focused}
+                // Not a control when it is already centred: the pointer says so, and the
+                // click is a no-op scroll to where the strip already is.
+                className={`group relative block cursor-pointer overflow-hidden rounded-xl outline-none transition-opacity duration-300 focus-visible:ring-1 focus-visible:ring-accent ${
+                  focused ? "opacity-100" : "opacity-55 hover:opacity-80"
+                }`}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={src}
+                  alt=""
+                  loading={i < 2 ? "eager" : "lazy"}
+                  className="h-[380px] w-auto object-contain sm:h-[520px]"
+                />
+                {/* The arrow overlay: one direction, only on a slide that is NOT centred,
+                    only on hover/focus. It is decorative — the whole slide is the button. */}
+                {!focused && (
+                  <span
+                    aria-hidden
+                    className="pointer-events-none absolute inset-0 flex items-center justify-center bg-paper/40 opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100"
+                  >
+                    <span className="flex h-12 w-12 items-center justify-center rounded-full bg-surface font-code text-lg text-ink backdrop-blur-sm">
+                      {i < index ? "←" : "→"}
+                    </span>
+                  </span>
+                )}
+              </button>
+            </li>
+          );
+        })}
       </ul>
 
-      <div className="mx-auto mt-6 flex max-w-6xl items-center gap-4 px-6">
-        <button
-          type="button"
-          aria-label="Previous image"
-          onClick={() => goTo(index - 1)}
-          disabled={index === 0}
-          className="pill px-3 transition-colors hover:text-accent disabled:opacity-30 disabled:hover:text-ink-2"
-        >
-          ←
-        </button>
-        <button
-          type="button"
-          aria-label="Next image"
-          onClick={() => goTo(index + 1)}
-          disabled={index === images.length - 1}
-          className="pill px-3 transition-colors hover:text-accent disabled:opacity-30 disabled:hover:text-ink-2"
-        >
-          →
-        </button>
-
-        <div className="ml-2 flex flex-wrap items-center gap-2">
+      {/* The indicator is centred under the strip, always — it is the only chrome left. */}
+      <div className="mx-auto mt-6 flex max-w-6xl flex-wrap items-center justify-center gap-3 px-6">
+        <div className="flex flex-wrap items-center justify-center gap-2">
           {images.map((src, i) => (
             <button
               key={src}
@@ -129,6 +142,9 @@ export function Gallery({ images, label = "Gallery" }: { images: string[]; label
             />
           ))}
         </div>
+        <p className="label tabular-nums">
+          {index + 1} / {images.length}
+        </p>
       </div>
     </section>
   );

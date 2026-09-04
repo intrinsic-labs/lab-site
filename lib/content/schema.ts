@@ -82,6 +82,16 @@ export type ProductFrontMatter = z.infer<typeof productFrontMatter>;
 export const WORK_SCENE_IDS = ["dog-head", "wifi", "church", "bible", "total-station"] as const;
 export type WorkSceneId = (typeof WORK_SCENE_IDS)[number];
 
+/**
+ * Per-case-study colour for the work-page 3D scenes and card hover accent — a closed
+ * enum because each name is a semantic token declared in `app/globals.css`
+ * (`--color-<name>`), not a free-form colour. `sky` is the one token added for this
+ * purpose (the old Intrinsic Labs blue); the rest already existed. Absent → the scenes'
+ * pre-tint `--color-ink-2` grey.
+ */
+export const WORK_TINTS = ["accent", "marker", "ember", "sky", "ink"] as const;
+export type WorkTint = (typeof WORK_TINTS)[number];
+
 /** Work = the client portfolio, ported from the old intrinsiclabs.co case studies. */
 export const caseStudyFrontMatter = z.object({
   name: z.string().min(1),
@@ -98,6 +108,8 @@ export const caseStudyFrontMatter = z.object({
    * place of `cover`/GenerativeCover when set. Absent falls back to `cover`, then
    * GenerativeCover — see `WorkSceneCanvas`. */
   scene: z.enum(WORK_SCENE_IDS).optional(),
+  /** Point-cloud + hover-accent colour. Absent → the pre-tint grey. */
+  tint: z.enum(WORK_TINTS).optional(),
   order: z.number().int().default(100),
 });
 export type CaseStudyFrontMatter = z.infer<typeof caseStudyFrontMatter>;

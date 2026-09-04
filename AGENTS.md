@@ -79,11 +79,16 @@ flips `status`, merges. Production promotion is a human act — there is no agen
   and declared with `@font-face` at the top of `app/globals.css`. Don't swap one for a
   Google lookalike — Asher's ruling, 2026-09-04.
 - No analytics. Deliberate (Sovereignty beam). Don't add a tracker.
-- One colour mode, and it is **pure black** — the latent-spaces-web dark palette with
-  `--color-paper: #000000` (re-skinned 2026-09-04; the cream/paper palette is gone). No
-  toggle — the D7 ruling of 2026-09-03 still stands, only the mode changed. Every component
-  reads the semantic tokens in `app/globals.css`, so the palette lives in exactly one place:
-  never hardcode a colour in a component. `docs/style-notes.md` is the provenance table.
+- The site is **pure black** — the latent-spaces-web dark palette with
+  `--color-paper: #000000` (re-skinned 2026-09-04; the old cream/paper palette is gone) —
+  with **one route-scoped exception: the research surfaces are LIGHT** (`/research`,
+  `/research/areas/*`, every post; Asher, 2026-09-04). Still no toggle — the D7 ruling of
+  2026-09-03 stands; the light theme is a remap of the same semantic tokens, selected by
+  `html:has([data-theme="light"])` in `app/globals.css` against the one wrapper
+  `app/research/layout.tsx` renders, so it reaches the root-layout Header and Footer with
+  no JS and no flash. Every component reads the semantic tokens, so the palette lives in
+  exactly one place: never hardcode a colour in a component. `docs/style-notes.md` is the
+  provenance table for both.
 - Category/kind labels are **not stroked pills** — text on a low-opacity fill, small radius,
   no border (`.pill` in `globals.css`, `components/ui/Chip.tsx`). Ruled 2026-09-04.
 
