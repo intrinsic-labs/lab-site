@@ -44,7 +44,7 @@ export function ResearchIndex({ items }: { items: IndexItem[] }) {
       {shown.length === 0 ? (
         <p className="py-10 text-ink-2 italic">Nothing under that filter yet.</p>
       ) : (
-        <ul className="mt-px grid gap-px border border-rule bg-rule sm:grid-cols-3">
+        <ul className="mt-px card-grid sm:grid-cols-3">
           {shown.map((item) => (
             <PostCard key={item.slug} item={item} />
           ))}

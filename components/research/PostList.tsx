@@ -7,7 +7,7 @@ export function PostList({ posts, empty }: { posts: Post[]; empty?: string }) {
     return <p className="border-b border-rule py-5 text-ink-2 italic">{empty ?? "Nothing here yet."}</p>;
   }
   return (
-    <ul className="grid gap-px border border-rule bg-rule sm:grid-cols-3">
+    <ul className="card-grid sm:grid-cols-3">
       {posts.map((p) => (
         <PostCard
           key={p.slug}

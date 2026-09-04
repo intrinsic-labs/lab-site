@@ -3,8 +3,7 @@ import { notFound } from "next/navigation";
 import { postBySlug, renderableSlugs } from "@/lib/content/posts";
 import { Mdx } from "@/lib/mdx/render";
 import { PostHeader } from "@/components/research/PostHeader";
-import { Artifacts } from "@/components/research/Artifacts";
-import { Corrections } from "@/components/research/Corrections";
+import { PostMeta } from "@/components/research/PostMeta";
 import { SystemPrimer } from "@/components/research/SystemPrimer";
 import { cardo } from "@/components/research/fonts";
 import { site } from "@/lib/site";
@@ -45,8 +44,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
         <div className={`prose prose-post py-12 ${cardo.className}`}>
           <Mdx source={post.body} />
         </div>
-        <Artifacts post={post} />
-        <Corrections post={post} />
+        <PostMeta post={post} />
       </div>
     </article>
   );

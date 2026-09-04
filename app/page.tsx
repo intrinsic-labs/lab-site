@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { listablePosts } from "@/lib/content/posts";
-import { allInstruments } from "@/lib/content/instruments";
+import { allProducts } from "@/lib/content/products";
 import { AutonomySpecimen } from "@/components/home/AutonomySpecimen";
 import { Masthead } from "@/components/home/Masthead";
 import { AreaCards } from "@/components/home/AreaCards";
@@ -10,7 +10,7 @@ import { Mdx } from "@/lib/mdx/render";
 import { pageContent } from "@/lib/content/pages";
 
 export default async function Home() {
-  const [posts, instruments, subtitle] = await Promise.all([listablePosts(), allInstruments(), pageContent("home-subtitle")]);
+  const [posts, products, subtitle] = await Promise.all([listablePosts(), allProducts(), pageContent("home-subtitle")]);
 
   return (
     <div className="mx-auto max-w-6xl px-6 min-w-0">
@@ -19,7 +19,7 @@ export default async function Home() {
         <section className="px-6 pt-24 pb-20">
           <div className="mx-auto max-w-[640px] text-center">
             <h1 className="font-serif text-[2.4rem] sm:text-6xl font-medium tracking-tight leading-[1.05]">
-              A one-person company, run mostly by agents.
+              A company that runs itself. Mostly.
             </h1>
             <div className="mt-5 text-lg sm:text-xl text-ink-2 leading-snug">
               <Mdx source={subtitle.content} />
@@ -44,7 +44,7 @@ export default async function Home() {
           <h2 className="font-serif text-2xl font-medium tracking-tight">Products</h2>
           <Link href="/products" className="label hover:text-ink">All products →</Link>
         </div>
-        <ProductsGrid items={instruments} />
+        <ProductsGrid items={products} />
       </section>
 
       <section className="pt-16 pb-20">

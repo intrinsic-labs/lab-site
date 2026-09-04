@@ -8,12 +8,13 @@ export function ButtonLink({
   children,
 }: {
   href: string;
-  tone?: "green";
+  tone?: "green" | "ink";
   external?: boolean;
   children: React.ReactNode;
 }) {
   const tones = {
     green: "bg-verdant text-paper hover:bg-ink",
+    ink: "bg-ink text-paper hover:bg-accent",
   };
   const className = `label inline-block ${tones[tone]} px-3.5 py-2`;
 

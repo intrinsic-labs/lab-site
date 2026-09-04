@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { publishedPosts } from "@/lib/content/posts";
-import { allInstruments } from "@/lib/content/instruments";
+import { allProducts } from "@/lib/content/products";
+import { allCaseStudies } from "@/lib/content/work";
 import { AREAS } from "@/lib/content/areas";
 import { site } from "@/lib/site";
 
@@ -8,7 +9,8 @@ export const dynamic = "force-static";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const posts = await publishedPosts();
-  const instruments = await allInstruments();
+  const products = await allProducts();
+  const caseStudies = await allCaseStudies();
   const u = (p: string) => `${site.url}${p}`;
   return [
     { url: u("/") },
@@ -19,6 +21,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: u("/about/editorial") },
     ...AREAS.map((a) => ({ url: u(`/research/areas/${a}`) })),
     ...posts.map((p) => ({ url: u(`/research/${p.slug}`), lastModified: p.date })),
-    ...instruments.map((i) => ({ url: u(`/products/${i.slug}`) })),
+    ...products.map((p) => ({ url: u(`/products/${p.slug}`) })),
+    { url: u("/products/aspen-grove/open-loom") },
+    ...caseStudies.map((c) => ({ url: u(`/work/${c.slug}`) })),
   ];
 }

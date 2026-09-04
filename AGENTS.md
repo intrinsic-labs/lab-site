@@ -11,15 +11,17 @@ published) are the design docs. This file is the engineering entry point.
 ```
 app/            routes only — thin, compose components + lib
   research/     index, [slug] posts, areas/[area]
-  instruments/  index + [slug]
-  work/ about/ about/editorial/
+  products/     index + [slug] (the company's own bets: GlyphDeck, Liturgos, Tycho, Aspen Grove;
+                the vault listed last) + aspen-grove/open-loom (the spec, plain markdown)
+  work/         index + [slug] — the CLIENT portfolio (case studies ported from intrinsiclabs-co-v3)
+  about/ about/editorial/
   feed.xml/     RSS (published posts only)
   sitemap.ts robots.ts not-found.tsx icon.svg
-components/     layout/ ui/ research/ home/ about/ — presentational, no fs access except Specimen
-                and the pageContent()-backed components (InstrumentStrip, HowThisWorks)
-content/        the CMS. research/*.mdx, instruments/*.mdx, specimen/ (home-page plate),
+components/     layout/ ui/ research/ home/ about/ — presentational, no fs access except the
+                home plate and ProductsGrid (reads public/products/<slug>/ for images)
+content/        the CMS. research/*.mdx, products/*.mdx, work/*.mdx, specimen/ (home-page plate),
                 pages/ (static-page prose — see below)
-lib/content/    schema.ts (zod, the front-matter contract) · posts.ts · instruments.ts
+lib/content/    schema.ts (zod, the front-matter contract) · posts.ts · products.ts · work.ts
                 areas.ts + kinds.ts (declared vocab) · draft-rail.ts · fs.ts · format.ts
                 pages.ts (loads content/pages/*.md)
 lib/mdx/        render.tsx — next-mdx-remote-client RSC + remark-gfm

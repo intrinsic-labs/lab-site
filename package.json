@@ -16,7 +16,9 @@
     "next-mdx-remote-client": "^2.1.12",
     "react": "19.2.8",
     "react-dom": "19.2.8",
+    "remark": "^15.0.1",
     "remark-gfm": "^4.0.1",
+    "remark-html": "^16.0.1",
     "zod": "^4.5.4"
   },
   "devDependencies": {

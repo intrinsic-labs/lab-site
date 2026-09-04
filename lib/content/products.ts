@@ -2,33 +2,35 @@ import { cache } from "react";
 import { promises as fsp } from "node:fs";
 import path from "node:path";
 import { readDir } from "./fs";
-import { instrumentFrontMatter, type InstrumentFrontMatter, type InstrumentStatus } from "./schema";
+import { productFrontMatter, type ProductFrontMatter, type ProductStatus } from "./schema";
 
-export interface Instrument extends InstrumentFrontMatter {
+export interface Product extends ProductFrontMatter {
   slug: string;
   body: string;
 }
 
-export const STATUS_LABEL: Record<InstrumentStatus, string> = {
+export const STATUS_LABEL: Record<ProductStatus, string> = {
   released: "Released",
+  "in-development": "In development",
   private: "Private — running, code not released",
-  described: "Described here — no code released",
+  described: "Internal — described here, no code released",
   "in-design": "In design — not yet built",
+  paused: "Paused — resuming",
 };
 
-export const allInstruments = cache(async (): Promise<Instrument[]> => {
-  const entries = await readDir("instruments");
+export const allProducts = cache(async (): Promise<Product[]> => {
+  const entries = await readDir("products");
   return entries
     .map((e) => {
-      const parsed = instrumentFrontMatter.safeParse(e.data);
-      if (!parsed.success) throw new Error(`content/instruments/${e.slug}: ${parsed.error.message}`);
+      const parsed = productFrontMatter.safeParse(e.data);
+      if (!parsed.success) throw new Error(`content/products/${e.slug}: ${parsed.error.message}`);
       return { ...parsed.data, slug: e.slug, body: e.body };
     })
     .sort((a, b) => a.order - b.order);
 });
 
-export async function instrumentBySlug(slug: string): Promise<Instrument | undefined> {
-  return (await allInstruments()).find((i) => i.slug === slug);
+export async function productBySlug(slug: string): Promise<Product | undefined> {
+  return (await allProducts()).find((p) => p.slug === slug);
 }
 
 export interface ProductImages {

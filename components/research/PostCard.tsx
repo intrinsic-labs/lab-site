@@ -36,7 +36,7 @@ export function PostCard({ item }: { item: PostCardItem }) {
           <GenerativeCover seed={item.slug} className="h-full w-full transition-transform duration-500 group-hover:scale-[1.03]" />
         )}
         {item.draft && (
-          <span className="label absolute top-2 right-2 border border-rule bg-paper/90 px-1.5 py-0.5">Draft</span>
+          <span className="label absolute top-2 right-2 rounded-full border border-rule bg-paper/90 px-2.5 py-0.5">Draft</span>
         )}
       </Link>
       <div className="flex flex-1 flex-col p-5">

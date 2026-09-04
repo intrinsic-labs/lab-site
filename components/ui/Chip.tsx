@@ -5,6 +5,6 @@ export function Chip({ children, tone = "default" }: { children: React.ReactNode
     muted: "border-rule text-ink-3",
   };
   return (
-    <span className={`label inline-block border px-1.5 py-0.5 leading-none ${tones[tone]}`}>{children}</span>
+    <span className={`label inline-block rounded-full border px-2.5 py-0.5 leading-none ${tones[tone]}`}>{children}</span>
   );
 }

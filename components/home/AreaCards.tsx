@@ -4,7 +4,7 @@ import { AREAS, AREA_INFO } from "@/lib/content/areas";
 /** Home page only: the three research areas, name + one line, nothing else. */
 export function AreaCards() {
   return (
-    <ol className="grid gap-px bg-rule border border-rule sm:grid-cols-3">
+    <ol className="card-grid sm:grid-cols-3">
       {AREAS.map((slug) => {
         const a = AREA_INFO[slug];
         return (

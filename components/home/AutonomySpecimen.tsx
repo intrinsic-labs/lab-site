@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { Frame } from "@/components/ui/Frame";
 import { readAutonomy, plotted, type AutonomyMetric } from "@/lib/content/autonomy";
-import { AutonomyScene } from "./AutonomyScene";
+import { AutonomyChart } from "./AutonomyChart";
+import { AutonomyTilt } from "./AutonomyTilt";
+import { DESKTOP, MOBILE } from "./autonomy-geometry";
 
 /** Plain words for the chart columns and the table — the data file's own `label` is a
  *  full sentence (for the tooltip), not something to set in 9px mono type. */
@@ -17,13 +19,18 @@ const SHORT_LABEL: Record<string, string> = {
  * the band the company says it is aiming for. Drift is a quality metric, not an autonomy
  * one — it stays out of the chart and appears only as a row in the table below, so
  * nothing on the chart plots a complement (an earlier version did, and read as "82%
- * autonomous," which wasn't the claim). The numbers are rendered here, as text, by the
- * server; the canvas beside them is the same data drawn, and nothing else. Data is a
- * committed file (content/specimen/autonomy.json), never a live vault read.
+ * autonomous," which wasn't the claim). The chart is SVG rendered by the server — the
+ * same numbers, drawn — so the plate is complete before any script runs; `AutonomyTilt`
+ * only adds motion on top of it. Two sizes are emitted and swapped by a media query,
+ * because the type inside an SVG scales with the drawing and mobile needs it not to.
+ * Data is a committed file (content/specimen/autonomy.json), never a live vault read.
  */
 export async function AutonomySpecimen() {
   const data = await readAutonomy();
-  const chartMetrics = data.metrics.filter((m) => m.direction === "up");
+  const goal = { low: data.goal.low, high: data.goal.high };
+  const plot = data.metrics
+    .filter((m) => m.direction === "up")
+    .map((m) => ({ key: m.key, label: SHORT_LABEL[m.key] ?? m.label, height: plotted(m) }));
 
   return (
     <Frame className="bg-paper-2 min-w-0 mx-auto max-w-[900px]">
@@ -33,14 +40,10 @@ export async function AutonomySpecimen() {
       </div>
 
       <div className="px-2 pt-3 sm:px-3">
-        <AutonomyScene
-          goal={{ low: data.goal.low, high: data.goal.high }}
-          metrics={chartMetrics.map((m) => ({
-            key: m.key,
-            label: SHORT_LABEL[m.key] ?? m.label,
-            height: plotted(m),
-          }))}
-        />
+        <AutonomyTilt>
+          <AutonomyChart uid="sm" size={MOBILE} goal={goal} metrics={plot} className="sm:hidden" />
+          <AutonomyChart uid="lg" size={DESKTOP} goal={goal} metrics={plot} className="hidden sm:block" />
+        </AutonomyTilt>
       </div>
 
       <dl className="border-t border-rule">

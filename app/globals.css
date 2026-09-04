@@ -137,3 +137,15 @@ html:has(.dossier-dark) ::selection { background: var(--color-accent-night); col
 .dossier-dark .prose blockquote { border-left-color: var(--color-chalk-2); }
 .dossier-dark .prose code,
 .dossier-dark .prose pre { background: var(--color-night-2); }
+
+/* Hairline card grid: seams between cards are drawn by each card's own 1px outline, which
+   overlaps into the 1px gap — so a short last row leaves paper, never a dead rule-coloured cell. */
+.card-grid {
+  display: grid;
+  gap: 1px;
+  border: 1px solid var(--color-rule);
+  background: var(--color-paper);
+}
+.card-grid > li {
+  outline: 1px solid var(--color-rule);
+}

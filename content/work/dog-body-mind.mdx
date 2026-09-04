@@ -1,0 +1,32 @@
+---
+name: Dog Body Mind
+line: A multi-language fitness platform for dog owners — web, mobile, and admin dashboard — serving content in six languages.
+url: https://dogbodymind.com/
+order: 1
+---
+
+## The problem
+
+My client runs a dog fitness education business and needed a platform to deliver video-based exercise content to dog owners worldwide via a mobile app. The content is highly structured (exercises have steps, each step has videos, troubleshooting flows, and equipment references) and needs to be available in six languages, with the ability to expand. The app is used in the field where connectivity isn't guaranteed, and the client needed a user-friendly way to manage all of this content without calling me.
+
+## Architecture
+
+This is a multi-service system where each service handles what it's best at.
+
+**Sanity CMS** owns localized content (titles, descriptions, step text in six languages). The client manages all content through Sanity's editing interface — publish triggers cache revalidation via webhook. **Supabase (Postgres)** owns relational metadata (exercise eligibility rules, level progression, user data, subscription status), with Row-Level Security gating content by subscription tier. **Mux** handles video streaming with adaptive bitrate and just-in-time encoding. **RevenueCat** unifies iOS and Android subscription billing.
+
+The website uses Next.js with ccTLD-based domain routing and a proxy layer for subdirectory internationalization — each language gets its own country-code domain, but it's all one deployment. The mobile app (React Native/Expo) includes a custom algorithm engine that composes training sessions based on the dog's age, weight classification, body condition, and training history; the algorithm is versioned, so the client can tune difficulty progression without code changes. The API layer is 20 endpoints deployed as Supabase Edge Functions, covering onboarding, session composition/lifecycle, body condition check-ins, ruleset management, and an offline sync pipeline with idempotent event reconciliation. The admin dashboard is a Vite app that lets the client manage content, view analytics, and adjust algorithm rulesets.
+
+## Stack
+
+Web: Next.js, Vite (admin dashboard), Sanity CMS, Tailwind CSS, Vercel. Mobile: React Native (Expo), TypeScript, expo-sqlite. Backend: Supabase (Postgres), Edge Functions (Deno/TypeScript), Mux, RevenueCat. Languages: English (US), English (UK), Spanish, French, German, Italian.
+
+## What I built
+
+Everything — sole developer on all layers: database schema and migrations, API endpoints, CMS configuration, the internationalized website, mobile app architecture, the algorithm engine, and the admin dashboard. A 12+ month engagement with a paying client, built through close collaboration translating domain expertise (dog fitness science) into software architecture.
+
+## Status
+
+In development. The website is live with all six languages (content still in progress, but the plumbing is built). API complete, 20 endpoints. Mobile app in final UI phase. Paid client engagement, 12+ months.
+
+*Architecture details available on request — project is under client confidentiality.*

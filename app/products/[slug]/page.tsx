@@ -1,50 +1,50 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import Link from "next/link";
-import { allInstruments, instrumentBySlug, productImages, STATUS_LABEL } from "@/lib/content/instruments";
-import { AREA_INFO } from "@/lib/content/areas";
+import { allProducts, productBySlug, productImages, STATUS_LABEL } from "@/lib/content/products";
 import { Mdx } from "@/lib/mdx/render";
 import { Chip } from "@/components/ui/Chip";
+import { ButtonLink } from "@/components/ui/ButtonLink";
 
 export const dynamicParams = false;
-export async function generateStaticParams() { return (await allInstruments()).map((i) => ({ slug: i.slug })); }
+export async function generateStaticParams() { return (await allProducts()).map((p) => ({ slug: p.slug })); }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
-  const i = await instrumentBySlug((await params).slug);
-  return i ? { title: i.name, description: i.measures } : {};
+  const p = await productBySlug((await params).slug);
+  return p ? { title: p.name, description: p.line } : {};
 }
 
 export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
-  const i = await instrumentBySlug((await params).slug);
-  if (!i) notFound();
-  const images = await productImages(i.slug);
+  const p = await productBySlug((await params).slug);
+  if (!p) notFound();
+  const images = await productImages(p.slug);
   // The palette is data (front matter), not a slug check. `.dossier-dark` is picked up by
   // `html:has()` in globals.css, which is what carries the inversion to the header and footer.
-  const dark = i.theme === "dark";
+  const dark = p.theme === "dark";
   return (
     <div data-theme={dark ? "dark" : undefined} className={dark ? "dossier-dark" : undefined}>
       <article className="mx-auto max-w-6xl px-6">
         {images.hero && (
           <div className="mt-10 aspect-[16/9] w-full overflow-hidden">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={images.hero} alt={i.name} className="h-full w-full object-cover" />
+            <img src={images.hero} alt={p.name} className="h-full w-full object-cover" />
           </div>
         )}
         <header className="pt-10 pb-10 border-b border-rule">
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-            <Link href={`/research/areas/${i.area}`} className="label hover:text-ink">{AREA_INFO[i.area].name}</Link>
-            <Chip tone={i.status === "released" ? "accent" : "muted"}>{STATUS_LABEL[i.status]}</Chip>
-          </div>
-          <h1 className="font-serif text-4xl sm:text-5xl font-medium tracking-tight leading-[1.05] mt-6">{i.name}</h1>
-          <p className="mt-5 text-xl text-ink-2 max-w-2xl leading-snug">{i.measures}</p>
-          {i.statusNote && <p className="mt-4 label">{i.statusNote}</p>}
-          {i.href && <a href={i.href} className="mt-4 inline-block label text-accent hover:underline">Repository ↗︎</a>}
+          <Chip tone={p.status === "released" ? "accent" : "muted"}>{STATUS_LABEL[p.status]}</Chip>
+          <h1 className="font-serif text-4xl sm:text-5xl font-medium tracking-tight leading-[1.05] mt-6">{p.name}</h1>
+          <p className="mt-5 text-xl text-ink-2 max-w-2xl leading-snug">{p.line}</p>
+          {p.statusNote && <p className="mt-4 label">{p.statusNote}</p>}
+          {p.url && (
+            <div className="mt-6">
+              <ButtonLink href={p.url} tone="green" external>Visit</ButtonLink>
+            </div>
+          )}
         </header>
-        <div className="py-12 prose max-w-[68ch] mx-auto"><Mdx source={i.body} /></div>
+        <div className="py-12 prose max-w-[68ch] mx-auto"><Mdx source={p.body} /></div>
         {images.gallery.length > 0 && (
           <section className="pb-16">
             <p className="label mb-4">Gallery</p>
-            <ul className="grid gap-px border border-rule bg-rule sm:grid-cols-2">
+            <ul className="card-grid sm:grid-cols-2">
               {images.gallery.map((src) => (
                 <li key={src} className="bg-paper">
                   {/* eslint-disable-next-line @next/next/no-img-element */}

@@ -1,0 +1,35 @@
+---
+name: GFBR
+line: A mobile app prototype to replace Salesforce Mobile + Geopointe for GFiber's door-to-door sales team.
+order: 2
+---
+
+## The problem
+
+I work as a door-to-door sales rep for GFiber. Our team uses Salesforce Mobile with the Geopointe plugin to manage territories, track door interactions, and sync data back to the CRM. The app is slow, crashes frequently, doesn't work well offline (a problem when you're walking neighborhoods), and the UX makes simple tasks take far longer than they should. It's costing us sales. So I started building a replacement.
+
+## Architecture
+
+GFBR follows strict clean architecture with layer boundaries enforced by ESLint — not just documented, automated. Domain cannot import infrastructure, interface cannot import infrastructure directly, and so on; everything flows through typed ports and adapters.
+
+**Offline-first with outbox sync.** Reps lose connectivity constantly in neighborhoods. Every interaction is written to a local SQLite database first, then synced to Salesforce via an outbox pattern with retry/backoff and status transitions (pending → synced / failed). Sync is idempotent by external interaction ID.
+
+**Salesforce as a data source, not a dependency.** The app treats Salesforce as an infrastructure detail behind adapter interfaces — if the backend changed, only the adapter layer would need to change.
+
+**Geospatial data handling.** Sales territories come from Salesforce as GeoJSON polygons, sometimes segmented across multiple fields due to Salesforce character limits. The geometry parser normalizes both formats and renders territories and address pins on a map.
+
+**OAuth with PKCE.** Authentication flows through Salesforce's Okta-federated OAuth with PKCE via expo-auth-session, with token refresh and secure session persistence.
+
+## Stack
+
+React Native (Expo), TypeScript, SQLite (expo-sqlite), Salesforce REST API, OAuth 2.0 + PKCE, Google Maps, Clean Architecture.
+
+## What I built
+
+Salesforce OAuth sign-in/sign-out with session restore and token refresh; shape (territory polygon) and pin (address) data adapters with GeoJSON geometry parsing; a SQLite persistence layer for offline territory/pin caching and interaction outbox; a map interface rendering cached territory polygons and address pin markers; an interaction recording flow with local-first persistence and Salesforce sync; an auto-sync runner with retry/backoff, status transitions, and observability telemetry; a rep dashboard with interaction history (local-first, remote fallback); and a documentation site (Next.js + Nextra) with architecture docs, domain model, and Salesforce integration guides.
+
+## Status
+
+A React Native prototype, built against a developer Salesforce and Okta sandbox and designed for a 250-person national door-to-door sales team. Pitching for a full-time development role to deploy it team-wide.
+
+*Architecture details available on request.*
