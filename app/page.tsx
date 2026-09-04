@@ -22,7 +22,7 @@ export default async function Home() {
           <h1 className="font-serif text-[2.4rem] sm:text-6xl font-medium tracking-tight leading-[1.05]">
             A company that runs itself. Mostly.
           </h1>
-          <div className="mt-5 text-lg sm:text-xl text-ink-2 leading-snug">
+          <div className="mt-5 text-lg sm:text-xl text-ink leading-snug">
             <Mdx source={subtitle.content} />
           </div>
         </div>

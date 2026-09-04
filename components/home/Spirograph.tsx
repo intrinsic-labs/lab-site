@@ -114,6 +114,8 @@ const MOUSE_DELTA_PER_PX = 0.0002;
 const TOUCH_DELTA_PER_PX = 0.002;
 const TOUCH_DEAD_ZONE_PX = 10;
 const STROKE_WIDTH = 0.5;
+/** Opacity of the cream stroke only; copper and blue draw at 1. */
+const CREAM_ALPHA = 0.6;
 
 function readToken(name: string, fallback: string): string {
   const v = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
@@ -173,8 +175,12 @@ export function Spirograph({ className = "" }: { className?: string }) {
       ctx!.strokeStyle = palette.copper;
       traceCurve(ctx!, "hypotrochoid", params, amount, scale, centerX, centerY, params.allRotation * 1.25);
 
+      // The cream curve alone is dimmed: with no contrast well under the headline it is
+      // the one stroke that competes with white type (Asher, 2026-09-04).
+      ctx!.globalAlpha = CREAM_ALPHA;
       ctx!.strokeStyle = palette.cream;
       traceCurve(ctx!, "epitrochoid", params, amount, scale, centerX, centerY, params.allRotation * 0.5);
+      ctx!.globalAlpha = 1;
 
       ctx!.strokeStyle = palette.blue;
       traceCurve(ctx!, "hypocycloid", params, amount, scale, centerX, centerY, params.allRotation * 0.25);
