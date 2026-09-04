@@ -77,7 +77,13 @@ export function OrbInteraction({
   metrics: PanelMetric[];
 }) {
   const hostRef = useRef<HTMLDivElement>(null);
-  const [active, setActive] = useState<string | null>(null);
+  // `hovered` is transient (pointer over / focus within); `pinned` is a tap or click and
+  // stays until the same orb is tapped again or another one is chosen. A finger has no
+  // hover — on touch, pointerover is followed by pointerout within the same tap — so the
+  // pin is what lets a phone hold one metric's explanation in the panel.
+  const [hovered, setHovered] = useState<string | null>(null);
+  const [pinned, setPinned] = useState<string | null>(null);
+  const active = pinned ?? hovered;
 
   // --- the panel: hover, focus and tap all resolve to the same "which orb" ---------------
   useEffect(() => {
@@ -87,21 +93,27 @@ export function OrbInteraction({
       t instanceof Element ? (t.closest("[data-orb-hit]") as HTMLElement | null)?.dataset.orbHit ?? null : null;
     const enter = (e: Event) => {
       const key = keyFrom(e.target);
-      if (key) setActive(key);
+      if (key) setHovered(key);
     };
     const leave = (e: Event) => {
       const key = keyFrom(e.target);
-      if (key) setActive((cur) => (cur === key ? null : cur));
+      if (key) setHovered((cur) => (cur === key ? null : cur));
+    };
+    const tap = (e: Event) => {
+      const key = keyFrom(e.target);
+      if (key) setPinned((cur) => (cur === key ? null : key));
     };
     host.addEventListener("pointerover", enter);
     host.addEventListener("pointerout", leave);
     host.addEventListener("focusin", enter);
     host.addEventListener("focusout", leave);
+    host.addEventListener("click", tap);
     return () => {
       host.removeEventListener("pointerover", enter);
       host.removeEventListener("pointerout", leave);
       host.removeEventListener("focusin", enter);
       host.removeEventListener("focusout", leave);
+      host.removeEventListener("click", tap);
     };
   }, []);
 
