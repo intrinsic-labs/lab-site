@@ -364,13 +364,14 @@ h1, h2, h3, h4, h5, h6 { font-family: var(--font-sans); }
    content file breaks; the class is simply inert, and no rule below re-points a
    palette variable. */
 
-/* Hairline card grid: seams between cards are drawn by each card's own 1px outline, which
-   overlaps into the 1px gap — so a short last row leaves ground, never a dead rule-coloured cell. */
+/* Hairline card grid: every seam — inner AND outer — is drawn by each card's own 1px
+   outline, which overlaps into the 1px gap. The `<ul>` itself paints nothing: an outer
+   border on it would trace an empty box around a short last row (Asher, 2026-09-04,
+   the /work grid), so a missing card simply leaves ground. */
 .card-grid {
   display: grid;
   gap: 1px;
-  border: 1px solid var(--color-rule);
-  background: var(--color-paper);
+  margin: 1px; /* room for the outlines, which sit outside each card */
 }
 .card-grid > li {
   outline: 1px solid var(--color-rule);
