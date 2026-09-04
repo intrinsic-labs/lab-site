@@ -68,7 +68,7 @@ export async function AutonomyOrbs() {
       <div className="mx-auto max-w-6xl px-6">
         <div className="grid gap-y-2 border-t border-rule pt-3 text-center md:grid-cols-3 md:items-baseline md:text-left">
           <p className="text-sm text-ink-2 leading-snug">
-            <span className="text-ink-3">Measured {data.generated}.</span> Target: {data.goal.low}–{data.goal.high}%.
+            Measured {data.generated}. Target: {data.goal.low}–{data.goal.high}%.
           </p>
           <h2 className="label text-ink md:text-center">Company autonomy rate</h2>
           <Link href="/products/vault" className="label text-accent hover:underline underline-offset-4 md:text-right">
