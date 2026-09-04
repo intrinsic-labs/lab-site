@@ -50,8 +50,8 @@ export function ProductFeature({
       // scroll on a phone. Same reason `ProductHero` clips.
       className={
         quiet
-          ? "relative overflow-hidden py-24 sm:py-32"
-          : "relative overflow-hidden py-24 sm:py-36 lg:min-h-[88vh] lg:py-40"
+          ? "relative overflow-hidden py-12 sm:py-16"
+          : "relative overflow-hidden py-14 sm:py-20 lg:py-24"
       }
     >
       <div

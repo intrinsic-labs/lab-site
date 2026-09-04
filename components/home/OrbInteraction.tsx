@@ -280,7 +280,7 @@ export function OrbInteraction({
   }, []);
 
   const line =
-    "absolute inset-x-0 top-0 max-w-[72ch] text-sm sm:text-base leading-snug text-ink-2 transition-opacity duration-300 ease-out motion-reduce:transition-none";
+    "absolute inset-x-0 top-0 mx-auto max-w-[72ch] text-center text-sm sm:text-base leading-snug text-ink-2 transition-opacity duration-300 ease-out motion-reduce:transition-none";
 
   return (
     <div ref={hostRef}>

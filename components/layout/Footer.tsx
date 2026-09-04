@@ -7,7 +7,7 @@ export function Footer() {
       <div className="mx-auto max-w-6xl px-6 py-10 grid gap-8 sm:grid-cols-3">
         <div>
           <p className="font-sans font-medium">Intrinsic Labs LLC</p>
-          <p className="text-ink-2 text-sm mt-1">One person, a crew of named agents, and a folder of plain text files.</p>
+          <p className="text-ink-2 text-sm mt-1">A company that runs itself. Mostly.</p>
         </div>
         <div className="flex flex-col gap-2">
           <Link href="/feed.xml" className="label hover:text-ink">RSS feed</Link>
