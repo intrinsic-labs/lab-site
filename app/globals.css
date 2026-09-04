@@ -371,7 +371,9 @@ h1, h2, h3, h4, h5, h6 { font-family: var(--font-sans); }
 .card-grid {
   display: grid;
   gap: 1px;
-  margin: 1px; /* room for the outlines, which sit outside each card */
+  /* No margin here: this rule is unlayered and would beat Tailwind's `mt-*` on the
+     same element (it silently ate the filter→grid gap on /research). The outlines
+     overhang the list by 1px into the gutter, which is invisible. */
 }
 .card-grid > li {
   outline: 1px solid var(--color-rule);
