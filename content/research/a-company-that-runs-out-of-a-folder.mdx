@@ -2,6 +2,7 @@
 title: A company that runs out of a folder of text files
 kind: note
 area: agent-operations
+primer: agent-ops
 date: 2026-09-03
 status: draft
 summary: How a one-person software company runs its daily operations through a crew of named agents working over plain Markdown — what's enforced in code, what's only a prompt, and what has broken so far.
@@ -64,4 +65,4 @@ A partial list, because the list is the point.
 
 A gated task's line stayed open for the days its PR waited on a human, and every tick re-did the work: one task made four branches and four PRs in one day before the chassis learned to check for an unlanded branch. The land step fast-forwarded the local default branch and pushed without asking the remote whether it was still current — so a merge the human made from his phone was silently reverted minutes later, with a clean tree and green CI. Executor sessions told to check their task's box "if the task is genuinely done" checked it at PR time on gated work, closing a line that was supposed to stay open until a human merged; the chassis now closes those. A logging channel meant to keep two versions of the same agent in sync was wired for a week and carried nothing, because the writer never fired. For a stretch, 61% of executor sessions were the system working on itself, which is now capped at one per tick.
 
-Every one of these was found by looking at the record the system keeps of its own operation. That is the case for the whole arrangement, and it is also the research program: a company small enough that one person can see all of it, instrumented well enough that the failures are legible, run by agents doing work that matters to someone. The studies in the agent-operations area come out of that record. This note is the map.
+This company is also the research program: small enough that one person can see all of it, instrumented well enough that the failures are legible, run by agents doing work that matters to someone. The studies in the agent-operations area come out of that record. This note is the map.

@@ -12,6 +12,16 @@
   --color-marker: #f4d58a;
   --color-verdant: #3d6b4f;
 
+  /* Dark dossier — the negative of the plate. Scoped to one page, never a toggle. */
+  --color-night: #14140f;
+  --color-night-2: #1e1d17;
+  --color-night-3: #2b2921;
+  --color-chalk: #ece6d8;
+  --color-chalk-2: #a9a094;
+  --color-chalk-3: #6f6960;
+  --color-rule-night: #3b382e;
+  --color-accent-night: #e0723f;
+
   --font-serif: var(--font-newsreader), "Iowan Old Style", Georgia, serif;
   --font-mono: var(--font-plex-mono), ui-monospace, "SF Mono", Menlo, monospace;
 }
@@ -25,6 +35,8 @@ html {
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   font-feature-settings: "kern", "liga", "onum";
+  /* Keeps a jumped-to anchor clear of the sticky header. */
+  scroll-padding-top: 5rem;
 }
 
 body { overflow-x: clip; }
@@ -80,3 +92,34 @@ body { overflow-x: clip; }
 .specimen .k { color: var(--color-ink-2); }
 .specimen .v { color: var(--color-ink); }
 .specimen .q { color: var(--color-accent); }
+
+/* ── Dark dossier ──────────────────────────────────────────────────────────────
+   There is still one colour mode and no toggle. A single instrument page (Tycho)
+   opts in from its front matter (`theme: dark`) and renders as the photographic
+   negative of the plate: dark ground, chalk lines, the same rules and registration
+   marks. It works by re-pointing the palette variables rather than by restating
+   every rule, so `.label`, `.prose`, `Frame`'s corner marks, the hairline rules and
+   every `bg-paper` / `text-ink` utility follow automatically.
+
+   `html:has(.dossier-dark)` is what carries the inversion up to the header and
+   footer, which live in the root layout above the page. */
+html:has(.dossier-dark) {
+  --color-paper: var(--color-night);
+  --color-paper-2: var(--color-night-2);
+  --color-paper-3: var(--color-night-3);
+  --color-ink: var(--color-chalk);
+  --color-ink-2: var(--color-chalk-2);
+  --color-ink-3: var(--color-chalk-3);
+  --color-rule: var(--color-rule-night);
+  --color-accent: var(--color-accent-night);
+  color-scheme: dark;
+}
+
+html:has(.dossier-dark) ::selection { background: var(--color-accent-night); color: var(--color-night); }
+
+/* Hairlines read heavier on a dark ground; pull them back to the same optical weight. */
+.dossier-dark .prose hr,
+.dossier-dark .prose td { border-color: var(--color-rule-night); }
+.dossier-dark .prose blockquote { border-left-color: var(--color-chalk-2); }
+.dossier-dark .prose code,
+.dossier-dark .prose pre { background: var(--color-night-2); }

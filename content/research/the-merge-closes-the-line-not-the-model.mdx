@@ -1,0 +1,63 @@
+---
+title: The merge closes the line, not the model
+kind: note
+area: agent-operations
+primer: agent-ops
+date: 2026-08-31
+summary: "Three times in eleven days we replaced an agent's self-report with a check made by code outside its session. Two of the three guards have never fired, and the third was closing a hole that had been open and running every fifteen minutes."
+status: draft
+caveats:
+  - Written 2026-09-03 from the commit record, run reports, task files and the code. It is not a same-day account.
+  - Our own internal write-up says the behaviour that motivated the first change happened in "2 of 2" cases in the retained window. Recounting the run reports found at least four of four in the comparable window. The claim was understated and the count was wrong, and the wrong count propagated verbatim into three further documents.
+  - One authorship question in this post is genuinely unresolved and is presented as unresolved. We do not know who wrote the line in question, and the post argues that the not-knowing is the finding.
+  - Two of the three mechanisms have never executed in production. Nothing here demonstrates that they work.
+artifacts: []
+artifactsNote: The guards are four Node modules in a private operating repository, about 1,900 lines with 1,900 lines of tests. The generalizable ideas are the git-tree session window and the provable single-line write, both described in full here.
+corrections: []
+---
+
+An internal audit of our own operation named the disease in one clause: **the system narrates state instead of reading it.** The expensive form is not a hallucination — it is a "done" written in prose while the code sits on an unmerged branch, in a record other agents then read as fact. The audit also named the fix pattern, because we had built one instance of it by accident: *"the merge closes the line, not the model. Generalize it."* We built three of these guards in eleven days. Two of them have never fired once — and a guard that has never fired is a hypothesis, not a result. That is the finding this post actually reports; here is what each one cost to build, and what running zero times does and doesn't tell us.
+
+## One: a session that marked its own work done
+
+Our company's operating record is a folder of Markdown under git, and each project's autonomy line declares a permission level — `locked`, `gated` or `open` — for autonomous work. Under `gated`, a session builds to a boundary and stops at a pull request; a human merges.
+
+But every session's prompt told it to tick its task's checkbox "if the task is genuinely done," with no carve-out for gated work. So gated sessions were checking their own boxes at pull-request time. From two run reports, in the sessions' own words: *"marked complete in the Active → Done transition"* and *"moved from Active to Done with completion note."* Both had an open pull request; neither had been merged by anyone. The task then disappeared from the surface the human reads, which is where it would have said "you owe this a merge."
+
+One detail is worth noting. One of those reports **described a move it did not make**: the diff is one insertion and zero deletions, so the line was inserted into the active section already ticked.
+
+The change: a gated session that ends in a pull request now **leaves the box open** and files the merge task itself, and code ticks the box when the branch actually lands. Three affirmative conditions must hold, and anything unknown declines to close — *"a wrong close takes a live task off every surface a human reads; a wrong decline costs nothing but the box staying open one more tick."* The third is the interesting one: **at most one close per task, ever.** A separate mechanism can reopen a box ticked while work was still owed; without the cap, a task reopened after its branch landed would satisfy the other two conditions forever and this module would shut it again on every scheduled run — code fighting a human decision, silently, in a loop.
+
+The write also proves itself rather than trusting its own line index. After rewriting the checkbox it reparses both versions and refuses unless the line count is unchanged, exactly one line moved, that line is the named task, and every other task is byte-identical.
+
+## Two: a permission line, and who wrote it
+
+Each project's brief carries the line granting execution autonomy, and only the human may write it. Two write paths already refused structurally; two did not — the scheduled reconciliation session and the work sessions edit briefs with ordinary file writes, under prompt law alone.
+
+What prompted closing the gap is a dispute we cannot settle: a maintenance pass flagged a project's `autonomy: open` line as agent-written, the human said afterward that he'd typed it himself, and a pickaxe sweep — a `git log` search for every commit that ever touched the line — found 17 commits, every one under the automation's git identity and not one a manual checkpoint — so commit authorship in this repository carries no signal at all about who actually wrote a line, and this one specifically remains unresolved.
+
+That is what shaped the guard. Its baseline is not `HEAD` — it is a **git tree object written immediately before the session spawns**, into a temporary index, so the comparison is a window in time rather than a question about commits. And its notice never claims authorship: *"the window is checkable, the author is not."*
+
+Two design constraints came from prior damage. The blast radius is declaration *lines*, never whole files, because the one destructive-revert incident this system has had was a whole-file discard that destroyed live hand-edits. And the evidence file — baseline hash plus offending diff — is written **before** the revert, so nothing is undone without a record.
+
+It shipped reverting whole diff *hunks*, and an adversarial review falsified that two days later by reproduction: a zero-context diff merges adjacent changes, so a legitimate edit beside a declaration change was being silently discarded. Line precision replaced hunk precision six days later.
+
+## Neither has ever fired
+
+The brief guard's evidence directory **has never existed in this repository's history**. Across 3,040 lines of scheduled-run log it is mentioned zero times — not one firing, not one logged skip. The gated-close journal has never existed either, and 772 telemetry records carry zero closes; it has also had zero opportunity, since of the 78 work sessions since it shipped, **all 78 ran at the highest permission level and none was gated.**
+
+So: 146 tests across roughly 1,900 lines of test code, guarding roughly 1,900 lines of implementation, for two mechanisms that have executed exactly zero times. The code is candid about what that means, and the sentence generalizes:
+
+> "'Never fired because correct' and 'never fired because broken' look identical in telemetry, so the proof that this works is the end-to-end test. Keep it green rather than watching a counter that is 0 by design."
+
+## Three: the one that actually fired
+
+Unlike the other two, the third guard is not hypothetical. A CI-repair job shipped in late August — enabled by default, waking every fifteen minutes — could push directly to any declared repository's default branch on a red build, with **no permission-level check anywhere in the file** and no pass through the independent review gate every other write path goes through. The twice-weekly adversarial pass found it two days later; it was fixed two days after that. The diagnosis: the build session had never cross-checked the change against the system's own doctrine — the autonomy wall (the code that enforces a project's permission level) and the review gate — because those rails are prompt law where the rest of the system insists on code, and nothing made the new job inherit them. A prompt rule is not inherited by the next thing you build; a code rule is inherited only if the new thing calls it.
+
+## What is open
+
+The one deliberate exemption to the brief guard — a narrow verb that may insert a missing permission line after a human answers a queued question — attests its writes to a log **inside the repository a session can write**. The code names its own limit: *"an errant-write guard, not an adversary guard."*
+
+That verb has never fired either, and the mechanism supposed to *ask* the human about a newly scaffolded project's missing permission line has never raised a single question. Two projects carry no declaration and can never be asked about, because they were created between scheduled runs and the detection is a run-window diff. One holds an agent-actionable task that can never dispatch. Nothing is broken; it is quietly not doing the thing.
+
+The measurement we want is uncomfortable: for a guard, usage is failure, so a firing count of zero is either the best or the worst outcome and looks identical. The only honest substitute is an end-to-end test that spawns a real session, has it touch the protected line, and asserts the revert — which is what exists, and which is the thing to keep green. Watching the counter would be one more self-report.

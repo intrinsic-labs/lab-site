@@ -27,6 +27,8 @@ export const postFrontMatter = z.object({
   /** Why the artifacts block is empty, when it is. Rendered instead of hiding the block. */
   artifactsNote: z.string().optional(),
   corrections: z.array(correctionSchema).default([]),
+  /** Renders the shared-vocabulary SystemPrimer box between the header and the body. */
+  primer: z.enum(["agent-ops"]).optional(),
 });
 export type PostFrontMatter = z.infer<typeof postFrontMatter>;
 
@@ -41,5 +43,11 @@ export const instrumentFrontMatter = z.object({
   statusNote: z.string().optional(),
   order: z.number().int().default(100),
   href: z.string().url().optional(),
+  /**
+   * Page palette. Omitted means the site's one colour mode (cream). `dark` renders that
+   * instrument's page — chrome included — as the negative of the plate. Data, not a slug
+   * check, and deliberately not a user-facing toggle: see app/globals.css § Dark dossier.
+   */
+  theme: z.enum(["light", "dark"]).optional(),
 });
 export type InstrumentFrontMatter = z.infer<typeof instrumentFrontMatter>;

@@ -23,7 +23,7 @@ export default async function AreaPage({ params }: { params: Promise<{ area: str
   const instruments = (await allInstruments()).filter((i) => i.area === a.slug);
   return (
     <div className="mx-auto max-w-6xl px-6">
-      <PageTitle kicker={`Research area · beam: ${a.beam}`} title={a.name}>
+      <PageTitle kicker={`Research area · ${a.beam}`} title={a.name}>
         <p className="font-serif italic text-xl">{a.line}</p>
         <p className="mt-4">{a.body}</p>
       </PageTitle>

@@ -15,10 +15,13 @@ app/            routes only — thin, compose components + lib
   work/ about/ about/editorial/
   feed.xml/     RSS (published posts only)
   sitemap.ts robots.ts not-found.tsx icon.svg
-components/     layout/ ui/ research/ home/ — presentational, no fs access except Specimen
-content/        the CMS. research/*.mdx, instruments/*.mdx, specimen/ (home-page plate)
+components/     layout/ ui/ research/ home/ about/ — presentational, no fs access except Specimen
+                and the pageContent()-backed components (InstrumentStrip, HowThisWorks)
+content/        the CMS. research/*.mdx, instruments/*.mdx, specimen/ (home-page plate),
+                pages/ (static-page prose — see below)
 lib/content/    schema.ts (zod, the front-matter contract) · posts.ts · instruments.ts
                 areas.ts + kinds.ts (declared vocab) · draft-rail.ts · fs.ts · format.ts
+                pages.ts (loads content/pages/*.md)
 lib/mdx/        render.tsx — next-mdx-remote-client RSC + remark-gfm
 lib/site.ts     name, url, email, github
 ```
@@ -35,6 +38,21 @@ edits. An empty artifacts block says why.** Those three are the house style — 
 
 Areas and kinds are closed vocabularies in `lib/content/areas.ts` / `kinds.ts`; area slugs are
 permanent URLs (ruled 2026-09-03).
+
+**Prose lives in `content/pages/`, never hardcoded as JSX text.** Static pages (about, editorial,
+work, research, the home masthead, `HowThisWorks`) read their copy from
+`content/pages/<name>.md` through `pageContent(name)` (`lib/content/pages.ts` — `gray-matter` +
+the same js-yaml `JSON_SCHEMA` engine `lib/content/fs.ts` uses) and render it with `<Mdx source={…} />`
+(`lib/mdx/render.tsx`). One file per page or per distinct section — there's no requirement to
+cram a whole route into one file. Data that's already canonical elsewhere stays there instead of
+being duplicated into markdown: `AreaCards` reads its copy from `AREA_INFO` in
+`lib/content/areas.ts`, and the `work` page's `PRODUCTS` array stays inline data, not prose. Where
+a page needs to splice a live, data-driven element into otherwise-static prose (e.g. the editorial
+policy's publication-ladder list, driven by `lib/content/kinds.ts`), write an MDX shortcode —
+`<ComponentName />` in the markdown — and pass `components={{ ComponentName }}` to `<Mdx>`; see
+`content/pages/editorial.md` + `components/about/KindsList.tsx` for the pattern. Exception: content
+that's mostly structured data with one or two dynamic tokens (the about page's Contact block, mailto
+links) can stay in TSX rather than round-tripping through a template-substitution hack.
 
 ## The draft rail (publication-cadence.md §5.2) — do not weaken
 
@@ -61,6 +79,25 @@ flips `status`, merges. Production promotion is a human act — there is no agen
 ## Commands
 
 `pnpm dev` · `pnpm build` · `pnpm lint` · `VERCEL_ENV=production pnpm build` (rail check)
+
+## The cold-reader gate (standing, since 2026-09-03)
+
+Every change to site copy — `content/pages/*.md`, area/kind descriptions in `lib/content/`,
+instrument front matter, any prose in TSX that slipped the rule above — is followed by a
+**cold read**: dump the rendered text of every page (curl each route, strip tags) to one
+file and hand it to a fresh agent that is told to read nothing else and explore nothing.
+It reports as three readers (ML researcher, senior engineer, smart non-technical) on:
+undefined/internal terms, sentences that read as marketing, claims wanting evidence, and
+whether the front-page plate is legible. Fix or cut; then re-run if the change was large.
+Two reads so far found 35 and 56 undefined terms respectively — the vocabulary of the
+vault leaks into copy constantly, and nobody inside can see it. The gate exists because
+Asher's standing instruction is that the site must register with an outsider who has no
+context, and must not read as marketing.
+
+Related house rules from the same session: never narrate honesty ("and we say so") — state
+the fact and stop; never assert "every" where the site's own numbers say otherwise; The
+Ghost is always "The Ghost" and lives under Tycho; `/instruments/tycho` is the one dark
+page (`theme: dark` in its front matter), never a site-wide toggle.
 
 <!-- BEGIN:nextjs-agent-rules -->
 

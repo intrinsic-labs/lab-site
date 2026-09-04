@@ -1,16 +1,74 @@
 ---
 name: Tycho
-measures: Elicitation — closes open questions about one person's judgment by presenting fictionalized dilemmas as play.
+measures: Elicitation — builds a model of one person's judgment out of the decisions they have already made, then keeps it current by putting fresh decisions in front of them as play.
 area: elicitation
-status: in-design
-statusNote: In design. Design documents exist; no build yet.
-order: 3
+status: private
+statusNote: Built and running for one person. The source is private and nothing is distributed; this page is the description.
+order: 2
+theme: dark
 ---
 
-Tycho starts from a problem Ghost exposes. Mining a person's past record tells you what they decided in situations that already happened. It says nothing about the trade-offs they were never presented with, and it goes stale the moment their thinking moves.
+Tycho is a program that runs on one person's own machine and produces one artefact: **The Ghost** — a model of that person's judgment, built from the record of decisions they have already made, which can be asked what they would decide and then audited against what they actually did.
 
-The design: keep a ledger of the model's *uncertainty* about the person — specific, named gaps. Generate short fictionalized dilemmas at the frontier of that uncertainty and present them as missions in a game. The person plays; the choices they make are structured elicitation data; the ledger entries close. The fiction is consented and disclosed — it is the means, not a trick — and one of the open research questions is what the fictional frame does to the answers (the observer effect, measured rather than assumed away).
+Two names, two things: **The Ghost is the model; Tycho is the program that builds and maintains it** — including the interface a person answers scenarios in.
 
-Tycho is also the company's own decision surface: the real trade-offs a one-person business has to make are the raw material for the missions. That is what makes it an instrument rather than a toy — the calibration data comes from choices that had consequences.
+Two halves, and the order matters. The Ghost is mined from the past: several years of that person's conversations with AI coding agents and chat assistants, read as a record of choices. Tycho's interface is what keeps it from going stale — it presents new trade-offs as short fictionalised scenarios and records how the person answers them.
 
-Status: design conversations and a design-system canon exist; the source survey on eliciting judgment is complete; nothing is built. This entry will be updated when that changes.
+## What it is an instrument for
+
+A model built only from someone's past record has two blind spots, and they are the reason this work exists.
+
+It knows what they decided in situations that actually came up. It knows nothing about the trade-offs they were never presented with — the questions nobody happened to ask.
+
+And it is a snapshot. The moment the person's thinking moves, the model is describing someone who no longer exists, and nothing in the record announces that this has happened.
+
+Tycho is the attempt to close both. It keeps an explicit ledger of what the model does *not* know about the person — specific, named gaps rather than a confidence score — and generates scenarios aimed at those gaps. The person plays; the choices are structured data; ledger entries close.
+
+<h2 id="the-ghost">The Ghost</h2>
+
+The Ghost is what Tycho produces. This section walks through Tycho's pipeline — the half of the program that builds it. Each stage is separable and each one is a place the whole thing can be wrong.
+
+**Adapters** parse each source's export format into one normalised stream of events — five formats are handled, one parser per source. This layer is plain code — pattern matching, role checks, field extraction — and nothing in it knows who the person is. A scrubbing pass removes secrets and personal identifiers before anything downstream reads a byte.
+
+**Stage 1** finds candidate *steering moments*: places where the person interrupted, contradicted, redirected, or — the case that took a calibration round (a batch of sessions hand-labelled by the person, used to tune the detectors and the grading prompt against a known-correct answer) to discover — agreed at length after loading a lot of context. The detectors are structural: turn position, interrupt events, message length measured against that person's own distribution, plus a small vocabulary of steering phrases. About half are generic. The other half were tuned to one person and would need re-tuning for anyone else.
+
+**Stage 2** grades each candidate with a language model: is this a real steer, and of what kind? The taxonomy came out of a hand-labelled calibration round, and the grading prompt carries verbatim examples that never leave the private record they were drawn from.
+
+**The holdout** is a fixed slice of sessions — 298 of them — that the model-building step is forbidden by code from reading, so that evaluation has something honest to measure against.
+
+**Evaluation** replays holdout decisions past The Ghost and has a judge model compare its answer to what the person actually said. That judging is itself audited by a second pass, because the first real finding of the project was that the judge was wrong about two-thirds of the time.
+
+## What the surface actually is
+
+Tycho began as a design for a game and is no longer one. It is a small imitation operating system, rendered as a wireframe drawing: you open a filing cabinet, pull a drawer, take out a sheet. Each program inside it is a separate probe.
+
+Two of those programs are label benches, where the person grades the pipeline's own output — the cases where two grading models disagreed, and a fixed reference set used to check whether the judge can be trusted at all. One is a terminal. One presents the day's real work as a short mission.
+
+Building it this way was a deliberate reversal. The earlier plan — an open world with a fictional corporation in it — was abandoned because the frame was doing no work: the fiction has to be a way of asking a question, not decoration around one.
+
+## The open questions
+
+- **Does the fictional frame change the answer?** A scenario is a stand-in for a real decision, and how a question is constructed is known to move the response — that's a claim about method, not a citation this page needs to carry. Tycho records how abstracted each scenario was, so this can be measured rather than assumed away. If accurate signal keeps requiring *less* fiction, the premise is failing and the record will show it.
+- **Do in-fiction choices agree with real ones?** Call this the concordance test — it's the gate the project is held at. Fifty matched pairs, compared by decision type. Nothing expands until that number exists.
+- **Is a model of a judge better than the judge?** A long line of judgment-and-decision-making research finds that a consistent model of an expert's judgments often out-predicts the expert, because it strips out noise ([Dawes, 1979](https://doi.org/10.1037/0003-066X.34.7.571), "The robust beauty of improper linear models in decision making," *American Psychologist* 34(7): 571–582). The same literature says the gains are usually small and that some experts beat their own models. Which case this is, for this kind of work, is not known.
+- **How many labels are enough?** There is no reliable way to predict, in advance, the point at which more hand-labelling stops improving anything.
+
+## Status, as of 3 September 2026
+
+Honestly: the machine is built and the measurements are not in.
+
+The Ghost's pipeline is complete through stage 2 across all five sources, and the holdout is frozen. The interface is built, runs on one machine, and is reachable only over a private network. Two label benches are live, and their sheets — the running tally of labelled pairs each one needs before its number means anything — stand at 0 of 50 and 1 of 50. That means **no evaluation number this project has produced is yet certifiable** (backed by enough labelled pairs to trust), and none is quoted here.
+
+The concordance test — whether choices made inside a scenario match choices made for real — has not been run. Everything beyond it is gated on it.
+
+The named failure mode is latency. If getting a real decision made through this surface is slower than the ordinary way, Tycho has failed no matter how good it looks. That comparison is part of the test, not an afterthought to it.
+
+Recent direction: the person it was built for is the first user, not the only intended one. Making it something a stranger could pick up — an account of their own, a first-run path, a way to bring their own record in — is the current line of work and is not built.
+
+There is no public site for Tycho and nothing to sign up for. When that changes, this page will say so.
+
+## What is published, and what never is
+
+The method is publishable and generalisable: how steering moments are detected, what happens when a benchmark saturates, mining the disagreements between two graders, the gate that audits the judge, and the gap between what a person says they prefer and what they demonstrably chose. That is what appears in the research index.
+
+The record it is built from is one person's private correspondence. It has no remote copy, it is not shared with any model provider beyond the grading calls it is subject to, and it will not be released in any form.

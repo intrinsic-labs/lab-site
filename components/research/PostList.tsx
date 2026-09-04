@@ -6,7 +6,7 @@ export function PostList({ posts, showArea = true, empty }: { posts: Post[]; sho
     return <p className="text-ink-2 italic border-b border-rule py-5">{empty ?? "Nothing here yet."}</p>;
   }
   return (
-    <ul className="border-t border-ink">
+    <ul className="border-t border-b border-ink">
       {posts.map((p) => (
         <PostRow key={p.slug} post={p} showArea={showArea} />
       ))}

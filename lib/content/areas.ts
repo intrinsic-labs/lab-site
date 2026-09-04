@@ -20,7 +20,7 @@ export const AREA_INFO: Record<Area, AreaInfo> = {
     line: "Getting one person's actual judgment into a machine, and measuring honestly whether it got there.",
     beam: "Craft",
     body:
-      "N-of-1 methodology. How you mine a person's real steering decisions out of years of transcripts, how you keep a held-out set the model can never see, and how you evaluate a persona without the evaluator quietly grading itself. Revealed preferences over stated ones; fiction-mediated elicitation and its observer effects; the construct problems that show up when the human being modelled had evidence the judge did not.",
+      "Single-subject (N-of-1) methodology, worked out in practice: how to mine a person's real past decisions out of years of transcripts; how to keep a held-out set of those decisions hidden from the model being tested, so it can be checked against choices it never saw; and how to grade a stand-in persona's answers without letting the same system grade its own test. It favors what someone actually chose over what they say they would choose, checks whether presenting a decision as a fictional scenario changes the answer, and watches for cases where the person being modelled knew something the grader did not.",
   },
   "agent-operations": {
     slug: "agent-operations",
@@ -28,7 +28,7 @@ export const AREA_INFO: Record<Area, AreaInfo> = {
     line: "Running real work through agents and measuring what happens.",
     beam: "Craft",
     body:
-      "A small company runs its daily operations through a crew of named agents working over plain text files. Autonomy is declared per project and enforced in code, every change is reviewed by a session that never saw the author's conversation, and the whole thing is observable end to end. That makes it an instrument: trust as a measurement rather than a feeling, and a record of what agents actually do when the work is real.",
+      "A small company runs its daily operations through a crew of software agents, each with its own name and job, working over plain text files. Autonomy is declared per project and enforced in code; every change is supposed to be reviewed by a session that never saw the author's conversation — in the measured window, 51 of 58 branches actually were — and the whole thing is observable end to end. That makes it an instrument: a record of what agents actually do when the work is real, checked against what happened rather than taken on trust.",
   },
   "local-compute": {
     slug: "local-compute",

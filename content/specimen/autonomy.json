@@ -1,0 +1,85 @@
+{
+  "generated": "2026-09-03",
+  "window": {
+    "from": "2026-07-07",
+    "to": "2026-09-03",
+    "days": 59
+  },
+  "goal": {
+    "low": 90,
+    "high": 95,
+    "text": "Asher's stated goal is for the company to run 90-95% autonomously."
+  },
+  "metrics": [
+    {
+      "key": "execution",
+      "label": "Agent sessions that ran to completion with no human in the loop",
+      "value": 73.2,
+      "numerator": 270,
+      "denominator": 369,
+      "unit": "%",
+      "direction": "up",
+      "method": "Sum of the \"executor\" attempted/completed counters the loop itself writes to every \"loop-run\" telemetry record (Tools/crons/telemetry/vault-loop.jsonl), across 204 ticks from 2026-07-30 to 2026-09-03. \"Completed\" means the session ran to a stop the chassis recognizes as done, not that the resulting work was correct.",
+      "source": "Tools/crons/telemetry/vault-loop.jsonl",
+      "window": {
+        "from": "2026-07-30",
+        "to": "2026-09-03"
+      }
+    },
+    {
+      "key": "outward",
+      "label": "Sessions aimed at client and product work rather than at the system itself (of the 211 with a run report)",
+      "value": 37,
+      "numerator": 78,
+      "denominator": 211,
+      "unit": "%",
+      "direction": "up",
+      "method": "Counts each \"## <task-id> — <project-slug> (...)\" session header the chassis writes into its own run reports (Mechanical/logs/executor-runs/*.md, 18 files, 2026-08-13 to 2026-09-03); every slug other than \"vault\" (Projects/meta/vault) counts as outward.",
+      "source": "Mechanical/logs/executor-runs/",
+      "window": {
+        "from": "2026-08-13",
+        "to": "2026-09-03"
+      }
+    },
+    {
+      "key": "decisions",
+      "label": "Material decisions made without the founder",
+      "value": 9.5,
+      "numerator": 2,
+      "denominator": 21,
+      "unit": "%",
+      "direction": "up",
+      "method": "Every \"## YYYY-MM-DD — title\" entry in Mechanical/docs/Decision Log.md (21 entries, 2026-07-07 to 2026-09-02) is counted as made \"without Asher\" only when its body carries the log's own literal promotion marker \"decided by the ghost, veto window passed\" (a queued call that stood because he did not veto it in time); every other entry attributes the choice to Asher's own hand or session. Hand-verifiable, deterministic on the exact phrase — a conservative rule that undercounts autonomy rather than overcounts it.",
+      "source": "Mechanical/docs/Decision Log.md",
+      "window": {
+        "from": "2026-07-07",
+        "to": "2026-09-02"
+      },
+      "withoutAsherEntries": [
+        {
+          "date": "2026-08-01",
+          "title": "GlyphDeck: Poly Pizza joins as third asset source, via API key not scraping"
+        },
+        {
+          "date": "2026-07-31",
+          "title": "Dog Body Mind: push the verified test work; port the pattern per-project, not as one sweep"
+        }
+      ]
+    },
+    {
+      "key": "drift",
+      "label": "Documentation claims that no longer matched the code when audited",
+      "value": 17.7,
+      "numerator": 93,
+      "denominator": 524,
+      "unit": "%",
+      "direction": "down",
+      "method": "Sum of the \"N drift item(s)\" / \"N claim(s) checked\" counters the Arbiter writes into its own \"## checked\" section per project per run (Mechanical/logs/arbiter-runs/*.md, 19 of 21 files carry a checked section, 2026-08-14 to 2026-09-03). A claim is a documentation assertion the Arbiter verified against running code that tick; drift is a claim it found false. Real code defects the Arbiter also flags that were never a documentation claim are not counted here.",
+      "source": "Mechanical/logs/arbiter-runs/",
+      "window": {
+        "from": "2026-08-14",
+        "to": "2026-09-03"
+      }
+    }
+  ]
+}

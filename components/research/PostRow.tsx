@@ -7,7 +7,7 @@ import { KindLabel } from "./KindLabel";
 /** One index row: kind · date · title · one line. Nobody shows abstracts in an index. */
 export function PostRow({ post, showArea = true }: { post: Post; showArea?: boolean }) {
   return (
-    <li className="border-b border-rule py-5 grid gap-2 sm:grid-cols-[9rem_1fr] sm:gap-8">
+    <li className="py-5 grid gap-2 sm:grid-cols-[9rem_1fr] sm:gap-8">
       <div className="flex items-center gap-3 sm:flex-col sm:items-start sm:gap-2">
         <KindLabel kind={post.kind} />
         <time dateTime={post.date} className="label">{formatDate(post.date)}</time>

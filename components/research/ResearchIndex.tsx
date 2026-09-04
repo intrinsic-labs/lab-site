@@ -34,9 +34,9 @@ export function ResearchIndex({ items }: { items: IndexItem[] }) {
       {shown.length === 0 ? (
         <p className="text-ink-2 italic py-8">Nothing under that filter yet.</p>
       ) : (
-        <ul>
+        <ul className="border-b border-rule">
           {shown.map((p) => (
-            <li key={p.slug} className="border-b border-rule py-5 grid gap-2 sm:grid-cols-[9rem_1fr] sm:gap-8">
+            <li key={p.slug} className="py-5 grid gap-2 sm:grid-cols-[9rem_1fr] sm:gap-8">
               <div className="flex items-center gap-3 sm:flex-col sm:items-start sm:gap-2">
                 <KindLabel kind={p.kind} />
                 <time dateTime={p.date} className="label">{formatDate(p.date)}</time>

@@ -4,7 +4,7 @@ import matter from "gray-matter";
 import { load, JSON_SCHEMA } from "js-yaml";
 
 /** YAML with the JSON schema, so `date: 2026-09-03` stays a string the schema can validate. */
-const engines = { yaml: (s: string) => load(s, { schema: JSON_SCHEMA }) as object };
+export const engines = { yaml: (s: string) => load(s, { schema: JSON_SCHEMA }) as object };
 
 export const CONTENT_ROOT = path.join(process.cwd(), "content");
 

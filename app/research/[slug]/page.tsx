@@ -5,6 +5,7 @@ import { Mdx } from "@/lib/mdx/render";
 import { PostHeader } from "@/components/research/PostHeader";
 import { Artifacts } from "@/components/research/Artifacts";
 import { Corrections } from "@/components/research/Corrections";
+import { SystemPrimer } from "@/components/research/SystemPrimer";
 import { site } from "@/lib/site";
 
 export const dynamicParams = false;
@@ -30,6 +31,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
   return (
     <article className="mx-auto max-w-6xl px-6">
       <PostHeader post={post} />
+      {post.primer === "agent-ops" && <SystemPrimer />}
       <div className="py-12 lg:grid lg:grid-cols-[1fr_20rem] lg:gap-16">
         <div className="prose min-w-0">
           <Mdx source={post.body} />
@@ -37,7 +39,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
           <Corrections post={post} />
         </div>
         <aside className="hidden lg:block">
-          <div className="sticky top-8 border-t border-ink pt-4 text-[0.9rem] text-ink-2 space-y-4">
+          <div className="sticky top-20 border-t border-ink pt-4 text-[0.9rem] text-ink-2 space-y-4">
             <p className="label">About this rung</p>
             <p>{rungNote(post.kind)}</p>
             <p className="label pt-2">Disclosure</p>

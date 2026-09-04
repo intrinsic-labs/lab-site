@@ -16,7 +16,7 @@ export function Footer() {
         </div>
         <div className="flex flex-col gap-2 sm:text-right">
           <a href={`mailto:${site.email}`} className="label hover:text-ink">{site.email}</a>
-          <p className="label">Richmond, Virginia</p>
+          <p className="label">Mint Hill, North Carolina</p>
         </div>
       </div>
     </footer>

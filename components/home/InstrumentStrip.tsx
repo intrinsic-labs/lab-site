@@ -5,7 +5,7 @@ import { Chip } from "@/components/ui/Chip";
 export async function InstrumentStrip() {
   const items = await allInstruments();
   return (
-    <ul className="grid gap-px bg-rule border border-rule sm:grid-cols-3">
+    <ul className="grid gap-px bg-rule border border-rule sm:grid-cols-2">
       {items.map((i) => (
         <li key={i.slug} className="bg-paper p-6">
           <div className="flex items-baseline justify-between gap-3">
@@ -14,7 +14,11 @@ export async function InstrumentStrip() {
             </h3>
             <Chip tone={i.status === "released" ? "accent" : "muted"}>{STATUS_LABEL[i.status]}</Chip>
           </div>
-          <p className="text-ink-2 mt-2 leading-snug">{i.measures}</p>
+          <p className="text-ink-2 mt-2 leading-snug">
+            {i.slug === "tycho" && <span className="text-ink">Produces The Ghost — </span>}
+            {i.slug === "vault" && <span className="text-ink">The company&rsquo;s own operating record — </span>}
+            {i.measures}
+          </p>
         </li>
       ))}
     </ul>

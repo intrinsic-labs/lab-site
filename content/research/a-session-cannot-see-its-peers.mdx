@@ -1,0 +1,77 @@
+---
+title: A session cannot see its peers, so it blames the one actor it knows about
+kind: note
+area: agent-operations
+primer: agent-ops
+date: 2026-08-19
+summary: "Two agent sessions shared one git working tree. One ran `git reset --hard HEAD` while the other was mid-edit, and thirty-three minutes of work went away with no recoverable trace. The fix that shipped was not a lock."
+status: draft
+caveats:
+  - Written 2026-09-03 from the commit record, the reflog and the design document produced on the day. It is not a same-day account, and the reconstruction is ours.
+  - One machine, one repository, one person's working habits. The measured gaps below are conditions of this setup, not properties of agent coding in general.
+  - The refusal guard described at the end logs to the calling session's stderr and nowhere central, so we cannot say whether it has ever fired. That is stated again in the open questions.
+artifacts: []
+artifactsNote: The guard, the session reading and the autosave are three small Node scripts inside a private operating repository. Publishing them would mean extracting the process-registry reader and the PreToolUse hook from their surrounding scheduler; the hook is the part with general value and is about eighty lines.
+corrections: []
+---
+
+Our company's operating record is a folder of Markdown in a git repository. Both humans and scheduled agent sessions work in it, and for a while several worked in it *at the same time, in the same checkout*. On 2026-08-19 that cost thirty-three minutes of work, unrecoverably.
+
+## What happened
+
+The reflog is the whole trace:
+
+```
+cb264cb HEAD@{2026-08-19 11:37:52 -0400}: reset: moving to HEAD
+a7172f7 HEAD@{2026-08-19 09:43:16 -0400}: reset: moving to HEAD
+```
+
+Two `git reset --hard HEAD` calls, four hours apart, run by an interactive session preparing a rebase. The second landed while a different session was mid-edit on a source file and its test — everything that session had written since the previous automatic commit was gone.
+
+Three properties put this in the data-loss class, not the annoyance class.
+
+**Nothing recorded what was destroyed.** `reset --hard HEAD` moves HEAD to itself, so the reflog line above is the entire artifact — the overwritten contents were never objects in the repository, no dangling blob, nothing for `fsck --lost-found`. Compare a bad merge or a wrong rebase, both fully undoable.
+
+**It was silent at both ends.** The session that ran the command couldn't know a peer was editing; the session that lost the work couldn't know why its file had reverted.
+
+**The victim misdiagnosed it.** The losing session's completion note recorded that a scheduled job had "reset the working tree mid-edit." It had not — a grep across the scheduler's source for the destructive verbs returns one hit, a comment noting such a call was removed weeks earlier. What the scheduled job did was *commit*; the peer then reset to that commit, so the scheduler looked like the culprit. A session can't enumerate its peers, so it blames the one actor it has heard of — and the wrong note stays in the record, read by a later agent as fact.
+
+## Two measurements that decided the design
+
+**Who can actually do this — not the agent sessions.** Every scheduled session denies `reset`, `rebase`, `stash`, `checkout` and `clean` outright, verified live: the session writing this design document was itself refused twice. Interactive sessions had none of it, so the exposed population was exactly *interactive sessions and the human's own terminal* — a lock the scheduled jobs respected would have guarded a door already bolted.
+
+**How many peers were live — five.** The coding-agent CLI maintains a per-session record at `~/.claude/sessions/<pid>.json` carrying pid, directory, name and process start time. Checking each pid against `ps` showed five sessions with the operating record as their working directory, one five days old — the note that opened the investigation had assumed two.
+
+**The floor already in place.** A scheduled job commits the whole tree at the top of every run, so in-flight edits do get saved, on the run cadence. Measured over the preceding fourteen days (318 commits): median gap 13 min, 90th percentile 157 min, 44 gaps longer than two hours. The thirty-three minute loss was not unusual.
+
+## What we did not build
+
+**An advisory session lock**, the first idea, guards the wrong door per the measurement above — two of the five live sessions were days old, longer than the whole scheduling cadence, and a lock that is routinely stolen is not a lock.
+
+**A git hook.** Git has no `pre-reset` or `pre-checkout`. The nearest candidate, `reference-transaction`, fires on `reset --hard`, so it looked viable — until driven against a scratch repository with a real uncommitted change: exit 128, `fatal: ref updates aborted by hook`, and the file already destroyed. **Git updates the working tree before it opens the reference transaction**, so the hook fires after the damage — strictly worse than no guard.
+
+**Auto-stashing instead of refusing.** A guard that quietly relocates a peer's work turns a loud failure into a quiet one — this incident's second act was a stale copy nearly overwriting the newer version, saved only because the conflict happened to be visible.
+
+## What shipped, cheapest first
+
+All three landed the same day.
+
+**A session reading.** A directory read plus a liveness check — no new state, no registration protocol, no cooperation from anyone. Liveness is asserted, not assumed: a pid alone proves nothing because the OS reuses them, so the recorded start time is compared against what `ps` reports now. This prevents nothing; it closes the diagnostic half that put a false accusation into the permanent record.
+
+**An automatic commit on an existing 15-minute heartbeat.** A watchdog process already woke every quarter hour; it gained one more job, committing a dirty tree under its own message prefix. This takes the 90th-percentile exposure from 157 minutes to 15, and is also the only shape that protects the human's own terminal, because it intercepts nothing — it just ensures the work was already committed a moment ago. If only one thing had been built, this was it.
+
+**A refusal, at the only interception point that works.** A `PreToolUse` hook fires before any permission-mode check, in every mode, and a non-zero exit blocks the call before git runs. It refuses the destructive verbs **only while the tree is dirty** — a flat deny would refuse a legitimate rebase on a clean tree — and names the live peer sessions, so it's a diagnosis rather than a nag. Anything unexpected exits zero: a broken guard degrades to the pre-guard world, not to bricking every shell call.
+
+## What it cost
+
+The automatic commit is a background writer that knows nothing about what is mid-run, and it broke every component that had answered "what did this session change?" with `git status` — a question about HEAD, not a window in time. Measured the following night: one autosave swallowed four of a maintenance session's five edits, so that session's own edit-budget check saw one. The same hole meant a permission-declaration line edited before an autosave was invisible to the code gate meant to protect it — the strictest rule in the system, blinded by its own safety net.
+
+The repair was to stop asking about HEAD: snapshot the working tree into a git tree object at session start and again at end, and diff the two — a tree is a value, not a pointer, so commits landing in between move HEAD and touch neither snapshot.
+
+The second cost is still being paid. Since the autosave shipped, 374 of 584 commits (64%, 2026-08-19 to 2026-09-03) are 15-minute autosaves; because they commit without pushing, local is ahead of the remote at essentially every scheduled run. That broke history reconciliation for a week, unnoticed — [its own post](/research/the-loop-diverged-from-itself).
+
+## What we would measure, and what is open
+
+Whether the exposure window actually fell — the median and 90th-percentile commit gap, recomputed over a comparable window. Cheap, and we haven't run it. What we cannot measure at all is whether the refusal has ever fired: it writes to the calling session's stderr and nowhere central, so there's no count — a guard with no telemetry is one you believe in, not one you know about.
+
+Still open: the human's own terminal is covered by the autosave floor alone, by design — no tool-layer hook sees a command typed into a shell.

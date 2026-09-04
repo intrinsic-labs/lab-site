@@ -13,8 +13,8 @@ export default async function InstrumentsPage() {
     <div className="mx-auto max-w-6xl px-6">
       <PageTitle kicker="Instruments" title="The tools the research runs on.">
         <p>
-          An instrument exists to take a measurement. Some of ours are released, some are private, and one is
-          still a design. Each is listed with its status rather than left off because it isn&apos;t open source yet.
+          An instrument exists to take a measurement. Neither of ours is distributed yet — the source of both
+          is private today. Each is listed here with its status rather than left off until it is open source.
         </p>
         <p className="mt-4 font-medium text-ink">
           One line that governs this page: the <em>method</em> is published; the <em>corpus</em> — the personal

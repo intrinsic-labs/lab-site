@@ -9,9 +9,9 @@ export interface Instrument extends InstrumentFrontMatter {
 
 export const STATUS_LABEL: Record<InstrumentStatus, string> = {
   released: "Released",
-  private: "Private",
-  described: "Described, not released",
-  "in-design": "In design",
+  private: "Private — running, code not released",
+  described: "Described here — no code released",
+  "in-design": "In design — not yet built",
 };
 
 export const allInstruments = cache(async (): Promise<Instrument[]> => {
