@@ -54,13 +54,6 @@ export async function AutonomyOrbs() {
 
   return (
     <>
-      <div className="mx-auto max-w-6xl px-6">
-        <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 border-b border-rule pb-3">
-          <h2 className="label normal-case tracking-normal text-ink">How much of this company runs itself</h2>
-          <span className="label text-ink-3 whitespace-nowrap">measured {data.generated}</span>
-        </div>
-      </div>
-
       {/* The figure is full-bleed and the prose around it is not: the haze under the
           waterline has to reach the edges of the viewport, or it ends in the hard vertical
           edge the boxed version had. */}
@@ -69,12 +62,16 @@ export async function AutonomyOrbs() {
         <OrbFigure size={DESKTOP} metrics={metrics} className="hidden md:block" />
       </OrbInteraction>
 
+      {/* One caption row under the figure (Asher, 2026-09-04: the heading/measured-date
+          strip above the orbs is gone; the date rides with the target). Three cells so the
+          title sits dead centre at md+; on a phone the three stack. */}
       <div className="mx-auto max-w-6xl px-6">
-        <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2 border-t border-rule pt-3">
+        <div className="grid gap-y-2 border-t border-rule pt-3 text-center md:grid-cols-3 md:items-baseline md:text-left">
           <p className="text-sm text-ink-2 leading-snug">
-            Target: {data.goal.low}–{data.goal.high}%.
+            <span className="text-ink-3">Measured {data.generated}.</span> Target: {data.goal.low}–{data.goal.high}%.
           </p>
-          <Link href="/products/vault" className="label text-accent hover:underline underline-offset-4">
+          <h2 className="label text-ink md:text-center">Company autonomy rate</h2>
+          <Link href="/products/vault" className="label text-accent hover:underline underline-offset-4 md:text-right">
             How these are computed →
           </Link>
         </div>
