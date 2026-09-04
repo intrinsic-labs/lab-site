@@ -19,9 +19,12 @@ import type { SizedImage } from "@/lib/content/products";
  * Keyboard still works (the strip is focusable, ← / → step it) and so does native touch
  * snapping — the click handling is additive, never a replacement for the scroller.
  *
- * Every slide is a FIXED HEIGHT with `w-auto`, which is what keeps a folder of portrait
- * phone screenshots (Aspen Grove's fourteen) from dominating the page: portrait frames
- * come out narrow and several are visible at once, landscape frames come out wide.
+ * Every slide is bounded by a MAX height and a MAX width with both axes `auto`, so the
+ * browser fits the intrinsic aspect ratio inside whichever bound binds: a portrait phone
+ * screenshot (Aspen Grove's fourteen) is capped by height and comes out narrow, several
+ * visible at once; a landscape console frame is capped by width. The width cap is what
+ * keeps a 1600×738 frame from spilling off a 390px phone (Asher, 2026-09-04 — on mobile a
+ * landscape slide was 620px wide, ×1.2 focused, and clipped hard on both sides).
  */
 export function Gallery({ images, label = "Gallery" }: { images: SizedImage[]; label?: string }) {
   const scroller = useRef<HTMLUListElement>(null);
@@ -107,11 +110,11 @@ export function Gallery({ images, label = "Gallery" }: { images: SizedImage[]; l
                 // the strip's layout — and `syncIndex`'s offsetLeft measurements — never
                 // change; the `py-*` on the list is the room the scale needs vertically.
                 className={`group relative block cursor-pointer overflow-hidden rounded-xl outline-none transition-[opacity,transform] duration-300 focus-visible:ring-1 focus-visible:ring-accent ${
-                  focused ? "z-10 scale-[1.2] opacity-100" : "opacity-55 hover:opacity-80"
+                  focused ? "z-10 scale-[1.08] opacity-100 sm:scale-[1.2]" : "opacity-55 hover:opacity-80"
                 }`}
               >
-                {/* A slide is a FIXED HEIGHT and `w-auto`, so until the bytes arrive its
-                    width is zero — fourteen of those in one flex row means the whole strip
+                {/* A slide's box comes from its intrinsic ratio, so without the attributes
+                    its width is zero until the bytes arrive — fourteen of those in one flex row means the whole strip
                     re-lays-out as they stream in, which both jumps the page and makes
                     `syncIndex` (it measures `offsetLeft`) pick the wrong focused slide.
                     The intrinsic dimensions give each slide its aspect ratio, and therefore
@@ -124,7 +127,7 @@ export function Gallery({ images, label = "Gallery" }: { images: SizedImage[]; l
                   height={img.height}
                   loading={i < 2 ? "eager" : "lazy"}
                   decoding="async"
-                  className="h-[380px] w-auto object-contain sm:h-[520px]"
+                  className="h-auto w-auto max-h-[380px] max-w-[calc(100vw-4rem)] object-contain sm:max-h-[520px] sm:max-w-[min(80vw,960px)]"
                 />
                 {/* The arrow overlay: one direction, only on a slide that is NOT centred,
                     only on hover/focus. It is decorative — the whole slide is the button. */}
