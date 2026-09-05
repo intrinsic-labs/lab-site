@@ -202,17 +202,18 @@ itself, so the column is cream before `html`'s background composites.
 | `--color-ink-2` | `#55524d` | ours — 7.2:1 |
 | `--color-ink-3` | `#87837c` | ours — 3.5:1, decorative only |
 | `--color-rule` | `#ded7ca` | ours — hairlines |
-| `--color-accent` | `#1447e6` | Tailwind blue-700 on cream, 5.4:1 — the UI accent |
-| `--color-verdant` | `#51a2ff` | Tailwind blue-400 — the pale fill |
-| `--color-marker` | `#6f5f2e` | `ls.yellow` darkened for cream (5.8:1) — highlight band only |
+| `--color-accent` | `#1447e6` | Tailwind blue-700 — the UI accent (text on cream) |
+| `--color-verdant` | `#51a2ff` | Tailwind blue-400 — the pale fill (decoration, not text) |
+| `--color-marker` | `#6f5f2e` | `ls.yellow` darkened for cream — highlight band only |
 | `--color-marker-2` | `#a4915c` | `ls.yellow` verbatim — the highlight band, never text |
-| `--color-link` | `#155dfc` | Tailwind blue-600 — prose links on cream, 5.2:1 |
+| `--color-link` | `#155dfc` | Tailwind blue-600 — prose links on cream (text) |
 | `--color-ember` | `#a8481d` | latent-spaces `--orange` `#E07A55`, darkened to 5.4:1 |
 | `--color-surface` | `rgba(33,32,31,0.06)` | mirrored — a wash of the ink, not of white |
 
 **The blue pair on cream.** On black the light blue is the text and the dark blue
-the fill; on cream `accent` is the dark tone and `verdant` the light one. Every tone
-above clears 4.5:1 on `#f9f6f2`.
+the fill; on cream `accent` is the dark tone and `verdant` the light one. The text
+tones (`ink`, `ink-2`, `accent`, `link`) clear AA contrast on cream; the fill tones
+(`verdant`, `marker-2`) serve as decoration or highlights, not text.
 
 ### Code, on cream
 
@@ -258,12 +259,12 @@ Only the places the dark sheet hardcodes a `#fff` or `#000` the token remap can'
 
 ## Favicon and app icons
 
-`app/icon.png` (192×192) and `app/apple-icon.png` (180×180) are the site's favicon and
+`app/icon.png` (512×512) and `app/apple-icon.png` (180×180) are the site's favicon and
 Apple touch icon. They are Next.js file-convention metadata files — no `<link>` tags or
-`icons` key in the metadata object — and are automatically served as `/icon` and
-`/apple-icon` by the framework. Both are rendered from the same source art (the Intrinsic
-Labs robot mark). There is no `public/favicon.ico` and no separate SVG variant. The prior
-`app/icon.svg` was replaced by the PNG files in commit 510a4f1 (2026-09-04).
+`icons` key in the metadata object — and are automatically served as `/icon.png` and
+`/apple-icon.png` by the framework. Both are rendered from the same source art (the
+Intrinsic Labs robot mark). There is no `public/favicon.ico` and no separate SVG variant.
+The prior `app/icon.svg` was replaced by the PNG files in commit 510a4f1 (2026-09-04).
 
 ---
 
