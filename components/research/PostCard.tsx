@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import type { Kind } from "@/lib/content/kinds";
 import { formatDate } from "@/lib/content/format";
@@ -26,11 +27,12 @@ export function PostCard({ item }: { item: PostCardItem }) {
     <li className="flex flex-col bg-paper">
       <Link href={`/research/${item.slug}`} className="group relative block aspect-[4/3] w-full overflow-hidden border-b border-rule">
         {item.cover ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
+          <Image
             src={item.cover}
             alt={item.coverAlt ?? ""}
-            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+            fill
+            sizes="(min-width: 640px) 33vw, 100vw"
+            className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
           />
         ) : (
           <GenerativeCover seed={item.slug} className="h-full w-full transition-transform duration-500 group-hover:scale-[1.03]" />

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { accentVar, STATUS_LABEL, type Product, type ProductImages } from "@/lib/content/products";
 import { GenerativeCover } from "@/components/ui/GenerativeCover";
@@ -76,17 +77,15 @@ export function ProductFeature({
               // before the bytes arrive; without them this box laid out at zero and then
               // shoved the whole two-column grid when the image landed (measured 0.068 CLS
               // on /products, the largest shift on the site).
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
+                  <Image
                 src={images.hero.src}
                 alt={product.name}
-                width={images.hero.width}
-                height={images.hero.height}
+                width={images.hero.width ?? 1600}
+                height={images.hero.height ?? 1000}
+                sizes="(min-width: 1024px) 50vw, 100vw"
                 // The first section is above the fold, so lazy-loading it delays the page's
                 // largest paint and guarantees the shift it is meant to avoid.
-                loading={priority ? "eager" : "lazy"}
-                fetchPriority={priority ? "high" : undefined}
-                decoding="async"
+                priority={priority}
                 // Definite width + the two caps that `w-auto max-w-full max-h-*` used to
                 // express, so the box is the right size before the image loads rather than
                 // after. The classes stay as the fallback for an image we could not measure.

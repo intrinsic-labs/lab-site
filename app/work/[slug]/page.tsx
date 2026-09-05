@@ -1,3 +1,4 @@
+import Image from "next/image";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { allCaseStudies, caseStudyBySlug } from "@/lib/content/work";
@@ -19,12 +20,11 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
   if (!c) notFound();
   return (
     <article className="mx-auto max-w-6xl px-6">
-      <div className="mt-6 aspect-[4/3] w-full overflow-hidden sm:mt-10 sm:aspect-[16/9]">
+      <div className="relative mt-6 aspect-[4/3] w-full overflow-hidden sm:mt-10 sm:aspect-[16/9]">
         {c.scene ? (
           <WorkSceneCanvas scene={c.scene} seed={c.slug} tint={c.tint} zoom={1.35} className="h-full w-full" />
         ) : c.cover ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={c.cover} alt={c.name} className="h-full w-full object-cover" />
+          <Image src={c.cover} alt={c.name} fill priority sizes="(min-width: 1280px) 1152px, 100vw" className="object-cover" />
         ) : (
           <GenerativeCover seed={c.slug} className="h-full w-full" />
         )}

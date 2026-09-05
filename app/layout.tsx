@@ -23,9 +23,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <head>
-        <link rel="preload" href="/fonts/cardo/Cardo-Regular.ttf" as="font" type="font/ttf" crossOrigin="anonymous" />
-        <link rel="preload" href="/fonts/neue_montreal/NeueMontreal-Medium.otf" as="font" type="font/otf" crossOrigin="anonymous" />
-        <link rel="preload" href="/fonts/calling_code/CallingCode-Regular.ttf" as="font" type="font/ttf" crossOrigin="anonymous" />
+        <link rel="preload" href="/fonts/cardo/Cardo-Regular.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+        <link rel="preload" href="/fonts/neue_montreal/NeueMontreal-Medium.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+        <link rel="preload" href="/fonts/calling_code/CallingCode-Regular.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
       </head>
       <body className="min-h-screen flex flex-col">
         <Header />

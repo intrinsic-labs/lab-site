@@ -1,3 +1,4 @@
+import Image from "next/image";
 import type { Post } from "@/lib/content/posts";
 import { formatDate } from "@/lib/content/format";
 import { KindLabel } from "./KindLabel";
@@ -46,10 +47,9 @@ export function PostHeader({ post }: { post: Post }) {
         )}
       </div>
 
-      <div className="mt-8 aspect-[16/9] w-full overflow-hidden rounded-2xl border border-rule sm:mt-12">
+      <div className="relative mt-8 aspect-[16/9] w-full overflow-hidden rounded-2xl border border-rule sm:mt-12">
         {post.cover ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={post.cover} alt={post.coverAlt ?? ""} className="h-full w-full object-cover" />
+          <Image src={post.cover} alt={post.coverAlt ?? ""} fill priority sizes="(min-width: 1024px) 900px, 100vw" className="object-cover" />
         ) : (
           <GenerativeCover seed={post.slug} className="h-full w-full" />
         )}

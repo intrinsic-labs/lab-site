@@ -1,3 +1,4 @@
+import Image from "next/image";
 import fs from "node:fs";
 import path from "node:path";
 import type { Metadata } from "next";
@@ -41,12 +42,9 @@ export default async function AboutPage() {
         <div className={portrait ? "flex flex-col gap-8 md:flex-row md:items-start md:gap-10" : undefined}>
           {portrait && (
             <div className="order-first flex-none md:order-last md:w-80">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={portrait}
-                alt="Asher Pope"
-                className="aspect-[4/5] w-full max-w-[320px] rounded-2xl object-cover"
-              />
+              <div className="relative aspect-[4/5] w-full max-w-[320px] overflow-hidden rounded-2xl">
+                <Image src={portrait} alt="Asher Pope" fill priority sizes="320px" className="object-cover" />
+              </div>
             </div>
           )}
           <div className="prose text-lg">

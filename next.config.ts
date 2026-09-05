@@ -1,6 +1,11 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  images: {
+    // AVIF first, WebP fallback: the product screenshots are 0.5–1.8 MB PNGs and were being
+    // served raw (Lighthouse 2026-09-04: 2.7 MB of image savings on the front page alone).
+    formats: ["image/avif", "image/webp"],
+  },
   async redirects() {
     return [
       {

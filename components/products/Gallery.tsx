@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { SizedImage } from "@/lib/content/products";
 
@@ -129,12 +130,12 @@ export function Gallery({ images, label = "Gallery" }: { images: SizedImage[]; l
                     `syncIndex` (it measures `offsetLeft`) pick the wrong focused slide.
                     The intrinsic dimensions give each slide its aspect ratio, and therefore
                     its width, before a single byte of image has loaded. */}
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
+                <Image
                   src={img.src}
                   alt=""
-                  width={img.width}
-                  height={img.height}
+                  width={img.width ?? 1600}
+                  height={img.height ?? 1000}
+                  sizes="(min-width: 640px) min(80vw, 960px), calc(100vw - 4rem)"
                   loading={i < 2 ? "eager" : "lazy"}
                   decoding="async"
                   className="h-auto w-auto max-h-[380px] max-w-[calc(100vw-4rem)] object-contain sm:max-h-[520px] sm:max-w-[min(80vw,960px)]"

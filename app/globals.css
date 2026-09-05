@@ -10,14 +10,14 @@
 /* JetBrains Mono Variable */
 @font-face {
   font-family: 'JetBrains Mono Variable';
-  src: url('/fonts/jetbrains_mono/JetBrainsMono-VariableFont_wght.ttf') format('truetype-variations');
+  src: url('/fonts/jetbrains_mono/JetBrainsMono-VariableFont_wght.woff2') format('woff2-variations');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: 'JetBrains Mono Variable';
-  src: url('/fonts/jetbrains_mono/JetBrainsMono-Italic-VariableFont_wght.ttf') format('truetype-variations');
+  src: url('/fonts/jetbrains_mono/JetBrainsMono-Italic-VariableFont_wght.woff2') format('woff2-variations');
   font-weight: 100 900;
   font-style: italic;
   font-display: swap;
@@ -26,21 +26,21 @@
 /* Cardo */
 @font-face {
   font-family: 'Cardo';
-  src: url('/fonts/cardo/Cardo-Regular.ttf') format('truetype');
+  src: url('/fonts/cardo/Cardo-Regular.woff2') format('woff2');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: 'Cardo';
-  src: url('/fonts/cardo/Cardo-Bold.ttf') format('truetype');
+  src: url('/fonts/cardo/Cardo-Bold.woff2') format('woff2');
   font-weight: bold;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: 'Cardo';
-  src: url('/fonts/cardo/Cardo-Italic.ttf') format('truetype');
+  src: url('/fonts/cardo/Cardo-Italic.woff2') format('woff2');
   font-weight: normal;
   font-style: italic;
   font-display: swap;
@@ -49,7 +49,7 @@
 /* Calling Code */
 @font-face {
   font-family: 'Calling Code';
-  src: url('/fonts/calling_code/CallingCode-Regular.ttf') format('truetype');
+  src: url('/fonts/calling_code/CallingCode-Regular.woff2') format('woff2');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -58,56 +58,56 @@
 /* Neue Montreal */
 @font-face {
   font-family: 'Neue Montreal';
-  src: url('/fonts/neue_montreal/NeueMontreal-Regular.otf') format('opentype');
+  src: url('/fonts/neue_montreal/NeueMontreal-Regular.woff2') format('woff2');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: 'Neue Montreal';
-  src: url('/fonts/neue_montreal/NeueMontreal-Bold.otf') format('opentype');
+  src: url('/fonts/neue_montreal/NeueMontreal-Bold.woff2') format('woff2');
   font-weight: bold;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: 'Neue Montreal';
-  src: url('/fonts/neue_montreal/NeueMontreal-Medium.otf') format('opentype');
+  src: url('/fonts/neue_montreal/NeueMontreal-Medium.woff2') format('woff2');
   font-weight: 500;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: 'Neue Montreal';
-  src: url('/fonts/neue_montreal/NeueMontreal-Light.otf') format('opentype');
+  src: url('/fonts/neue_montreal/NeueMontreal-Light.woff2') format('woff2');
   font-weight: 300;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: 'Neue Montreal';
-  src: url('/fonts/neue_montreal/NeueMontreal-Italic.otf') format('opentype');
+  src: url('/fonts/neue_montreal/NeueMontreal-Italic.woff2') format('woff2');
   font-weight: normal;
   font-style: italic;
   font-display: swap;
 }
 @font-face {
   font-family: 'Neue Montreal';
-  src: url('/fonts/neue_montreal/NeueMontreal-BoldItalic.otf') format('opentype');
+  src: url('/fonts/neue_montreal/NeueMontreal-BoldItalic.woff2') format('woff2');
   font-weight: bold;
   font-style: italic;
   font-display: swap;
 }
 @font-face {
   font-family: 'Neue Montreal';
-  src: url('/fonts/neue_montreal/NeueMontreal-MediumItalic.otf') format('opentype');
+  src: url('/fonts/neue_montreal/NeueMontreal-MediumItalic.woff2') format('woff2');
   font-weight: 500;
   font-style: italic;
   font-display: swap;
 }
 @font-face {
   font-family: 'Neue Montreal';
-  src: url('/fonts/neue_montreal/NeueMontreal-LightItalic.otf') format('opentype');
+  src: url('/fonts/neue_montreal/NeueMontreal-LightItalic.woff2') format('woff2');
   font-weight: 300;
   font-style: italic;
   font-display: swap;

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import type { CaseStudy } from "@/lib/content/work";
 import type { WorkTint } from "@/lib/content/schema";
@@ -33,8 +34,7 @@ export function WorkCard({ item }: { item: CaseStudy }) {
         {item.scene ? (
           <WorkSceneCanvas scene={item.scene} seed={item.slug} tint={item.tint} className={COVER_CLASSNAME} />
         ) : item.cover ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={item.cover} alt={item.name} className={`object-cover ${COVER_CLASSNAME}`} />
+          <Image src={item.cover} alt={item.name} fill sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw" className="object-cover" />
         ) : (
           <GenerativeCover seed={item.slug} className={COVER_CLASSNAME} />
         )}

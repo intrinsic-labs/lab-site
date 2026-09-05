@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { formatDate } from "@/lib/content/format";
 import { GenerativeCover } from "@/components/ui/GenerativeCover";
@@ -16,8 +17,7 @@ import type { IndexItem } from "./ResearchIndex";
  */
 function Cover({ item, className }: { item: IndexItem; className?: string }) {
   return item.cover ? (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img src={item.cover} alt={item.coverAlt ?? ""} className={className} />
+    <Image src={item.cover} alt={item.coverAlt ?? ""} fill sizes="(min-width: 1024px) 40vw, (min-width: 640px) 55vw, 100vw" className={className} />
   ) : (
     <GenerativeCover seed={item.slug} className={className} />
   );
@@ -31,11 +31,11 @@ export function FeaturedRow({ featured, next }: { featured: IndexItem; next: Ind
         <article className="grid gap-6 sm:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] sm:items-center sm:gap-8">
           <Link
             href={`/research/${featured.slug}`}
-            className="group block aspect-[4/3] overflow-hidden rounded-2xl border border-rule sm:aspect-[5/4]"
+            className="group relative block aspect-[4/3] overflow-hidden rounded-2xl border border-rule sm:aspect-[5/4]"
           >
             <Cover
               item={featured}
-              className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+              className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
             />
           </Link>
           <div>
