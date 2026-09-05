@@ -5,6 +5,16 @@ import remarkRehype from "remark-rehype";
 import rehypeStringify from "rehype-stringify";
 import rehypeShiki from "@shikijs/rehype";
 import { rehypeShikiOptions } from "./highlight";
+import { rehypeHeadingIds, type HeadingSlugger } from "./heading-ids";
+
+export type RenderMarkdownOptions = {
+  /**
+   * When given, every `h2`–`h4` gets an `id` computed from its text so in-page anchors
+   * (a docs rail's subsection links) resolve. The caller owns the slug rule so the ids
+   * match whatever it printed in the navigation.
+   */
+  headingIds?: HeadingSlugger;
+};
 
 /**
  * Plain-markdown → HTML, for prose that can't go through MDX. The OpenLoom spec is
@@ -15,11 +25,13 @@ import { rehypeShikiOptions } from "./highlight";
  * identical wherever it appears — that was previously not true: this path ran
  * `remark-html` with no highlighter at all.
  */
-export async function renderMarkdown(raw: string): Promise<string> {
-  const file = await unified()
+export async function renderMarkdown(raw: string, options: RenderMarkdownOptions = {}): Promise<string> {
+  const processor = unified()
     .use(remarkParse)
     .use(remarkGfm)
-    .use(remarkRehype, { allowDangerousHtml: true })
+    .use(remarkRehype, { allowDangerousHtml: true });
+  if (options.headingIds) processor.use(rehypeHeadingIds, options.headingIds);
+  const file = await processor
     .use(rehypeShiki, rehypeShikiOptions)
     .use(rehypeStringify, { allowDangerousHtml: true })
     .process(raw);

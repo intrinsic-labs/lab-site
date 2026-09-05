@@ -16,6 +16,19 @@ The products surface. Two shapes live here, and they are deliberately different:
 | `ProductHero.tsx` | The landing screen: name (huge, sans), the one sentence from front matter's `line`, then the hero image centred over a soft accent glow. The title is Neue Montreal (`font-sans`) at `clamp(2.75rem, 12vw, 8.5rem)`, so it scales with the viewport and cannot overflow a phone. **No status chip** — "just say Visit" (Asher, 2026-09-04); `Visit` is the only control. Server component. |
 | `Gallery.tsx` | The gallery as a scroll-snap carousel — native horizontal scroll (so touch and trackpad are free), arrow keys, dot indicator. No carousel library. Client component. |
 
+### `openloom/` — the OpenLoom spec as documentation
+
+`/products/aspen-grove/open-loom` reads as docs, not as one long post (Asher, 2026-09-04:
+"tabs along the side, like a table of contents, more like documentation"). The banner header
+is unchanged and lives in the route's `layout.tsx`; the spec stays ONE markdown file and
+`lib/openloom/spec.ts` splits it on `##` — one section per sub-route, the first at the base URL.
+
+| File | What it is |
+|---|---|
+| `SpecNav.tsx` | The table of contents: every `##` section, the active one expanded to its `###` anchors. A sticky rail from `lg`, a `<details>` "Contents" disclosure below that (re-keyed on the pathname so navigating closes it). Client component, for `usePathname` only. |
+| `SpecSection.tsx` | One section's body: the markdown rendered with heading ids from the same slug rule the nav used (`lib/mdx/heading-ids.ts`), then the pager. |
+| `SectionPager.tsx` | Prev / next at the foot of a section. Server component. |
+
 `ProductCard.tsx` is **not** here — it lives in `components/ui/` because the home page's
 products row still uses it. `/products` no longer does.
 
