@@ -91,7 +91,7 @@ Ported from `BlogPostContent.tsx` / `OpenLoomContent.tsx`.
 | h2 | `text-2xl font-neue-montreal font-bold mt-10 mb-4` | `1.5rem / 700 / Neue Montreal`, `margin-top: 2.2em` |
 | h3 | `text-xl font-neue-montreal font-bold mt-8 mb-4` | `1.2rem / 700 / Neue Montreal` (the old *italic serif* h3 is gone) |
 | blockquote | `border-l-4 border-primary/30 pl-4 italic` | `4px solid rgba(255,255,255,0.3)`, `padding-left: 1.1em`, italic |
-| links | blog: plain underline · OpenLoom: `CodeChip` = `text-ls-yellowLight bg-ls-yellowLight/10 rounded` | sand `#c9b374`, underlined, with a sand wash on hover — the CodeChip colour without turning every link into a button |
+| links | blog: plain underline · OpenLoom: `CodeChip` = `text-ls-yellowLight bg-ls-yellowLight/10 rounded` | Blue `#51a2ff` (dark) / `#155dfc` (light), underlined 1px with 3px offset. Hover: text becomes white (dark) / `--color-ink` (light), background becomes 22% blue wash (dark) / 18% blue wash (light) |
 | inline code | dark page: `bg-neutral-800/40 text-orange rounded px-1.5 py-0.5 font-calling-code text-[1rem]` | Calling Code, `#e07a55`, `rgba(255,255,255,0.08)` (raised from `neutral-800/40`, which is invisible on `#000`), `border-radius: 0.25rem`, `0.1em 0.35em` |
 | code blocks | `react-syntax-highlighter` Prism **`vscDarkPlus`**, `customStyle={{ borderRadius: '1rem' }}`, `my-6` | **shiki `dark-plus`** — the identical VS Code Dark+ token set — resolved at build time, `#1e1e1e` ground, `border-radius: 1rem`, `1.6em` margins, no border |
 | lists | `list-disc pl-6 mb-6` | `list-style: disc` (was `square`), `padding-left: 1.4em` |
