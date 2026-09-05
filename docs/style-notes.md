@@ -129,7 +129,8 @@ black ground, and these are captions.
 latent-spaces' CTA shape — `Hero.tsx` / `DiscordCTA.tsx` / `Navigation.tsx`:
 `bg-ls-accent/30 border border-ls-accentLight rounded-full font-calling-code`. The label is
 the **light** accent, not the fill colour: the old `bg-verdant text-paper` put near-black
-text on dark green and the "Visit →" button was unreadable. Every tone clears 7:1.
+text on dark green and the "Visit →" button was unreadable. Blue buttons on dark meet WCAG AA;
+on cream the light-theme combination runs tighter.
 
 ## What of ours was kept
 
@@ -141,7 +142,7 @@ text on dark green and the "Visit →" button was unreadable. Every tone clears 
 - **`.marker`** — same gradient band, but at 34% alpha with a 55% inset underline, because
   a solid sand band would black out white text.
 - **`GenerativeCover`** — same seeded trochoid; the two curves now carry the two
-  latent-spaces accents (green outer, sand inner) over a `#121212` plate, plus a second
+  accents (blue outer, sand inner) over a `#121212` plate, plus a second
   inner registration circle.
 - **The 68ch measure, 18px root, `scroll-padding-top`, the sticky header, the four-item
   nav** — all unchanged.
