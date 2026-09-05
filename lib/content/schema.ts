@@ -128,9 +128,6 @@ export const caseStudyFrontMatter = z.object({
   store: z.string().url().optional(),
   /** Price as shown on the storefront, verbatim ("$14.99"). Only meaningful with `store`. */
   price: z.string().optional(),
-  /** One short, honest status line ("Hardening in progress") — the card's label where a
-   *  client item shows its client, and the eyebrow on the project page. */
-  status: z.string().optional(),
   /** The client or organization, when it can be named. Confidential engagements omit it. */
   client: z.string().optional(),
   /** One sentence describing the engagement. */

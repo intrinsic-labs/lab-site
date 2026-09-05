@@ -48,11 +48,12 @@ export function WorkCard({ item }: { item: CaseStudy }) {
             {item.name}
           </Link>
         </h3>
-        {/* The eyebrow under the name: a client item names its client, an open-source item
-            states its honest status ("Hardening in progress") — same slot, same type. */}
-        {item.kind === "open-source"
-          ? item.status && <p className="label mt-1 text-ink-3">{item.status}</p>
-          : item.client && item.client !== item.name && <p className="label mt-1 text-ink-3">{item.client}</p>}
+        {/* The eyebrow under the name: a client item names its client. An open-source item has
+            none — GitHub is the source of truth for where a repo stands (Asher, 2026-09-05), so
+            the site carries no status line to drift. */}
+        {item.kind !== "open-source" && item.client && item.client !== item.name && (
+          <p className="label mt-1 text-ink-3">{item.client}</p>
+        )}
         <p className="mt-2 flex-1 text-[0.95rem] leading-snug text-ink-2">{item.line}</p>
       </div>
     </li>

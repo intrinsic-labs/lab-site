@@ -31,9 +31,10 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
       </div>
       <header className="pt-4 pb-8 sm:pt-10 sm:pb-10 border-b border-rule mx-auto max-w-[68ch]">
         {/* "Open source" is only claimed when the source is actually public (`repo`); a project
-            sold from a store with a private repo (Record Machine) shows its status alone. */}
+            sold from a store with a private repo (Record Machine) gets no eyebrow. No status
+            line either way — GitHub is the source of truth for that (Asher, 2026-09-05). */}
         {c.kind === "open-source"
-          ? <p className="label">{[c.repo ? "Open source" : null, c.status].filter(Boolean).join(" · ")}</p>
+          ? c.repo && <p className="label">Open source</p>
           : c.client && c.client !== c.name && <p className="label">{c.client}</p>}
         <h1 className="font-serif text-4xl sm:text-5xl font-medium tracking-tight leading-[1.05] mt-2">{c.name}</h1>
         <p className="mt-5 text-xl text-ink-2 max-w-2xl leading-snug">{c.line}</p>
