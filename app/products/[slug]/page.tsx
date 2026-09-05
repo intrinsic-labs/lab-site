@@ -22,6 +22,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
  * stated: `statusNote` when the front matter has one (the "built for one person, source is
  * private" kind of caveat, which already says the status in prose), the plain `STATUS_LABEL`
  * otherwise — so a product like GlyphDeck with no note still says "In development" somewhere.
+ * The one exception is `described`: that page IS the description, so a label saying so is
+ * noise (Asher, 2026-09-04: drop "the code is private for now; this page is the description").
  */
 export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
   const p = await productBySlug((await params).slug);
@@ -30,6 +32,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   // The palette is data (front matter), not a slug check. `.dossier-dark` is inert now that
   // the site's one colour mode is dark — kept so no content file breaks. See globals.css.
   const dark = p.theme === "dark";
+  const statusLine = p.statusNote ?? (p.status === "described" ? null : STATUS_LABEL[p.status]);
   return (
     <div data-theme={dark ? "dark" : undefined} className={dark ? "dossier-dark" : undefined}>
       <article>
@@ -39,7 +42,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
 
         <div className="mx-auto max-w-6xl px-6">
           <div className="mx-auto max-w-[68ch] border-t border-rule py-14">
-            <p className="label mb-8">{p.statusNote ?? STATUS_LABEL[p.status]}</p>
+            {statusLine && <p className="label mb-8">{statusLine}</p>}
             <div className="prose prose-post"><Mdx source={p.body} /></div>
           </div>
         </div>

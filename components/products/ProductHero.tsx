@@ -43,14 +43,6 @@ export function ProductHero({ product, images }: { product: Product; images: Pro
           // Full-bleed on a phone (the section clips, so the negative margin cannot widen
           // the page), inset again from `sm` up.
           <div className="relative -mx-6 mt-10 sm:mx-0 sm:mt-14">
-            {/* Vignette: the image sinks into the ground rather than sitting on a card. */}
-            <div
-              aria-hidden
-              className="pointer-events-none absolute -inset-x-10 -inset-y-6 opacity-60 blur-2xl"
-              style={{
-                background: "radial-gradient(50% 50% at 50% 50%, var(--color-paper-3) 0%, transparent 75%)",
-              }}
-            />
             {images.hero ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
