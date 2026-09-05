@@ -71,8 +71,14 @@ export const loadSpec = cache(async (): Promise<Spec> => {
   const abstract = preamble
     .replace(/^#\s+.+$/m, "")
     .replace(/^\*\*Version\s+[^\n]*$/m, "")
+    .replace(/\n---[ \t]*\s*$/, "")
     .trim();
-  if (sections[0] && abstract) sections[0] = { ...sections[0], body: `${abstract}\n\n${sections[0].body}` };
+  // The abstract goes UNDER section 1's heading, not above it: a page that opens with a
+  // media-type line and then a heading reads as two starts.
+  if (sections[0] && abstract) {
+    const [heading, ...rest] = sections[0].body.split("\n");
+    sections[0] = { ...sections[0], body: `${heading}\n\n${abstract}\n${rest.join("\n")}` };
+  }
   const seen = new Set<string>();
   for (const s of sections) {
     if (seen.has(s.slug)) throw new Error(`OpenLoom spec: two sections slug to "${s.slug}"`);

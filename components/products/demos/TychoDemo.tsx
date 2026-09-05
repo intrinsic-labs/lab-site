@@ -11,15 +11,15 @@
  *
  * Sizing follows the shell's own frame, which is 4:3 letterboxed on the ground colour — so the
  * box is 4:3 here and a phone gets a taller box, where the shell's own ≤760px layout takes over
- * inside. `loading="lazy"` defers the ~1.3 MB (three.js is most of it) until the frame is near
+ * inside — with a sliver of page on either side (Asher, 2026-09-04), never edge-to-edge. `loading="lazy"` defers the ~1.3 MB (three.js is most of it) until the frame is near
  * the viewport; the shell's power-on gate then makes the first tap the visitor's, which is also
  * what lets its boot chime play (a synthetic tap can't unlock audio).
  */
 export function TychoDemo() {
   return (
     <section aria-label="Interactive demo" className="py-14">
-      <div className="mx-auto max-w-6xl px-0 sm:px-6">
-        <div className="relative mx-auto aspect-[3/4] w-full overflow-hidden border-y border-rule bg-black sm:aspect-[4/3] sm:rounded-xl sm:border">
+      <div className="mx-auto max-w-6xl px-3 sm:px-6">
+        <div className="relative mx-auto aspect-[3/4] w-full overflow-hidden rounded-lg border border-rule bg-black sm:aspect-[4/3] sm:rounded-xl">
           <iframe
             src="/tycho-demo/index.html"
             title="TychoOS — interactive demo with synthetic data"
@@ -30,7 +30,7 @@ export function TychoDemo() {
             className="absolute inset-0 h-full w-full border-0"
           />
         </div>
-        <p className="label mt-5 px-6 text-center sm:px-0">Interactive demo · synthetic data</p>
+        <p className="label mt-5 text-center">Interactive demo · synthetic data</p>
       </div>
     </section>
   );
