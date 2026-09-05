@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>TYCHO — demo</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="tycho.css">
+  <meta name="theme-color" content="#000000">
+</head>
+<body>
+  <div id="frame">
+    <div id="boot">
+      <div class="boot-gate">
+        <div class="prompt">PRESS ANY KEY OR TAP TO POWER ON</div>
+      </div>
+      <div class="boot-panel" aria-hidden="true">
+        <div class="boot-meta">
+          <div class="boot-box boot-unit boot-flicker">UNIT TYC-01</div>
+          <div class="boot-link boot-flicker"></div>
+          <div class="boot-box boot-status boot-flicker">STATUS: ACTIVE</div>
+        </div>
+        <div class="boot-lab boot-flicker">
+          <span class="boot-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+          <span class="boot-lab-name">INTRINSIC LABS</span>
+          <span class="boot-rule"></span>
+          <span class="boot-six" aria-hidden="true">
+            <i></i><i></i><i></i><i></i><i></i><i></i>
+          </span>
+        </div>
+        <div class="boot-hero">
+          <div class="boot-thanks boot-reveal">THANK YOU FOR USING</div>
+          <div class="boot-red-rule"></div>
+          <div class="boot-wordmark">TYCHO</div>
+        </div>
+        <div class="boot-lower">
+          <div class="boot-terminal boot-reveal">
+            <span>OPERATOR TERMINAL</span>
+            <span class="boot-stages" aria-label="Four initialization stages">
+              <i></i><i></i><i></i><i></i>
+            </span>
+          </div>
+          <div class="boot-dots boot-reveal"></div>
+          <div class="boot-tagline boot-reveal">
+            <i aria-hidden="true"></i>
+            <span>A QUIET MACHINE FOR SERIOUS WORK</span>
+            <i aria-hidden="true"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="menubar" class="t-menubar">
+      <span class="brand">◆ TYCHO</span>
+      <span class="spacer"></span>
+      <span class="item" id="clock"></span>
+    </div>
+    <!-- the cabinet scene, and the fullscreen program host that fades in over it -->
+    <div id="main">
+      <div id="world"></div>
+      <div id="apps"></div>
+      <div id="dip"></div>
+    </div>
+    <div id="dock" class="t-dock"></div>
+  </div>
+  <!-- the kernel, in dependency order: helpers first, the core after the
+       services it calls, the extensions after the core they attach to -->
+  <!-- DEMO: the mock server, installed before the first fetch (demo/shim.js) -->
+  <script src="demo/corpus.js"></script>
+  <script src="demo/shim.js"></script>
+  <script src="kernel/helpers.js"></script>
+  <script src="kernel/sound.js"></script>
+  <script src="kernel/log.js"></script>
+  <script src="kernel/sys.js"></script>
+  <script src="kernel/boot.js"></script>
+  <script src="kernel/tele.js"></script>
+  <script src="kernel/tycho.js"></script>
+  <script src="kernel/dock.js"></script>
+  <script src="kernel/doc-icon.js"></script>
+  <script src="kernel/crumple-art.js"></script>
+  <script src="kernel/dialogs.js"></script>
+  <script src="kernel/lifecycle.js"></script>
+  <script src="kernel/fs-verbs.js"></script>
+  <script src="kernel/trash-view.js"></script>
+  <script src="mobile.js"></script>
+  <script src="soft-keyboard.js"></script>
+  <script src="primitives/flipcard.js"></script>
+  <script src="primitives/indexcard.js"></script>
+  <script src="primitives/stamp.js"></script>
+  <script src="primitives/trays.js"></script>
+  <!-- the judging bench, which stands on the four above -->
+  <script src="primitives/bench.js"></script>
+  <script src="programs/calibrate.js"></script>
+  <script src="programs/golden.js"></script>
+  <script src="programs/term.js"></script>
+  <script src="programs/system.js"></script>
+  <script src="programs/edit.js"></script>
+  <script src="programs/intake.js"></script>
+  <script src="fs-cabinet.js"></script>
+  <!-- DEMO: hide the programs that need a Mac, shorten the boot (demo/tune.js) -->
+  <script src="demo/tune.js"></script>
+  <!-- The cabinet scene. An import map is how a no-build page resolves the
+       bare `three` specifier the vendored addons import; it must come before
+       any module script. The module is deferred by definition, so it lands
+       after every classic script above and can rely on Tycho/T. -->
+  <script type="importmap">
+  { "imports": { "three": "./vendor/three/three.module.min.js" } }
+  </script>
+  <script type="module" src="scene/index.js"></script>
+</body>
+</html>

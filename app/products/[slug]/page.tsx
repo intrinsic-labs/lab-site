@@ -4,6 +4,7 @@ import { allProducts, productBySlug, productImages, STATUS_LABEL } from "@/lib/c
 import { Mdx } from "@/lib/mdx/render";
 import { ProductHero } from "@/components/products/ProductHero";
 import { Gallery } from "@/components/products/Gallery";
+import { ProductDemo } from "@/components/products/demos";
 
 export const dynamicParams = false;
 export async function generateStaticParams() { return (await allProducts()).map((p) => ({ slug: p.slug })); }
@@ -14,7 +15,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 }
 
 /**
- * A product page is a landing screen, then a carousel, then the document — in that order.
+ * A product page is a landing screen, then a carousel — or, for a product that declares a
+ * `demo`, the interactive prototype in the carousel's place — then the document, in that order.
  * The hero carries the name, the one sentence and the image; nothing else goes above the
  * fold. The status opens the reading column instead of the hero, because it qualifies the
  * thing rather than introducing it — the hero's job is the hook, and it carries no chip
@@ -36,9 +38,9 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   return (
     <div data-theme={dark ? "dark" : undefined} className={dark ? "dossier-dark" : undefined}>
       <article>
-        <ProductHero product={p} images={images} />
+        <ProductHero product={p} images={images} demo={!!p.demo} />
 
-        <Gallery images={images.gallery} />
+        {p.demo ? <ProductDemo id={p.demo} /> : <Gallery images={images.gallery} />}
 
         <div className="mx-auto max-w-6xl px-6">
           <div className="mx-auto max-w-[68ch] border-t border-rule py-14">
