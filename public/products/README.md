@@ -18,7 +18,9 @@ front-matter field for images, the folder IS the declaration.
   card-specific file in and the card uses it; leave it out and the card falls back to
   `hero.*` exactly as before. **No code change and no front-matter field either way** — the
   folder is the declaration. Make it 4:3 and subject-centred.
-- **every other image** — the gallery, shown in filename order as a carousel
+- **every other image** — the gallery (a product whose front matter declares `demo:` shows an
+  interactive demo in the gallery's place instead and no hero image — Tycho; see
+  `components/products/demos/`), shown in filename order as a carousel
   (`components/products/Gallery.tsx`). Name them so they sort:  `1a-home.png`, `1b-drawer.png`,
   `01-…`, `02-…`. Slides are a **fixed height** with automatic width, so portrait phone
   screenshots come out narrow (several visible at once) and landscape ones come out wide —

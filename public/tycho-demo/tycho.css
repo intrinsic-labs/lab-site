@@ -1,0 +1,1855 @@
+/* ============================================================================
+   TYCHO DESIGN SYSTEM — tokens + component kit
+   Canon distilled from the 2026-08-24 reference board:
+   phosphor-on-black, single-pixel rules, square corners, boxed everything,
+   bracket motifs, dotted leaders, chunky mono type, glow yes / scanlines no,
+   grain barely-there. Every program builds from these classes; a program that
+   needs a new shape adds a component HERE, never a one-off style.
+   ========================================================================== */
+
+@font-face {
+  font-family: "Departure Mono";
+  src: url("fonts/DepartureMono-Regular.woff2") format("woff2");
+  font-display: swap;
+}
+
+:root {
+  /* -- palette: phosphor ------------------------------------------------- */
+  /* A COLD CRT, not a green one (Asher, 2026-09-02): the phosphor is a pale
+     white-blue. It carries NO meaning beyond "this is the machine's own ink"
+     — chrome, rules, body text, hot and selected states are all phosphor.
+     Contrast against --bg, measured on the neutral ground below: --ph 15.09:1,
+     --ph-bright 17.90:1, --ph-dim 5.26:1 — the whole ladder clears AA and the
+     ink clears AAA, which is where the green one sat. The anchors are
+     Asher's: #cfe3f0 for the ink, #2a3a44 for the faintest rule; --ph-dim is
+     his #9fbdd0 walked down to the luminance the old --ph-dim held, because
+     #9fbdd0 itself sits a whole step brighter than a secondary ever should. */
+  --ph:        #cfe3f0;   /* primary phosphor — the ink everything is drawn in */
+  --ph-bright: #eaf4fd;   /* highlights, active text */
+  --ph-dim:    #6b8798;   /* secondary text, idle chrome */
+  --ph-faint:  #2a3a44;   /* rules, borders, disabled */
+  --ph-ghost:  #131f27;   /* fills, hover washes */
+
+  /* -- palette: signals (sparingly — one accent per screen) -------------- */
+  /* GREEN IS SEMANTIC (Asher, 2026-09-02) and means exactly one thing: the
+     affirmative verdict — SAME DECISION, HIT, FILED ✓, saved. --bad is its
+     opposite, and is the red the OS always had. A state that is merely hot,
+     primary or selected is PHOSPHOR; reaching for --ok there is what left the
+     old palette unable to say "good" at all. */
+  --ok:     #6ee7a0;      /* affirmative: SAME DECISION, HIT, a passing tick */
+  --bad:    #ff5340;      /* negative: DIFFERENT, MISS, alerts, refusals */
+  --amber:  #ffd24d;      /* WEAK, caution, secondary emphasis */
+  --orange: #ff9b3d;      /* warm accent (Microcosm stripes) */
+  --red:    var(--bad);   /* the pre-2026-09-02 name for --bad; same colour */
+  --blue:   #2f6bff;      /* boot-splash moments only (Bell Atlantic) */
+  --cream:  #efe6d0;      /* "print" surfaces, inverted moments */
+
+  /* -- palette: ground ---------------------------------------------------- */
+  /* NEUTRAL-COOL, NOT GREEN (2026-09-02). The grounds were left behind by the
+     phosphor's move off green and still carried a green bias — a cold blue-
+     white ink on a faintly green black reads as two different screens. They
+     are a near-black with the same cool cast the phosphor has, so the only
+     hues in the OS are the ink and the two verdicts. */
+  --void: #040507;        /* outside the frame */
+  --bg:   #07090c;        /* screen ground */
+  --bg2:  #0b0e12;        /* raised surfaces (windows, bars) */
+
+  /* -- type ---------------------------------------------------------------- */
+  --mono: "Departure Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --fs-xs: 10px; --fs-s: 12px; --fs-m: 14px; --fs-l: 18px; --fs-xl: 28px;
+
+  /* -- structure ----------------------------------------------------------- */
+  --line: 1px solid var(--ph-faint);
+  --line-hot: 1px solid var(--ph-dim);
+  --pad: 12px;
+  /* the glows are DERIVED from the tokens they glow with, never restated as
+     rgba literals — a hand-copied literal is a second definition of a colour,
+     and it is what silently keeps the old palette alive after a repaint */
+  --glow: 0 0 6px color-mix(in srgb, var(--ph) 35%, transparent);
+  --glow-hard: 0 0 10px color-mix(in srgb, var(--ph) 55%, transparent);
+  --glow-ok: 0 0 6px color-mix(in srgb, var(--ok) 50%, transparent);
+  --glow-bad: 0 0 6px color-mix(in srgb, var(--bad) 50%, transparent);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+  background: var(--void);
+  color: var(--ph);
+  font-family: var(--mono);
+  font-size: var(--fs-m);
+  line-height: 1.45;
+  -webkit-font-smoothing: none;
+  overscroll-behavior: none;
+}
+
+::selection { background: var(--ph); color: var(--bg); }
+
+/* ============================================================ the frame —
+   the screen: 4:3 on a desk or a tablet (Asher, 2026-09-02 — was square,
+   then 3:2 for an afternoon),
+   letterboxed inside whatever display it is on; full-bleed on a phone. */
+#frame {
+  position: relative;
+  width: min(100%, calc(100vh * 4 / 3));
+  height: min(100vh, calc(100vw * 3 / 4));
+  margin: 0 auto;
+  background: var(--bg);
+  border-left: var(--line);
+  border-right: var(--line);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+@media (max-width: 760px), (max-height: 560px) {
+  #frame { width: 100%; height: 100%; border: none; }
+}
+
+/* grain — real noise, barely there. No scanlines (canon). */
+#frame::after {
+  content: "";
+  position: absolute; inset: 0;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+  z-index: 90;
+}
+
+/* ============================================================ menu bar */
+.t-menubar {
+  display: flex; align-items: center; gap: 14px;
+  padding: 0 var(--pad);
+  height: 30px; flex: none;
+  /* no rule under it and no band behind it (Asher, 2026-09-02) */
+  background: var(--bg);
+  font-size: var(--fs-s);
+  color: var(--ph-dim);
+  user-select: none;
+  position: relative; z-index: 50;
+}
+/* the wordmark, in the boot screen's block letters */
+.t-menubar .brand {
+  color: var(--cream);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 19px; font-weight: 900; letter-spacing: -.045em; line-height: 1;
+}
+.t-menubar .spacer { flex: 1; }
+.t-menubar .item { cursor: pointer; padding: 2px 4px; }
+.t-menubar .item:hover, .t-menubar .item.open { background: var(--ph); color: var(--bg); }
+
+.t-menu {
+  position: absolute; top: 30px; left: 0;
+  min-width: 190px;
+  background: var(--bg2);
+  border: var(--line-hot);
+  box-shadow: var(--glow);
+  z-index: 60;
+}
+.t-menu .row {
+  display: flex; justify-content: space-between; gap: 16px;
+  padding: 7px 12px; font-size: var(--fs-s); cursor: pointer;
+  color: var(--ph);
+}
+.t-menu .row:hover { background: var(--ph); color: var(--bg); }
+.t-menu .row .hint { color: var(--ph-dim); }
+.t-menu .row:hover .hint { color: var(--bg); }
+.t-menu hr { border: none; border-top: var(--line); }
+
+/* ============================================================ the main —
+   everything between the menubar and the dock. Two layers: `#world`, the
+   cabinet scene, and `#apps`, the fullscreen program host that fades in over
+   it once a sheet has grown to fill the screen (kernel/tycho.js). */
+#main { position: relative; flex: 1; min-height: 0; overflow: hidden; }
+#world { position: absolute; inset: 0; }
+#world.under { visibility: hidden; }
+#apps {
+  position: absolute; inset: 0;
+  opacity: 0; pointer-events: none;
+  transition: opacity .22s linear;
+}
+#apps.on { opacity: 1; pointer-events: auto; }
+/* the dip to colour between the scene and a program: a sheet of the
+   screen's own ground that fades up over whatever is showing, the DOM is
+   swapped beneath it, and it fades away (kernel/tycho.js) */
+#dip {
+  position: absolute; inset: 0; z-index: 30; background: var(--bg);
+  opacity: 0; pointer-events: none; transition: opacity .28s linear;
+}
+#dip.on { opacity: 1; pointer-events: auto; }
+
+/* ============================================================ programs —
+   a running program is a fullscreen host in #apps: body, then statusbar.
+   THERE IS NO TITLE ROW (Asher, 2026-09-02) — the title repeated a word the
+   screen already said, ▤ is the HOME icon in the dock, and back is each
+   program's own affordance in its own body. Only ✕ survived, at the far
+   right of the statusbar. The class name `.t-window` is kept because
+   programs and their CSS address it; there is no window manager. */
+.t-window {
+  position: absolute; inset: 0;
+  display: none; flex-direction: column;
+  background: var(--bg);
+}
+.t-window.on { display: flex; }
+
+.t-body { flex: 1; overflow-y: auto; padding: var(--pad); outline: none; }
+.t-body::-webkit-scrollbar { width: 8px; }
+.t-body::-webkit-scrollbar-thumb { background: var(--ph-faint); }
+.t-body::-webkit-scrollbar-thumb:hover { background: var(--ph-dim); }
+
+
+/* ============================================================ status bar */
+.t-statusbar {
+  display: flex; gap: 10px; align-items: center;
+  height: 26px; padding: 0 var(--pad); flex: none;
+  border-top: var(--line);
+  background: var(--bg2);
+  font-size: var(--fs-xs); color: var(--ph-dim);
+  user-select: none;
+  overflow: hidden;   /* a long fault may never push the window's edge out */
+}
+/* the program's own half of the bar — `w.statusbar` is THIS, not the bar, so
+   a program rewriting its status line can never wipe the ✕ beside it */
+.t-status-slot {
+  display: flex; gap: 14px; align-items: center;
+  flex: 1; min-width: 0; overflow: hidden;
+}
+/* the close button — the last survivor of the titlebar (2026-09-02). Square,
+   small, at the far right where a window control belongs. */
+.t-close {
+  font: inherit; font-size: 11px; line-height: 1;
+  width: 20px; height: 18px; flex: none;
+  display: grid; place-items: center;
+  border: var(--line-hot); background: var(--bg2); color: var(--ph-dim);
+  cursor: pointer; touch-action: manipulation;
+}
+.t-close:hover { background: var(--red); border-color: var(--red); color: var(--bg); }
+.t-statusbar b { color: var(--ph); font-weight: normal; }
+/* a one-line fault in the bar: clamped to the bar's width, ellipsized, and
+   tappable — the tap opens the boxed form with the whole dump in it */
+.t-statusbar .fault {
+  flex: 1; min-width: 0;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  color: var(--red); cursor: pointer;
+}
+.t-statusbar .fault:hover { color: var(--ph-bright); text-decoration: underline; }
+
+/* ============================================================ dock —
+   NO BAR (Asher, 2026-09-02). No rule across the frame, no raised band, no
+   boxed text cells: a small cluster of ICONS FLOATING IN SPACE at the bottom
+   left — HOME, then one per running program, then the pinned INTAKE — and
+   the trash can alone at the bottom right. Each icon is a square glyph box
+   with its name beneath; the one on screen inverts, the ones running behind
+   it wear a dashed edge. Square corners, like everything except the one big
+   hovering verb. */
+.t-dock {
+  /* ONE ROW ALONG THE VERY BOTTOM (Asher, 2026-09-02, tablet pass). The
+     scene's big verbs used to sit in a strip of their own floating just above
+     these icons — two bottom-of-screen rows, which read as weird. A three
+     column grid instead: the icons pinned to the left corner, the SCENE'S
+     BAND centred in the same row and vertically in line with the glyphs, the
+     trash can pinned to the right. Grid rather than `space-between`, because
+     with three unequal children space-between centres nothing; `1fr auto 1fr`
+     centres the middle against the FRAME, which is what "centred" means here. */
+  display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
+  gap: var(--pad);
+  min-height: 62px; padding: 4px var(--pad) 8px; flex: none;
+  background: var(--bg);
+  font-size: var(--fs-xs); color: var(--ph-dim);
+  user-select: none;
+  position: relative; z-index: 55;
+}
+.t-dock-cells { justify-self: start; }
+.t-dock-slot { justify-self: center; display: flex; justify-content: center; min-width: 0; }
+/* a fullscreen program covers the scene, so the scene's verbs are controls
+   for a surface that is not on screen — hidden exactly like the can, and by
+   `visibility` for the same reason: the row must not move underneath them */
+.t-dock-slot.off { visibility: hidden; }
+.t-can { justify-self: end; }
+.t-dock-cells {
+  display: flex; align-items: flex-end; gap: 12px;
+  min-width: 0; overflow-x: auto; overflow-y: hidden;
+  scrollbar-width: none;
+}
+.t-dock-cells::-webkit-scrollbar { display: none; }
+.t-dock .item {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  flex: none; cursor: pointer; touch-action: manipulation;
+}
+.t-dock .item .glyph {
+  width: 34px; height: 34px;
+  display: grid; place-items: center;
+  border: var(--line-hot); background: var(--bg); color: var(--ph);
+  font-size: var(--fs-s); letter-spacing: 0;
+}
+.t-dock .item .lab {
+  max-width: 62px; letter-spacing: 1px; white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis;
+}
+.t-dock .item:hover .glyph { background: var(--ph); color: var(--bg); border-color: var(--ph); }
+.t-dock .item:hover .lab { color: var(--ph); }
+/* the one on screen */
+.t-dock .item.on .glyph { background: var(--ph); color: var(--bg); border-color: var(--ph); box-shadow: var(--glow); }
+.t-dock .item.on .lab { color: var(--ph); }
+/* running behind the one on screen: dashed, and it lights on hover */
+.t-dock .item.run .glyph { border: 1px dashed var(--ph-dim); }
+
+/* the trash can: a line drawing, no box around it — a receptacle, not a
+   program. It lights when a carried file is over it, and it is not offered
+   at all while a program is fullscreen (nothing in there to drag). */
+.t-can {
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  flex: none; color: var(--ph-dim);
+  transition: color .12s linear;
+}
+.t-can.off { visibility: hidden; }
+.t-can-art {
+  width: 30px; height: 35px; flex: none;
+  fill: none; stroke: currentColor; stroke-width: 2;
+  stroke-linecap: square; stroke-linejoin: miter;
+}
+.t-can .lab { letter-spacing: 1px; }
+.t-can.hot { color: var(--red); }
+.t-can.hot .t-can-art { filter: drop-shadow(0 0 6px color-mix(in srgb, var(--bad) 55%, transparent)); }
+
+/* ============================================================ document —
+   a file, drawn: a sheet with its top-right corner turned down, in the same
+   2px phosphor stroke as the cabinet and the can, filled with the screen's
+   own ground so it hides what is behind it. Its name goes underneath in tiny
+   type — the drawing says "a file", only the words say which one.
+   One object, two callers: the drag ghost and the trash view
+   (kernel/doc-icon.js). */
+.t-doc {
+  display: inline-flex; flex-direction: column; align-items: center; gap: 4px;
+  color: var(--ph); user-select: none;
+}
+.t-doc-art {
+  width: 34px; height: 44px; flex: none;
+  fill: var(--bg); stroke: currentColor; stroke-width: 2;
+  stroke-linecap: square; stroke-linejoin: miter;
+}
+.t-doc .lab {
+  max-width: 108px; font-size: 9px; letter-spacing: 0; line-height: 1.2;
+  text-align: center; color: var(--ph-bright);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+/* the crumpled paper ball (kernel/crumple-art.js) — what a file becomes once
+   it is in the can. Same stroke and the same opaque ground as the sheet, so
+   the two read as one object in two states; roughly square rather than 34:44,
+   because a screwed-up sheet has no upright left. Only the creases are lines
+   rather than shapes, so only they are unfilled. */
+.t-crumple-art {
+  width: 40px; height: 40px; flex: none;
+  fill: var(--bg); stroke: currentColor; stroke-width: 2;
+  stroke-linecap: square; stroke-linejoin: miter;
+}
+.t-crumple-art .crease { fill: none; }
+
+/* a CABINET in the can (kernel/crumple-art.js · cabinetArt) — what DELETE
+   CABINET puts there. It does NOT crumple: a folder is not a sheet of paper,
+   so it keeps the drawer stack's own proportions, taller than it is wide,
+   with the same stroke and the same opaque ground as everything else in here.
+   The drawer rules are lines rather than shapes, so only they are unfilled. */
+.t-binned-cabinet-art {
+  width: 36px; height: 46px; flex: none;
+  fill: var(--bg); stroke: currentColor; stroke-width: 2;
+  stroke-linecap: square; stroke-linejoin: miter;
+}
+.t-binned-cabinet-art .rule { fill: none; }
+
+/* ============================================================ trash view —
+   the can, opened (kernel/trash-view.js). It GROWS out of its own corner to
+   fill the stage — a scale-up from bottom-right, which is where the can is —
+   and holds the trashed files lying where they were dropped, jumbled on
+   purpose. A bin that sorts its contents into a grid is lying about what it
+   is. Ground, no box: the view IS the screen for as long as it is open, and
+   tapping the ground closes it. */
+.t-trash {
+  position: absolute; inset: 0; z-index: 40;
+  background: var(--bg);
+  transform: scale(.04); transform-origin: 100% 100%;
+  opacity: 0; transition: transform .26s cubic-bezier(.2, .8, .3, 1), opacity .18s linear;
+  overflow: hidden; user-select: none;
+}
+.t-trash.on { transform: scale(1); opacity: 1; }
+.t-trash .head {
+  position: absolute; left: 0; right: 0; top: 18px;
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  pointer-events: none;
+}
+.t-trash .head .cap {
+  color: var(--ph-bright); font-size: var(--fs-s); letter-spacing: 6px;
+  text-shadow: var(--glow);
+}
+/* the honest line: Tycho can only put back what Tycho put here */
+.t-trash .floor { position: absolute; inset: 64px 0 24px; }
+.t-trash .empty {
+  position: absolute; inset: 0;
+  display: grid; place-items: center;
+  color: var(--ph-dim); font-size: var(--fs-s); letter-spacing: 3px;
+}
+.t-trash-doc {
+  position: absolute; cursor: context-menu;
+  transition: color .12s linear;
+}
+/* bigger in here than in flight: the can GREW to fill the screen, and a
+   34px sheet on a 1440px desk reads as a speck rather than as a file */
+.t-trash-doc .t-doc-art { width: 46px; height: 60px; }
+/* the ball is squarer, so it is matched on FOOTPRINT rather than on width —
+   56 square sits about as heavily on the floor as the 46 × 60 sheet did, and
+   the creases need the extra few px to stay legible as creases */
+.t-trash-doc .t-crumple-art { width: 56px; height: 56px; }
+/* the cabinet keeps its upright, so it is matched on HEIGHT to the ball */
+.t-trash-doc .t-binned-cabinet-art { width: 50px; height: 62px; }
+.t-trash-doc .lab { font-size: var(--fs-xs); max-width: 132px; }
+.t-trash-doc:hover { color: var(--ph-bright); }
+.t-trash-doc:hover .lab { text-shadow: var(--glow); }
+
+/* ============================================================ tab strip —
+   TERM's shells: one boxed cell per live shell, flush at the top of the body.
+   Same idiom as the dock: single-pixel seams, active inverts. The `+` cell
+   opens a new shell and disappears at the cap (4). × on the active cell
+   detaches the tab only — the pty lives on server-side. */
+.t-tabs {
+  display: flex; align-items: stretch; flex: none;
+  min-height: 24px;
+  border-bottom: var(--line);
+  background: var(--bg2);
+  font-size: var(--fs-xs); color: var(--ph-dim);
+  user-select: none;
+  overflow-x: auto;
+}
+.t-tabs .cell {
+  display: flex; align-items: center; gap: 6px;
+  padding: 0 10px; flex: none;
+  border-right: var(--line);
+  letter-spacing: 1px; white-space: nowrap;
+  cursor: pointer;
+}
+.t-tabs .cell:hover { background: var(--ph-ghost); color: var(--ph); }
+.t-tabs .cell.on { background: var(--ph); color: var(--bg); }
+.t-tabs .cell.plus { color: var(--ph); }
+.t-tabs .cell.plus:hover { background: var(--ph); color: var(--bg); }
+.t-tabs .cell .x { padding: 0 2px; }
+.t-tabs .cell .x:hover { color: var(--red); }
+
+/* ============================================================ terminal —
+   the vendored xterm.css sets `.xterm-viewport { overflow-y: scroll }`, so on a
+   Mac set to "always show scroll bars" its NATIVE scrollbar sits down the right
+   edge as a white slab — and an alt-screen TUI (claude, vim) keeps no
+   scrollback, so the thumb fills the whole track and it reads as a solid white
+   bar rather than a scrollbar. Same 8px phosphor treatment as .t-body, and the
+   viewport ground matches the terminal theme instead of xterm's default black. */
+.xterm .xterm-viewport {
+  background-color: var(--bg2);
+  scrollbar-width: thin;
+  scrollbar-color: var(--ph-faint) transparent;
+}
+.xterm .xterm-viewport::-webkit-scrollbar { width: 8px; }
+.xterm .xterm-viewport::-webkit-scrollbar-track { background: transparent; }
+.xterm .xterm-viewport::-webkit-scrollbar-thumb { background: var(--ph-faint); }
+.xterm .xterm-viewport::-webkit-scrollbar-thumb:hover { background: var(--ph-dim); }
+
+/* ============================================================ thread —
+   a scrollback column, one .msg per turn — .you
+   right-aligned bright, .err red, .sys a centered divider, .busy the in-flight
+   indicator (these requests take a minute+; the roll must not look dead while
+   a real session thinks). */
+.t-thread {
+  display: flex; flex-direction: column; gap: 10px;
+  flex: 1; min-height: 0; overflow-y: auto;
+  padding: 2px 2px 8px;
+}
+.t-thread .msg { max-width: 94%; }
+.t-thread .msg .tag {
+  display: block; margin-bottom: 2px;
+  font-size: var(--fs-xs); letter-spacing: 1px; color: var(--ph-dim);
+}
+.t-thread .msg.you { align-self: flex-end; text-align: right; color: var(--ph-bright); }
+.t-thread .msg.err { color: var(--red); }
+.t-thread .msg.sys {
+  align-self: center; text-align: center;
+  font-size: var(--fs-xs); color: var(--ph-dim);
+}
+.t-thread .msg.busy .txt { color: var(--ph-dim); }
+.t-thread .msg.busy .tag::after {
+  content: " ▮"; animation: blink 1.1s steps(1) infinite; color: var(--amber);
+}
+
+/* ============================================================ controls */
+.t-btn {
+  font: inherit; font-size: var(--fs-s);
+  background: var(--bg2); color: var(--ph);
+  border: var(--line-hot);
+  padding: 8px 16px;
+  cursor: pointer; user-select: none;
+  letter-spacing: 1px;
+  touch-action: manipulation;
+}
+.t-btn:hover:not(:disabled) { background: var(--ph); color: var(--bg); text-shadow: none; }
+.t-btn:disabled { color: var(--ph-faint); border-color: var(--ph-faint); cursor: default; }
+.t-btn.primary { background: var(--ph); color: var(--bg); border-color: var(--ph); }
+.t-btn.primary:hover:not(:disabled) { background: var(--ph-bright); box-shadow: var(--glow-hard); }
+.t-btn.danger { color: var(--red); border-color: var(--red); }
+.t-btn.danger:hover:not(:disabled) { background: var(--red); color: var(--bg); }
+/* CORNERS (Asher, 2026-09-02): square everywhere, and a PILL for the one big
+   verb that hovers in space — the RUN under a drawer, the FLY under a card.
+   Never a small radius: "I really hate the little rounded corners." */
+.t-btn.pill { border-radius: 999px; }
+
+/* segmented control — the verdict picker */
+.t-seg { display: flex; }
+.t-seg .t-btn { flex: 1; border-right: none; }
+.t-seg .t-btn:last-child { border-right: var(--line-hot); }
+.t-seg .t-btn.on { background: var(--ph); color: var(--bg); box-shadow: var(--glow); }
+.t-seg .t-btn.on.amber { background: var(--amber); border-color: var(--amber); }
+.t-seg .t-btn.on.red { background: var(--red); border-color: var(--red); }
+
+.t-field, .t-textarea {
+  font: inherit; font-size: var(--fs-s);
+  width: 100%;
+  background: var(--bg); color: var(--ph-bright);
+  border: var(--line-hot);
+  padding: 8px 10px;
+  outline: none;
+}
+.t-field:focus, .t-textarea:focus { border-color: var(--ph); box-shadow: var(--glow); }
+.t-textarea { resize: vertical; min-height: 64px; }
+::placeholder { color: var(--ph-faint); }
+
+/* dotted-leader label rows (Weyland-Yutani dossier style) */
+.t-kv { display: flex; align-items: baseline; gap: 8px; font-size: var(--fs-s); padding: 3px 0; }
+.t-kv .k { color: var(--ph-dim); flex: none; }
+.t-kv .dots { flex: 1; border-bottom: 1px dotted var(--ph-faint); transform: translateY(-3px); }
+.t-kv .v { color: var(--ph-bright); text-align: right; }
+
+/* progress — blocky segments, no smooth fills */
+.t-progress { display: flex; gap: 2px; height: 12px; border: var(--line-hot); padding: 2px; }
+.t-progress i { flex: 1; background: var(--ph-ghost); }
+.t-progress i.on { background: var(--ph); box-shadow: var(--glow); }
+
+/* boxed section w/ bracket caption ([ LIKE THIS ]) */
+.t-box { border: var(--line); padding: var(--pad); margin: var(--pad) 0; position: relative; }
+.t-box > .cap {
+  position: absolute; top: -9px; left: 8px;
+  background: var(--bg); padding: 0 6px;
+  font-size: var(--fs-xs); color: var(--ph-dim); letter-spacing: 1px;
+}
+.t-box > .cap::before { content: "[ "; }
+.t-box > .cap::after { content: " ]"; }
+
+/* ============================================================ content */
+.t-md { font-size: var(--fs-s); color: var(--ph); }
+.t-md p { margin: 8px 0; }
+.t-md strong { color: var(--ph-bright); text-shadow: var(--glow); font-weight: normal; }
+.t-md code {
+  color: var(--amber);
+  background: var(--ph-ghost);
+  padding: 0 3px;
+  font-size: var(--fs-xs);
+  word-break: break-all;
+}
+.t-md pre {
+  border: var(--line); background: var(--bg2);
+  padding: 10px; margin: 8px 0;
+  font-size: var(--fs-xs); color: var(--ph-dim);
+  overflow-x: auto; white-space: pre-wrap; word-break: break-word;
+}
+.t-md table { border-collapse: collapse; width: 100%; margin: 8px 0; font-size: var(--fs-xs); }
+.t-md th, .t-md td { border: var(--line); padding: 5px 8px; text-align: left; vertical-align: top; }
+.t-md th { color: var(--ph-dim); letter-spacing: 1px; text-transform: uppercase; }
+.t-md .v-HIT { color: var(--ok); } .t-md .v-WEAK { color: var(--amber); } .t-md .v-MISS { color: var(--red); }
+
+.dim { color: var(--ph-dim); } .bright { color: var(--ph-bright); }
+.amber { color: var(--amber); } .red { color: var(--red); }
+.glow { text-shadow: var(--glow); }
+.small { font-size: var(--fs-xs); }
+
+/* ============================================================ boot */
+#boot {
+  position: absolute; inset: 0; z-index: 100;
+  background: var(--bg);
+  cursor: pointer; user-select: none;
+  transition: opacity .6s steps(12, end);
+}
+#boot.off { display: none; }
+#boot.leaving { opacity: 0; }
+#boot::after {
+  content: "";
+  position: absolute; inset: 0; z-index: 3;
+  pointer-events: none;
+  opacity: .12;
+  background: repeating-linear-gradient(
+    to bottom, transparent 0 3px, var(--ph-ghost) 3px 4px);
+}
+#boot .boot-gate {
+  position: absolute; inset: 0;
+  display: grid; place-items: center;
+}
+#boot .prompt { font-size: var(--fs-s); color: var(--amber); animation: blink 1.1s steps(1) infinite; }
+#boot.running { cursor: default; }
+#boot.running .boot-gate { display: none; }
+
+/* The splash is one square composition: scoped chrome, not component-kit API. */
+#boot .boot-panel {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  padding: clamp(26px, 5.8vmin, 64px);
+  overflow: hidden;
+}
+#boot .boot-meta {
+  display: grid; grid-template-columns: auto 1fr auto;
+  align-items: end;
+  font-size: clamp(13px, 2.2vmin, 24px);
+  letter-spacing: .12em;
+}
+#boot .boot-box {
+  min-width: 26%;
+  border: 2px solid var(--ph);
+  padding: clamp(7px, 1.2vmin, 13px) clamp(12px, 1.8vmin, 20px);
+  color: var(--ph); text-shadow: var(--glow);
+  white-space: nowrap;
+}
+#boot .boot-link { border-bottom: 2px solid var(--ph); }
+#boot .boot-lab {
+  display: grid; grid-template-columns: auto auto 1fr auto;
+  align-items: center; gap: clamp(10px, 2vmin, 22px);
+  margin-top: clamp(22px, 4.7vmin, 50px);
+  color: var(--ph); text-shadow: var(--glow);
+  font-size: clamp(14px, 2.5vmin, 28px);
+  letter-spacing: .16em; white-space: nowrap;
+}
+#boot .boot-mark {
+  width: clamp(22px, 3.5vmin, 38px); aspect-ratio: 1;
+  border: 2px solid var(--ph);
+  padding: 5px;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 4px;
+}
+#boot .boot-mark i { background: var(--ph); }
+#boot .boot-rule { height: 2px; background: var(--ph); }
+#boot .boot-six { display: flex; gap: clamp(4px, .8vmin, 9px); }
+#boot .boot-six i,
+#boot .boot-stages i {
+  display: block;
+  width: clamp(11px, 1.8vmin, 20px); aspect-ratio: 1;
+  border: 2px solid var(--ph);
+}
+#boot .boot-six i:not(:last-child) { background: var(--ph); box-shadow: var(--glow); }
+
+#boot .boot-hero {
+  margin-top: clamp(42px, 8vmin, 84px);
+  text-align: center;
+}
+#boot .boot-thanks {
+  font-size: clamp(17px, 3vmin, 32px);
+  letter-spacing: .15em;
+  color: var(--ph); text-shadow: var(--glow);
+}
+#boot .boot-red-rule {
+  height: 3px;
+  margin-top: clamp(14px, 2.4vmin, 26px);
+  background: var(--red);
+  transform: scaleX(0); transform-origin: left;
+}
+#boot .boot-red-rule.on { animation: boot-draw .65s steps(13, end) forwards; }
+#boot .boot-wordmark {
+  margin-top: clamp(24px, 3.5vmin, 38px);
+  color: var(--cream);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: clamp(72px, 22vmin, 226px);
+  font-weight: 900; line-height: .78;
+  letter-spacing: -.055em;
+  opacity: 0;
+}
+#boot .boot-wordmark.on { animation: boot-bloom .34s steps(6, end) forwards; }
+
+#boot .boot-lower { margin-top: auto; }
+#boot .boot-terminal {
+  display: grid; grid-template-columns: 1fr auto;
+  border: 2px solid var(--ph);
+  color: var(--ph); text-shadow: var(--glow);
+  font-size: clamp(14px, 2.5vmin, 28px);
+  letter-spacing: .1em;
+}
+#boot .boot-terminal > span:first-child {
+  display: flex; align-items: center;
+  min-height: clamp(40px, 7vmin, 72px);
+  padding: 0 clamp(14px, 2.5vmin, 28px);
+  white-space: nowrap;
+}
+#boot .boot-stages {
+  display: flex; align-items: center;
+  gap: clamp(12px, 2.2vmin, 24px);
+  border-left: 2px solid var(--ph);
+  padding: 0 clamp(14px, 2.5vmin, 28px);
+}
+#boot .boot-stages i { border-color: var(--amber); }
+#boot .boot-stages i.on { background: var(--amber); box-shadow: 0 0 6px var(--amber); }
+#boot .boot-stages.complete i {
+  background: var(--ph-bright); border-color: var(--ph-bright);
+  box-shadow: var(--glow);
+}
+#boot .boot-dots {
+  height: 2px;
+  margin: clamp(18px, 3.6vmin, 38px) 0;
+  background: repeating-linear-gradient(
+    to right, var(--ph) 0 5px, transparent 5px 13px);
+}
+#boot .boot-tagline {
+  display: grid; grid-template-columns: auto 1fr auto;
+  align-items: center; gap: clamp(16px, 4vmin, 44px);
+  color: var(--ph); text-shadow: var(--glow);
+  font-size: clamp(12px, 2.2vmin, 24px);
+  letter-spacing: .12em; text-align: center;
+  white-space: nowrap;
+}
+#boot .boot-tagline i {
+  width: clamp(10px, 1.8vmin, 20px); aspect-ratio: 1;
+  background: var(--ph); box-shadow: var(--glow);
+}
+
+#boot .boot-flicker,
+#boot .boot-reveal { opacity: 0; }
+#boot .boot-flicker.on { animation: boot-flicker .42s steps(1, end) forwards; }
+#boot .boot-reveal.on { opacity: 1; }
+
+@keyframes boot-flicker {
+  0%, 14%, 36%, 58% { opacity: 0; }
+  8%, 24%, 48%, 70%, 100% { opacity: 1; }
+}
+@keyframes boot-draw { to { transform: scaleX(1); } }
+@keyframes boot-bloom {
+  0% { opacity: 0; text-shadow: 0 0 28px var(--cream); }
+  24% { opacity: 1; text-shadow: 0 0 28px var(--cream); }
+  100% { opacity: 1; text-shadow: 0 0 5px var(--cream); }
+}
+@keyframes blink { 50% { opacity: 0; } }
+
+@media (max-width: 760px) {
+  #boot .boot-panel { padding: clamp(18px, 5.5vmin, 34px); }
+  #boot .boot-meta { font-size: clamp(10px, 3.2vw, 16px); }
+  #boot .boot-box { border-width: 1px; padding: 6px 8px; }
+  #boot .boot-link { border-bottom-width: 1px; }
+  #boot .boot-lab { gap: 8px; font-size: clamp(10px, 3.3vw, 17px); }
+  #boot .boot-mark { border-width: 1px; padding: 4px; gap: 3px; }
+  #boot .boot-six { gap: 3px; }
+  #boot .boot-six i { width: clamp(7px, 2.4vw, 12px); border-width: 1px; }
+  #boot .boot-wordmark { font-size: clamp(68px, 24vw, 142px); }
+  #boot .boot-terminal { border-width: 1px; font-size: clamp(11px, 3.3vw, 17px); }
+  #boot .boot-terminal > span:first-child { padding: 0 10px; }
+  #boot .boot-stages { gap: 7px; border-left-width: 1px; padding: 0 10px; }
+  #boot .boot-stages i { width: clamp(9px, 2.8vw, 14px); border-width: 1px; }
+  #boot .boot-tagline { gap: 10px; font-size: clamp(9px, 2.9vw, 14px); }
+}
+@media (max-height: 560px) {
+  #boot .boot-panel { padding: 16px 22px; }
+  #boot .boot-lab { margin-top: 10px; }
+  #boot .boot-hero { margin-top: 14px; }
+  #boot .boot-red-rule { margin-top: 7px; height: 2px; }
+  #boot .boot-wordmark { margin-top: 14px; font-size: clamp(64px, 25vmin, 126px); }
+  #boot .boot-terminal > span:first-child { min-height: 34px; }
+  #boot .boot-dots { margin: 12px 0; }
+}
+
+.cursor::after { content: "▮"; animation: blink 1.1s steps(1) infinite; }
+
+/* ============================================================ icons
+   TychoOS's own pixel set (T.icon) — 9×9 bitmaps, currentColor, crisp. */
+.t-ico {
+  width: 11px; height: 11px; flex: none;
+  fill: currentColor; shape-rendering: crispEdges;
+  vertical-align: -1px;
+}
+.t-btn .t-ico { margin-right: 6px; }
+p .t-ico { margin-right: 5px; }
+
+/* ============================================================ state flag
+   A loud one-line banner for a state the screen must not be able to hide.
+   Amber, because amber is this system's
+   "active/caution" signal everywhere else (the dashboard's wip, .v-WEAK) and
+   the whole point is that work mid-way through cannot read the same as
+   something sitting untouched. One accent per screen: a row wearing this flag
+   is not also wearing another. */
+.t-flag {
+  display: flex; align-items: center; gap: 8px;
+  border: 1px solid var(--amber);
+  background: color-mix(in srgb, var(--amber) 8%, transparent);
+  padding: 4px 8px; margin: 8px 0;
+  font-size: var(--fs-xs); letter-spacing: 1px;
+  color: var(--amber);
+}
+.t-flag .t-ico { color: var(--amber); }
+.t-flag b { font-weight: normal; text-shadow: 0 0 6px color-mix(in srgb, var(--amber) 50%, transparent); }
+.t-flag .when { color: var(--ph-dim); letter-spacing: 0; }
+/* ============================================================ rows + panels
+   Every list in the OS uses one boxed row idiom. */
+.t-actions {
+  display: flex; gap: 8px; flex-wrap: wrap;
+  margin: var(--pad) 0; padding-top: var(--pad);
+  border-top: var(--line);
+}
+/* a program's own way back, in its own body — the one navigation idiom left
+   now that the window title row is gone (2026-09-02). A text link, not a
+   button: it is navigation, not a verb, and a boxed control at the top left
+   of every subscreen would just be the titlebar again. */
+.t-back {
+  display: inline-block; margin-bottom: 10px;
+  color: var(--ph-dim); font-size: var(--fs-xs); letter-spacing: 2px;
+  text-decoration: none; cursor: pointer;
+}
+.t-back:hover { color: var(--ph-bright); text-shadow: var(--glow); }
+
+.t-box .row {
+  display: flex; align-items: center; gap: 8px;
+  padding: 5px 6px; font-size: var(--fs-s);
+  border-bottom: 1px dotted var(--ph-faint);
+  min-width: 0;
+}
+.t-box .row .id { color: var(--ph-bright); flex: none; }
+.t-box .row .txt {
+  flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+/* a pickable list — .sel rows are clickable, .on is the one chosen, wearing
+   the same inversion the dock and the folder tabs use */
+.t-box .row.sel { cursor: pointer; }
+.t-box .row.sel:hover, .t-box .row.on { background: var(--ph); color: var(--bg); }
+.t-box .row.sel:hover .id, .t-box .row.sel:hover .dim,
+.t-box .row.on .id, .t-box .row.on .dim { color: var(--bg); }
+/* an editable seed prompt — a textarea wearing pre's clothes */
+.t-seed {
+  font-size: var(--fs-xs); line-height: 1.5;
+  background: var(--bg2); color: var(--ph);
+  border: var(--line);
+  padding: 10px;
+  resize: none; overflow: hidden; min-height: 0;
+  white-space: pre-wrap; word-break: break-word;
+}
+.t-seed:focus { border-color: var(--ph-dim); box-shadow: none; }
+
+
+/* context menu — right-click on the desk, long-press on the tablet */
+.t-ctx {
+  position: absolute; z-index: 80;
+  min-width: 180px;
+  background: var(--bg2);
+  border: var(--line-hot);
+  box-shadow: var(--glow);
+  user-select: none;
+}
+.t-ctx .row {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 12px; font-size: var(--fs-s); cursor: pointer;
+  color: var(--ph);
+}
+.t-ctx .row:hover { background: var(--ph); color: var(--bg); }
+.t-ctx .row.danger { color: var(--red); }
+.t-ctx .row.danger:hover { background: var(--red); color: var(--bg); }
+
+/* modal dialog + transient toast (kernel-level, over the desk) */
+.t-dialog {
+  position: absolute; inset: 0; z-index: 85;
+  display: flex; align-items: center; justify-content: center;
+  background: color-mix(in srgb, var(--void) 60%, transparent);
+}
+.t-dialog .t-box { min-width: min(320px, 80%); box-shadow: var(--glow-hard); }
+/* the fault alert sits above an ordinary dialog and is sized for a dump */
+.t-dialog.t-alert { z-index: 88; }
+/* the box itself must NOT scroll — `.cap` hangs above its top edge and an
+   overflow on the box clips the caption clean off. The only unbounded thing
+   in here is the dump, and that has its own max-height. */
+.t-dialog.t-alert .t-box {
+  width: min(420px, 88%); margin: 14px 0;
+  box-shadow: 0 0 12px color-mix(in srgb, var(--bad) 45%, transparent);
+}
+.t-dialog.t-alert { overflow-y: auto; }
+.t-toast {
+  position: absolute; left: 50%; bottom: 18px; transform: translateX(-50%);
+  z-index: 86; max-width: 80%;
+  background: var(--bg2); border: var(--line-hot); box-shadow: var(--glow);
+  padding: 8px 14px; font-size: var(--fs-xs); color: var(--amber);
+}
+
+/* EDIT — the whole window is the textarea */
+.t-editor {
+  width: 100%; height: 100%;
+  font: inherit; font-size: var(--fs-s); line-height: 1.5;
+  background: var(--bg); color: var(--ph-bright);
+  border: none; outline: none; resize: none;
+  padding: var(--pad);
+  white-space: pre-wrap; word-break: break-word;
+  tab-size: 4;
+}
+
+.t-btn.tiny { padding: 2px 8px; font-size: 10px; }
+/* icon-only tiny button (the copy affordances) — no label, so no trailing gap */
+.t-btn.tiny.ico { padding: 3px 6px; line-height: 0; }
+.t-btn.tiny.ico .t-ico { margin-right: 0; vertical-align: middle; }
+
+/* ============================================================ INTAKE —
+   the capture slip: a real form, which this OS otherwise doesn't have. Label
+   column + field column, read left-to-right rather than scanned, so no dotted
+   leaders (those are for .t-kv, where the eye jumps to the value). PROJECT and
+   TITLE sit in the open; everything else create-task.mjs takes lives under
+   MORE, indented behind a single faint rule so it reads as secondary without
+   reading as unavailable. */
+.t-form-row { display: flex; gap: 10px; align-items: flex-start; margin: 8px 0; }
+.t-form-row > .k {
+  flex: none; width: 62px; padding-top: 9px;
+  font-size: var(--fs-xs); letter-spacing: 1px; color: var(--ph-dim);
+}
+.t-form-row > .f { flex: 1; min-width: 0; }
+.t-form-row.stack { flex-direction: column; gap: 4px; }
+.t-form-row.stack > .k { width: auto; padding-top: 0; }
+.t-form-row .pair { display: flex; gap: 8px; }
+.t-form-row .pair > * { flex: 1; min-width: 0; }
+.t-more { border-left: 1px solid var(--ph-faint); padding-left: 10px; margin: 6px 0; }
+
+/* TASK's slip — a capped, centred column rather than a form stretched the
+   width of whatever screen it is on (Asher, 2026-09-02). No box around it:
+   the column IS the shape, and a border inside a frame is a second frame. */
+.t-slip { max-width: 640px; margin: 0 auto; }
+.t-slip-form { margin: var(--pad) 0; }
+.t-slip-form > .cap {
+  padding-bottom: 7px; margin-bottom: 12px;
+  border-bottom: var(--line);
+  font-size: var(--fs-xs); color: var(--ph-dim); letter-spacing: 3px;
+}
+
+/* the project combobox — the field, and the filtered list dropped under it.
+   `.picked` is load-bearing: text that merely MATCHES a project is not a
+   selection, and the field says which of the two states it is in. */
+.t-combo { position: relative; }
+.t-field.picked { border-color: var(--ph); color: var(--ph-bright); }
+.t-pick {
+  position: absolute; left: 0; right: 0; top: 100%; z-index: 20;
+  background: var(--bg2); border: var(--line-hot); border-top: none;
+  box-shadow: var(--glow);
+  max-height: 220px; overflow-y: auto;
+  /* a native white overlay scrollbar here reads as a bug against the
+     green-on-black chrome everywhere else, so it's themed same as .t-body:
+     thin, transparent track, thumb in the dim phosphor green */
+  scrollbar-width: thin; scrollbar-color: var(--ph-dim) transparent;
+}
+.t-pick::-webkit-scrollbar { width: 6px; }
+.t-pick::-webkit-scrollbar-track { background: transparent; }
+.t-pick::-webkit-scrollbar-thumb { background: var(--ph-dim); }
+.t-pick::-webkit-scrollbar-thumb:hover { background: var(--ph); }
+.t-pick .row {
+  display: flex; gap: 8px; align-items: baseline;
+  padding: 6px 10px; font-size: var(--fs-s);
+}
+.t-pick .row .id { flex: 1; color: var(--ph-bright); }
+.t-pick .row.sel { cursor: pointer; }
+.t-pick .row.sel:hover, .t-pick .row.lead { background: var(--ph-ghost); }
+
+/* the two answers, and they may never look alike: green flag = filed with a
+   real id, red box = nothing written and nothing cleared */
+.t-flag.t-won { border-color: var(--ok); background: color-mix(in srgb, var(--ok) 8%, transparent); color: var(--ok); }
+.t-flag.t-won .t-ico { color: var(--ok); }
+.t-flag.t-won b { text-shadow: var(--glow-ok); }
+.t-box.t-fail { border-color: var(--red); }
+.t-box.t-fail > .cap { color: var(--red); }
+
+/* the receipt — this page-session's ids, newest last. Each id links OUT to
+   Obsidian through the https bounce page and nowhere else: there is no way
+   back into an editor from this screen, which is the program's whole rule. */
+.t-receipt {
+  margin-top: 10px; padding-top: 8px; border-top: 1px dotted var(--ph-faint);
+  font-size: var(--fs-xs); color: var(--ph-dim); word-break: break-word;
+}
+.t-receipt .out {
+  color: var(--ph); text-decoration: none;
+  border-bottom: 1px dotted var(--ph);
+}
+.t-receipt .out:hover { color: var(--ph-bright); background: var(--ph-ghost); }
+
+/* ============================================================ faults —
+   T.errBox. A failed action's stderr is a wall (git is the worst offender) and
+   it used to go out raw: unstyled red, overflowing the window frame. Two
+   registers instead — one line that says what happened, and the dump behind
+   DETAIL ▸ in a box that SCROLLS rather than grows. Nothing here may exceed
+   the window: the head wraps, the dump clips. */
+.t-box.t-err { border-color: var(--red); }
+.t-box.t-err > .cap { color: var(--red); }
+.t-err .head {
+  display: flex; align-items: flex-start; gap: 7px;
+  font-size: var(--fs-s); color: var(--red);
+  overflow-wrap: anywhere; word-break: break-word;
+}
+.t-err .head .t-ico { color: var(--red); margin-top: 3px; }
+.t-err .acts { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+/* the remedy: the exact command that fixes it, and a COPY — the point is that
+   it goes into a terminal, not that it gets read */
+.t-err .remedy {
+  display: flex; align-items: flex-start; gap: 8px;
+  margin-top: 10px; padding: 7px 9px;
+  border: 1px dashed var(--ph-faint); background: var(--bg2);
+}
+.t-err .remedy .cmd {
+  flex: 1; min-width: 0;
+  font-size: var(--fs-xs); line-height: 1.5; color: var(--amber);
+  white-space: pre-wrap; overflow-wrap: anywhere; user-select: text;
+}
+.t-err .remedy::before {
+  content: "$"; flex: none; color: var(--ph-dim); font-size: var(--fs-xs);
+  line-height: 1.5;
+}
+.t-err .queued { margin-top: 10px; }
+.t-err .dump {
+  max-height: 150px; overflow: auto;
+  margin-top: 8px; padding: 8px;
+  border: var(--line); background: var(--bg2);
+  font-size: var(--fs-xs); line-height: 1.5; color: var(--ph-dim);
+  white-space: pre-wrap; overflow-wrap: anywhere;
+  scrollbar-width: thin; scrollbar-color: var(--ph-faint) transparent;
+}
+.t-err .dump::-webkit-scrollbar { width: 6px; }
+.t-err .dump::-webkit-scrollbar-track { background: transparent; }
+.t-err .dump::-webkit-scrollbar-thumb { background: var(--ph-faint); }
+.t-err .dump::-webkit-scrollbar-thumb:hover { background: var(--ph-dim); }
+
+/* ============================================================ soft-keyboard
+   toolbar — docked above the on-screen keyboard (soft-keyboard.js positions
+   it via visualViewport, in JS; this is only its look). Same boxed-cell idiom
+   as the dock and the tab strip: single-pixel seams, a latched modifier
+   inverts exactly like a dock item or the attach pill. `position: fixed` with
+   `top` set in JS — no `bottom` here, because the whole point is that it
+   does not sit at the LAYOUT viewport's bottom, which does not move when the
+   keyboard opens. Hidden by default; JS toggles `.show`. */
+.sk-bar {
+  position: fixed;
+  top: 0; left: 0; width: 100%;
+  display: flex; align-items: stretch; gap: 4px;
+  padding: 6px 8px;
+  background: var(--bg2);
+  border-top: var(--line-hot);
+  box-shadow: var(--glow);
+  z-index: 95;
+  user-select: none;
+  transform: translateY(100%);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform .15s ease, opacity .15s ease;
+}
+.sk-bar.show { transform: translateY(0); opacity: 1; pointer-events: auto; }
+.sk-key {
+  display: flex; align-items: center; justify-content: center;
+  flex: none;
+  min-width: 42px; height: 34px; padding: 0 10px;
+  border: var(--line-hot); background: var(--bg2); color: var(--ph);
+  font-size: var(--fs-s); letter-spacing: 1px;
+  cursor: pointer; touch-action: manipulation;
+}
+.sk-key:active { background: var(--ph); color: var(--bg); }
+.sk-key.mod.on { background: var(--ph); color: var(--bg); box-shadow: var(--glow); }
+.sk-key.arrow { min-width: 38px; }
+.sk-spacer { flex: 1 1 auto; min-width: 8px; }
+
+/* ============================================================ MOBILE —
+   TychoOS at a phone width. ONE breakpoint, 760px, which is the width
+   `Tycho.small()` has always meant and the width #frame already goes
+   full-bleed at; the desktop (1440) and the tablet (2000x1250) are both
+   outside it and nothing here reaches them.
+
+   The rule this section encodes: every control grows to a thumb. It is the
+   same OS wearing the same tokens — the same cabinet, the same fullscreen
+   programs, the same dock; there is no second stylesheet. */
+@media (max-width: 760px) {
+  /* the frame tracks the VISUAL viewport, so a program's own footer (the chat
+     composer, the editor's save state) rides above the on-screen keyboard
+     instead of underneath it. `--vv-h` is written by Tycho.viewport, which the
+     soft-keyboard toolbar also pokes when it docks itself. */
+  body { overflow: hidden; }
+  /* -- iPhone safe areas ---------------------------------------------------
+     `viewport-fit=cover` (index.html) hands us the whole display, notch and
+     rounded corners included — which is what we want for the black ground,
+     and exactly wrong for content: the menubar was rendering UNDER the iOS
+     status bar and the action row's outer buttons were being clipped by the
+     display's corner radius. So the frame keeps the bleed and insets its
+     CONTENT by the four safe-area values.
+
+     Padding rather than margin on purpose: an absolutely-positioned child's
+     containing block is its parent's PADDING box, so `.t-drawer { inset: 0 }`
+     and every full-frame window inherit the insets without a second rule.
+     On Android and on desktop every env() here resolves to 0, so this block
+     is a no-op off iOS — verified against the mobile viewport shot.
+
+     One trap worth naming: padding alone insets the IN-FLOW chrome (menubar,
+     dock) and nothing else — an absolutely positioned `inset: 0` layer spans
+     the padding box rather than respecting it. */
+  #frame {
+    --sa-t: env(safe-area-inset-top, 0px);
+    --sa-b: env(safe-area-inset-bottom, 0px);
+    --sa-l: env(safe-area-inset-left, 0px);
+    --sa-r: env(safe-area-inset-right, 0px);
+    height: var(--vv-h, 100%);
+    padding: var(--sa-t) var(--sa-r) var(--sa-b) var(--sa-l);
+    background: var(--bg);
+  }
+
+  /* -- chrome ------------------------------------------------------------- */
+  .t-menubar { height: 34px; gap: 10px; }
+  .t-menubar .item { padding: 4px 6px; }
+  .t-menubar #clock { white-space: nowrap; }
+
+  /* -- programs -----------------------------------------------------------
+     There is no titlebar to size (2026-09-02); the ✕ that replaced it grows
+     to a thumb in the statusbar, and the dock's icons are already 34px. */
+  .t-close { width: 34px; height: 30px; font-size: var(--fs-m); }
+
+  /* -- touch sizing across the kit ---------------------------------------- */
+  .t-btn { min-height: 46px; padding: 10px 16px; font-size: var(--fs-m); }
+  .t-btn.tiny { min-height: 32px; padding: 4px 10px; font-size: var(--fs-xs); }
+  .t-btn.tiny.ico { min-height: 32px; min-width: 32px; padding: 4px 8px; }
+  /* an action row becomes a thumb pad: two columns, and the PRIMARY verb of a
+     screen (DROP IN, COMPLETE, RULE) takes the full width it deserves */
+  .t-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .t-actions .t-btn { margin: 0; }
+  .t-actions .t-btn.primary { grid-column: 1 / -1; }
+  .t-seg .t-btn { min-height: 46px; }
+  .t-tabs { min-height: 40px; }
+  .t-tabs .cell { flex: 1; justify-content: center; font-size: var(--fs-s); }
+  .t-statusbar { min-height: 40px; height: auto; gap: 8px; padding: 4px 10px; }
+  .t-statusbar .t-btn { min-height: 30px; padding: 3px 10px; }
+  /* the dock's icons are already thumb-sized; the phone only needs them to
+     sit a little tighter so four of them and the can fit across 412px */
+  .t-dock { min-height: 58px; padding: 2px 10px 6px; gap: 8px; }
+  .t-dock-cells { gap: 8px; }
+  .t-dock .item .glyph { width: 32px; height: 32px; }
+  .t-dock .item .lab { max-width: 48px; font-size: 9px; letter-spacing: 0; }
+  .t-can-art { width: 27px; height: 32px; }
+  .t-can .lab { font-size: 9px; letter-spacing: 0; }
+  .t-ctx { min-width: 220px; }
+  .t-ctx .row { padding: 13px 14px; font-size: var(--fs-m); }
+  .t-menu .row { padding: 13px 14px; font-size: var(--fs-m); }
+  /* 16px is the threshold under which mobile Safari zooms the page on focus —
+     a field that scrolls the whole OS sideways when tapped is not usable */
+  .t-field, .t-textarea, .t-editor { font-size: 16px; }
+
+  /* -- stacked facts -------------------------------------------------------
+     A dotted-leader row is a two-column form and there is no room for two
+     columns: WHERE / START / LEFT OFF / BRIEF stack, label over value, and the
+     leader (whose whole job was carrying the eye across a gap) goes away. */
+  .t-kv { flex-direction: column; align-items: stretch; gap: 2px; padding: 7px 0; }
+  .t-kv + .t-kv { border-top: 1px dotted var(--ph-faint); }
+  .t-kv .k { font-size: var(--fs-xs); letter-spacing: 2px; }
+  .t-kv .dots { display: none; }
+  .t-kv .v { text-align: left; font-size: var(--fs-s); overflow-wrap: anywhere; }
+  /* a fact's own opener (Finder, Obsidian) is an ornament ON the fact, not a
+     verb of the screen — it must not wear the 46px thumb size the action row's
+     buttons do, or a four-fact panel becomes a wall of empty boxes */
+  .t-kv .v .t-btn { min-height: 34px; min-width: 34px; padding: 4px 8px; flex: none; }
+  /* A boxed row is a one-line table on a wide screen and there is no room for
+     one here: a list squeezes every row's text down to a single letter
+     ("Deci…", "F", "D") while the date chip keeps its full width. So the
+     row wraps — chips on the first line, and the text, which is the only part
+     that says what the thing IS, gets the second line to itself. `order` is
+     what puts it below spans that follow it in the DOM. */
+  .t-box .row { padding: 12px 4px; gap: 10px; flex-wrap: wrap; row-gap: 6px; }
+  .t-box .row .txt {
+    flex: 1 0 100%; order: 9;
+    white-space: normal; overflow: visible;
+    font-size: var(--fs-s); line-height: 1.4;
+  }
+  /* a row's own button (the list's 👁 briefing) is square and sits on the chip
+     line — the 46px thumb height would stretch it over the wrapped text */
+  .t-box .row .t-btn { min-height: 36px; min-width: 36px; align-self: center; }
+
+  /* -- EDIT ----------------------------------------------------------------
+     A phone is where notes actually get typed, so the editor gets real prose
+     metrics rather than the desktop's dense code metrics: 16px, open leading,
+     a margin to rest a thumb against without catching the caret. */
+  .t-editor { line-height: 1.7; padding: 16px 14px 20px; }
+  /* EDIT has no save button, so this chip is the whole answer to "did that
+     save?" — at arm's length it has to be legible and colour-coded, not a
+     10px dim word in the corner */
+  .t-statusbar .save-state {
+    font-size: var(--fs-s); letter-spacing: 2px;
+    border: var(--line); padding: 3px 9px;
+  }
+  .t-statusbar .save-state[data-state="saved"] { color: var(--ok); border-color: var(--ok); }
+  .t-statusbar .save-state[data-state="dirty"] { color: var(--amber); border-color: var(--amber); }
+  .t-statusbar .save-state[data-state="fail"] { color: var(--red); border-color: var(--red); }
+
+  /* -- CHAT ---------------------------------------------------------------- */
+  .t-thread .msg { max-width: 100%; }
+}
+
+/* ============================================================ THE SCENE —
+   the filing cabinet (scene/). EVERY FACE IS DOM: the carcass, a drawer's
+   front and its thickness, the box's floor and walls, a folder's body, its
+   tab, the sheet — each an opaque element placed IN the scene by
+   CSS3DRenderer, its edges as borders, sorted against the others by the
+   browser's own preserve-3d. Two laws:
+
+   ONE: a solid is OPAQUE. Never `opacity` on one — a translucent front lets
+   the stack behind it show through (the first build's bug). Quiet a face
+   with colour, not alpha.
+
+   TWO: nothing here is laid out by JS except the sheet's height as it grows.
+   Everything else is the renderer's transform. */
+.sc-root { position: absolute; inset: 0; display: flex; flex-direction: column; }
+.sc-stage { flex: 1; position: relative; min-height: 0; overflow: hidden; overscroll-behavior: contain; }
+.sc-css { position: absolute; inset: 0; pointer-events: none; }
+.sc-css * { -webkit-tap-highlight-color: transparent; }
+
+/* -- the caption: the cabinet's name floating above the drawers ------------
+   NOT a row. No rule, no bar, no meta count — it hangs in the stage's own
+   space and gets out of the way as a drawer rolls out (the open drawer's
+   plate names it from then on). Opacity is legal here: this is flat chrome
+   and not a solid (law one is about the scene, not about the words). */
+.sc-cap {
+  position: absolute; left: 0; right: 0; top: 20px; z-index: 3;
+  text-align: center; pointer-events: none; user-select: none;
+  color: var(--ph-bright); font-size: var(--fs-s); letter-spacing: 6px;
+  /* the properties below are the caption's; the NAME inside it is what takes
+     the pointer (a full-width invisible strip would eat taps across the top
+     of the scene). */
+  text-shadow: var(--glow);
+  transition: opacity .35s ease;
+}
+.sc-cap-name { pointer-events: auto; cursor: context-menu; padding: 4px 8px; }
+.sc-root.dimmed .sc-cap { opacity: 0; }
+.sc-root.dimmed .sc-cap-name { pointer-events: none; }
+
+/* -- the line drawing ------------------------------------------------------
+   FAUX 3D (2026-09-02): one line colour, one weight, no shading, no glow on
+   geometry, rounded corners like the reference card. Every solid is filled
+   with the screen's ground so it hides what is behind it, and drawn with a
+   1px edge — at rest that is a flat drawing; only motion gives the depth
+   away. Quiet a face with a dimmer line, never with alpha (law one). */
+.sc-box, .sc-edge, .sc-body, .sc-front, .sc-tab {
+  box-sizing: border-box; background: var(--bg);
+  border: 2px solid var(--ph-dim);
+  backface-visibility: visible;
+}
+/* a shut drawer's box is not drawn at all; an open one is drawn at the same
+   weight as everything else — the drawing has ONE line weight (Asher,
+   2026-09-02: the open box read too thin against the fronts) */
+.sc-box { border: 2px solid var(--bg); }
+.sc-box.out { border: 2px solid var(--ph-dim); }
+/* a front's thickness is a silhouette only — its outline is the front's own */
+.sc-edge { border: none; }
+
+/* -- a drawer's front: the plate, centred, and the tap target --------------
+   The colour transitions are what make the other drawers FADE back as one
+   rolls out rather than snap the instant the mode flips. */
+.sc-front, .sc-plate, .sc-plate-name, .sc-plate-meta {
+  transition: border-color .45s ease, color .45s ease, text-shadow .45s ease;
+}
+.sc-front {
+  pointer-events: auto; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  user-select: none;
+}
+.sc-plate {
+  width: 64%; box-sizing: border-box; padding: 10px 12px 11px;
+  border: 2px solid var(--ph-dim);
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+}
+.sc-plate-name {
+  color: var(--ph); font-size: var(--fs-l); letter-spacing: 4px;
+  max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.sc-plate-meta { color: var(--ph-dim); font-size: var(--fs-s); letter-spacing: 2px; }
+.sc-front:hover, .sc-front.open { border-color: var(--ph); }
+.sc-front:hover .sc-plate, .sc-front.open .sc-plate { border-color: var(--ph); }
+.sc-front:hover .sc-plate-name, .sc-front.open .sc-plate-name { color: var(--ph-bright); text-shadow: var(--glow); }
+/* while a drawer is open the others are still there, but quieter — by
+   colour, never by alpha (law one). Driven by `dimmed` rather than the mode,
+   because the mode only flips home once the drawer has arrived: the class
+   turns on as it starts out and off as it starts back, so the transition
+   above is what the eye actually sees. */
+.sc-root.dimmed .sc-front:not(.open) { border-color: var(--ph-faint); }
+.sc-root.dimmed .sc-front:not(.open) .sc-plate { border-color: var(--ph-faint); }
+.sc-root.dimmed .sc-front:not(.open) .sc-plate-name { color: var(--ph-dim); text-shadow: none; }
+.sc-root.dimmed .sc-front:not(.open) .sc-plate-meta { color: var(--ph-faint); }
+
+/* -- a hanging folder: body and tab ---------------------------------------- */
+.sc-body { border-bottom: none; }
+.sc-body.hover { border-color: var(--ph); }
+.sc-body.hot { border-color: var(--ph-bright); }
+/* THE ONLY ROUNDED THING IN THE DRAWER (Asher, 2026-09-02): a folder tab and
+   a sheet face are rounded across their TOP corners and square at the foot,
+   which is what a real hanging folder and a real sheet of paper look like
+   sitting in a box. Everything else in the OS stays square; the big hovering
+   verbs stay pills. */
+.sc-tab, .sc-face { border-radius: 8px 8px 0 0; }
+.sc-tab {
+  pointer-events: auto; cursor: pointer;
+  /* a press here may become a CARRY to the trash can (scene/drag.js), so the
+     browser's own pan gesture must not claim the move first */
+  touch-action: none;
+  border-bottom: none;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 0 10px;
+  font-size: var(--fs-m); letter-spacing: 1px; line-height: 1;
+  color: var(--ph-dim);
+  white-space: nowrap; overflow: hidden;
+  user-select: none;
+  transition: color .12s linear, background .12s linear;
+}
+.sc-tab .sc-lab { color: var(--ph); overflow: hidden; text-overflow: ellipsis; }
+.sc-tab .sc-num { flex: none; color: var(--ph-dim); font-size: var(--fs-xs); }
+.sc-tab.hover { border-color: var(--ph); }
+.sc-tab.hover .sc-lab { color: var(--ph-bright); text-shadow: var(--glow); }
+/* popped: the tab fills with phosphor and the words invert */
+.sc-tab.hot { background: var(--ph); border-color: var(--ph-bright); }
+.sc-tab.hot .sc-lab, .sc-tab.hot .sc-num { color: var(--bg); text-shadow: none; }
+.sc-tab.hot .sc-num { opacity: .6; }
+/* -- the sheet's face: the file's own contents, on the paper --------------- */
+.sc-face {
+  pointer-events: auto; cursor: pointer;
+  touch-action: none;          /* same reason as .sc-tab: it can be carried */
+  box-sizing: border-box;
+  background: var(--bg);
+  border: 2px solid var(--ph);
+  padding: 16px 20px;
+  display: flex; flex-direction: column; gap: 6px;
+  overflow: hidden;
+}
+.sc-face-head { display: flex; align-items: baseline; gap: 12px; flex: none; }
+.sc-face-ord { color: var(--ph-faint); font-size: var(--fs-xs); letter-spacing: 1px; flex: none; }
+.sc-face-label {
+  color: var(--ph-bright); font-size: var(--fs-l); letter-spacing: 2px;
+  text-shadow: var(--glow);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.sc-face-meta {
+  color: var(--ph-dim); font-size: var(--fs-xs); letter-spacing: 1px;
+  border-bottom: var(--line); padding-bottom: 6px; flex: none;
+}
+.sc-face-body {
+  flex: 1; min-height: 0; overflow: hidden; margin: 0;
+  color: var(--ph); font-family: var(--mono); font-size: var(--fs-s);
+  line-height: 1.5; white-space: pre-wrap; word-break: break-word;
+}
+
+/* -- the file in your hand -------------------------------------------------
+   ONE OBJECT, TWO SHAPES (Asher, 2026-09-02: "the file comes out of the
+   drawer with you and shrinks into that little icon"). This is a CSS3DObject
+   in the scene like every other solid — scene/carry.js drives its transform
+   on the scene's own rAF — and it wears the sheet's markup at full size and
+   the trash view's document at the far end. Nothing here animates: a CSS
+   transition on this element would fight the renderer, which rewrites its
+   transform every frame.
+
+   `.sc-face.sc-carry` is the paper: everything the real sheet is, minus the
+   pointer (you are already holding it). `.sc-carry.doc` is the document:
+   no box and no ground of its own, because the drawing IS the sheet and it
+   carries the screen's ground as its own fill — the same object the drag
+   ghost and the trash view wear. */
+/* the surface the carried file is drawn on: over the frame, squared up with
+   the stage by chrome.js, and NOT clipped — the can it is being carried to
+   is in the dock row, below the stage's foot */
+.sc-hand {
+  position: absolute; z-index: 84; pointer-events: none; overflow: visible;
+}
+.sc-hand * { -webkit-tap-highlight-color: transparent; }
+
+.sc-face.sc-carry, .sc-carry {
+  pointer-events: none; cursor: default;
+  will-change: transform;
+}
+.sc-carry.doc {
+  box-sizing: border-box; border: none; background: none; padding: 0;
+  display: block; position: relative; overflow: visible;
+  color: var(--ph);
+}
+.sc-carry.doc .t-doc-art {
+  width: 100%; height: 100%; display: block;
+  fill: var(--bg); stroke: currentColor; stroke-width: 2;
+  stroke-linecap: square; stroke-linejoin: miter;
+}
+/* the name hangs BELOW the drawing rather than inside it, so shrinking the
+   card toward the document's 34:44 never has to make room for words */
+.sc-carry.doc .lab {
+  position: absolute; left: 50%; top: 100%; transform: translateX(-50%);
+  margin-top: 10px; max-width: 300%;
+  font-size: 26px; line-height: 1.2; letter-spacing: 0; text-align: center;
+  color: var(--ph-bright);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+/* over the can: the same red the ghost turned, by colour and never by alpha */
+.sc-face.sc-carry.bad { border-color: var(--bad); }
+.sc-carry.bad, .sc-carry.bad .sc-face-label, .sc-carry.bad .lab { color: var(--bad); }
+.sc-carry.bad .sc-face-label { text-shadow: none; }
+
+/* the slot the paper came out of: the hanging folder is still there, empty.
+   A dashed body rather than a gap — folders do not close ranks in a real
+   drawer, and an empty one is the honest picture of where it will go back. */
+.sc-body.gone { border-style: dashed; border-color: var(--ph-faint); }
+
+/* -- strata paddles --------------------------------------------------------
+   ▲▼ through an open drawer's pages, at the stage's right edge — and ONLY
+   in a drawer (2026-09-02). They used to double as the cabinet's ◀▶ bank
+   pads; those are pills in the bottom band now. */
+.sc-pads {
+  position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+  display: flex; flex-direction: column; gap: 8px; z-index: 4;
+}
+.sc-pad {
+  width: 42px; height: 42px;
+  border: var(--line-hot); background: var(--bg2); color: var(--ph);
+  font-family: var(--mono); font-size: var(--fs-m); cursor: pointer;
+  display: grid; place-items: center;
+  -webkit-tap-highlight-color: transparent;
+}
+.sc-pad:hover:not(:disabled) { background: var(--ph); color: var(--bg); box-shadow: var(--glow); }
+.sc-pad:disabled { color: var(--ph-faint); border-color: var(--ph-faint); cursor: default; }
+
+/* -- the band: THE BIG VERBS, ALONG THE BOTTOM (Asher, 2026-09-02) ---------
+   One strip, centred, at the bottom of the stage — never under the drawer's
+   projected front, which moves while the drawer rolls. It holds the popped
+   file's verbs in a drawer and the two bank pills out in the cabinet, and
+   nothing at all when there is neither (band.js hides it outright, so it
+   takes no space and eats no taps). The floating dock icons and the trash
+   can are in `#frame` BELOW `#main`, so the band never sits on top of them —
+   the margin here is breathing room, not clearance.
+
+   No bar, no rule above it: the band is a place, not a box. */
+/* the band is a plain flex child of the dock row now — no position, no
+   z-index, no pointer-events dance, because it is no longer an overlay */
+.sc-band { display: flex; justify-content: center; min-width: 0; }
+.sc-run, .sc-banks {
+  display: flex; gap: 10px; align-items: center;
+  min-width: 0;
+}
+.sc-run .t-btn {
+  /* a lone RUN is still a BIG verb — without a floor it shrinks to the width
+     of the word and stops reading as the one thing to press. The height is
+     the dock row's: 44px sits inside the row's 62px without making a drawer's
+     verbs taller than a cabinet's pads and jolting the stage. */
+  flex: 1 1 auto; min-width: 150px; max-width: 260px;
+  min-height: 44px; padding: 6px 20px;
+  font-size: var(--fs-m); letter-spacing: 2px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.sc-run .t-btn.primary { flex: 2 1 auto; }
+/* the bank pads: ROUND and wordless on every viewport (2026-09-02) — an
+   arrow in a circle, told apart from the drawer's word-bearing verbs by its
+   shape rather than by where it sits, now that they share one slot */
+.sc-bank.t-btn {
+  width: 44px; height: 44px; min-height: 0; flex: none;
+  padding: 0; display: grid; place-items: center;
+  font-size: var(--fs-m); letter-spacing: 0;
+}
+
+@media (max-width: 760px) {
+  .sc-cap { top: 14px; letter-spacing: 4px; }
+  .sc-plate-name { font-size: var(--fs-m); letter-spacing: 3px; }
+  .sc-tab { font-size: 10px; letter-spacing: 0; padding: 0 3px; }
+  .sc-tab .sc-num { display: none; }
+  .sc-face { padding: 12px 14px; }
+  .sc-pad { width: 46px; height: 46px; font-size: var(--fs-l); }
+  .sc-run, .sc-banks { gap: 8px; }
+  /* the centre slot has ~200px between the icons and the can, so the verbs
+     give up their floor rather than pushing the corners out of the frame */
+  .sc-run .t-btn {
+    min-width: 0; max-width: none; min-height: 42px;
+    padding: 6px 10px; font-size: var(--fs-s); letter-spacing: 1px;
+  }
+  .sc-bank.t-btn { width: 42px; height: 42px; }
+  /* a phone's floor is small: a slightly smaller sheet and a shorter name
+     keep the pile from becoming one illegible heap */
+  .t-trash-doc .t-doc-art { width: 38px; height: 50px; }
+  .t-trash-doc .t-crumple-art { width: 42px; height: 42px; }
+  .t-trash-doc .t-binned-cabinet-art { width: 37px; height: 46px; }
+  .t-trash-doc .lab { max-width: 96px; }
+}
+
+/* ==== PRIMITIVES: the flip card (primitives/flipcard.js) =====================
+   A line drawing at rest; the panels only have depth while one turns. One
+   line colour, one weight, the reference card's proportions. Sizes are in
+   --flip-w so a program can scale it. */
+.t-flip {
+  --flip-w: 250px; --flip-h: 330px; --flip-line: var(--ph); --flip-stroke: 2px;
+  display: inline-flex; align-items: center; gap: 14px;
+  user-select: none; -webkit-tap-highlight-color: transparent;
+}
+.t-flip-card {
+  position: relative; width: var(--flip-w); height: var(--flip-h);
+  perspective: 900px; cursor: pointer;
+}
+.t-flip-face {
+  position: absolute; left: 0; right: 0; height: 50%;
+  box-sizing: border-box; background: var(--bg);
+  border: var(--flip-stroke) solid var(--flip-line);
+  overflow: hidden; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 6px;
+  padding: 0 14px;
+}
+.t-flip-face.top { top: 0; border-radius: 10px 10px 0 0; border-bottom-width: var(--flip-stroke); }
+.t-flip-face.bottom { bottom: 0; border-radius: 0 0 10px 10px; border-top-width: var(--flip-stroke); }
+/* the card's foot rule — a line a little way up the bottom panel */
+.t-flip-face.bottom::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 20%;
+  border-top: var(--flip-stroke) solid var(--flip-line);
+}
+.t-flip-title {
+  color: var(--ph-bright); font-size: var(--fs-l); letter-spacing: 2px; text-align: center;
+  text-shadow: var(--glow); line-height: 1.2;
+  max-width: 100%; overflow: hidden; text-overflow: ellipsis;
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
+}
+.t-flip-sub { color: var(--ph-dim); font-size: var(--fs-xs); letter-spacing: 2px; text-align: center; }
+/* a bottom panel carries the sub line only; a top panel the title only —
+   one card, two halves, each saying its own part */
+.t-flip-face.top .t-flip-sub { display: none; }
+.t-flip-face.bottom .t-flip-title { display: none; }
+.t-flip-face.bottom .t-flip-sub {
+  position: absolute; top: 34px; left: 14px; right: 14px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+/* the split flap: a top-half panel that folds down over the hinge */
+.t-flip-flap {
+  position: absolute; left: 0; right: 0; top: 0; height: 50%;
+  transform-style: preserve-3d; transform-origin: 50% 100%;
+  pointer-events: none; visibility: hidden;
+}
+.t-flip-flap.down, .t-flip-flap.up { visibility: visible; }
+.t-flip-flap.up { top: 50%; transform-origin: 50% 0%; }
+.t-flip-flap.turn { transition: transform .52s cubic-bezier(.5, 0, .35, 1); }
+.t-flip-flap.down.turn { transform: rotateX(-180deg); }
+.t-flip-flap.up.turn { transform: rotateX(180deg); }
+.t-flip-side { position: absolute; inset: 0; backface-visibility: hidden; }
+.t-flip-side .t-flip-face { position: absolute; inset: 0; height: auto; }
+.t-flip-side.back { transform: rotateX(180deg); }
+
+/* hinge pins, nub and foot */
+.t-flip-pin {
+  position: absolute; top: calc(50% - 22px); width: 9px; height: 44px;
+  box-sizing: border-box; background: var(--bg);
+  border: var(--flip-stroke) solid var(--flip-line); border-radius: 5px; z-index: 3;
+}
+.t-flip-pin.l { left: 24%; } .t-flip-pin.r { right: 24%; }
+.t-flip-nub {
+  position: absolute; top: calc(-1 * var(--flip-stroke) - 5px); left: calc(50% - 20px);
+  width: 40px; height: 9px; box-sizing: border-box;
+  border: var(--flip-stroke) solid var(--flip-line); border-bottom: none; border-radius: 5px 5px 0 0;
+}
+.t-flip-foot {
+  position: absolute; bottom: calc(-1 * var(--flip-stroke) - 8px); left: 12px;
+  width: 42px; height: 12px; box-sizing: border-box;
+  border: var(--flip-stroke) solid var(--flip-line); border-top: none; border-radius: 0 0 6px 6px;
+}
+/* the spiral: seven ticks down each side, centred on the hinge */
+.t-flip-ticks { display: flex; flex-direction: column; gap: 5px; }
+.t-flip-ticks i { display: block; width: 24px; height: 5px; box-sizing: border-box;
+  border: var(--flip-stroke) solid var(--flip-line); border-radius: 2px; }
+.t-flip-ticks.l i { border-radius: 3px 0 0 3px; } .t-flip-ticks.r i { border-radius: 0 3px 3px 0; }
+.t-flip.empty .t-flip-card { opacity: 1; }
+.t-flip.empty .t-flip-title::before { content: "— EMPTY —"; color: var(--ph-dim); }
+
+@media (max-width: 760px) { .t-flip { --flip-w: 220px; --flip-h: 290px; } }
+
+/* ==== PRIMITIVES: the index card (primitives/indexcard.js) ===================
+   PAPER, and the one place in the OS that says so. Rounded 8px corners (the
+   design law's stated exception, with the flip card), a 2px phosphor edge, the
+   screen's own ground as the stock, and RULED: faint lines the body text sits
+   on, drawn as a repeating gradient whose pitch IS the body's line-height
+   (--card-rule), so a paragraph lands on the ruling instead of drifting off it
+   after four lines. The ruling is `background-attachment: local`, so it
+   travels with the text when a long card scrolls — a card whose rules stay put
+   while its words slide over them is not a card. */
+.t-card {
+  --card-rule: 22px;
+  position: relative;
+  display: flex; flex-direction: column;
+  min-width: 280px; min-height: 0;
+  background: var(--bg);
+  border: 2px solid var(--ph);
+  border-radius: 8px;
+  overflow: hidden;             /* the radius has to clip the ruling */
+}
+/* the title line, over the heavier rule that separates it from the body */
+.t-card-title {
+  flex: none; padding: 9px 16px 8px;
+  border-bottom: 2px solid var(--ph);
+  color: var(--ph-bright); font-size: var(--fs-s); letter-spacing: 4px;
+  text-shadow: var(--glow);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.t-card-body {
+  flex: 1; min-height: 0; overflow-y: auto;
+  padding: 0 16px 14px;
+  font-size: var(--fs-s); line-height: var(--card-rule);
+  color: var(--ph);
+  background-image: repeating-linear-gradient(to bottom,
+    transparent 0 calc(var(--card-rule) - 1px),
+    var(--ph-faint) calc(var(--card-rule) - 1px) var(--card-rule));
+  background-attachment: local;
+  scrollbar-width: thin; scrollbar-color: var(--ph-faint) transparent;
+}
+.t-card-body::-webkit-scrollbar { width: 6px; }
+.t-card-body::-webkit-scrollbar-track { background: transparent; }
+.t-card-body::-webkit-scrollbar-thumb { background: var(--ph-faint); }
+/* everything inside the card is measured in WHOLE RULES — a stray 8px margin
+   is what puts the second paragraph half a line off the ruling */
+.t-card-body .t-md { font-size: inherit; line-height: inherit; }
+.t-card-body .t-md p { margin: 0; }
+.t-card-body .t-md p + p { margin-top: var(--card-rule); }
+/* a block that is not prose masks the ruling under it rather than straddling
+   it — a table sitting on ruled lines reads as two grids fighting */
+.t-card-body .t-md pre,
+.t-card-body .t-md table { background: var(--bg); margin: var(--card-rule) 0; }
+/* …and it keeps the rhythm rather than only hiding it: ONE ROW IS TWO RULES —
+   the 22px line-height, 21px of padding and the 1px collapsed border — so a
+   cell that wraps grows by a whole rule instead of half of one, and whatever
+   follows the table lands back on the ruling. The table's one extra top
+   border is taken back out of its top margin. */
+.t-card-body .t-md table { margin-top: calc(var(--card-rule) - 1px); }
+.t-card-body .t-md th,
+.t-card-body .t-md td { padding: 10.5px 8px; line-height: var(--card-rule); }
+.t-card-lines > div { white-space: pre-wrap; overflow-wrap: anywhere; }
+/* the foot: a hairline and one short line of whatever the program hangs there
+   (REPLAY's two fair-test boxes, CALIBRATE's notes rule) */
+.t-card-foot {
+  flex: none; display: flex; align-items: center; gap: 12px;
+  padding: 7px 16px 9px;
+  border-top: 1px solid var(--ph-faint);
+  font-size: var(--fs-xs); color: var(--ph-dim); letter-spacing: 1px;
+}
+/* the reveal card — the same paper, smaller, so the eye reads it as an aside */
+.t-card.small { --card-rule: 20px; min-width: 0; }
+.t-card.small .t-card-title { padding: 6px 12px 5px; letter-spacing: 3px; }
+.t-card.small .t-card-body { padding: 0 12px 10px; font-size: var(--fs-xs); }
+/* a caption INSIDE the paper, for a small card that has something to name but
+   does not deserve a title rule of its own (the reveal). A boxed title bar on
+   an aside is the third panel this bench spent 2026-09-02 removing. */
+.t-card-cap {
+  color: var(--ph-dim); font-size: var(--fs-xs); letter-spacing: 3px;
+}
+
+/* a tick — a small square control for a boolean that belongs ON a card rather
+   than in an action row. Square, like everything but the paper and the big
+   verbs. REPLAY hangs two of them on its card foot (FAIR TEST / NOT A FAIR
+   TEST), mutually exclusive and both empty until he answers — which is why
+   `.on` is a state here rather than the default. */
+.t-tick {
+  display: inline-flex; align-items: center; gap: 7px; flex: none;
+  font: inherit; font-size: var(--fs-xs); letter-spacing: 2px;
+  background: none; border: none; padding: 0;
+  color: var(--ph-dim); cursor: pointer; touch-action: manipulation;
+}
+.t-tick .box {
+  width: 15px; height: 15px; flex: none; box-sizing: border-box;
+  border: 2px solid currentColor; background: transparent;
+}
+.t-tick.on { color: var(--ph-bright); }
+.t-tick.on .box { background: currentColor; }
+.t-tick:hover { color: var(--ph); text-shadow: var(--glow); }
+.t-tick[disabled] { cursor: default; opacity: .55; }
+/* the refusal: a stamp came down with neither box ticked, so the question
+   that has to be answered first says so */
+.t-ticks.pulse .t-tick { animation: tick-pulse .42s steps(1) 3; }
+@keyframes tick-pulse {
+  0%, 100% { color: var(--ph-dim); }
+  50% { color: var(--bad); text-shadow: var(--glow-bad); }
+}
+.t-ticks { display: flex; align-items: center; gap: 16px; min-width: 0; }
+/* CALIBRATE's back-talk: one ruled line at the foot of the card, not a box */
+.t-card-note {
+  flex: 1; min-width: 0;
+  font: inherit; font-size: var(--fs-xs);
+  background: transparent; color: var(--ph-bright);
+  border: none; border-bottom: 1px solid var(--ph-faint);
+  padding: 3px 2px; outline: none;
+}
+.t-card-note:focus { border-bottom-color: var(--ph); }
+
+/* ==== PRIMITIVES: the rubber stamp (primitives/stamp.js) ====================
+   AN OBJECT ON A DESK, not a row of buttons (Asher, 2026-09-02). Each stamp
+   is drawn side-on — a rounded handle over a flat base block with the verdict
+   word small on it, and the rubber die under that — standing on a REST: a
+   single hairline, no box, because a rest is a patch of desk and a box would
+   be a panel. Picking one up is a real carry (stamp.js), so the whole thing
+   is `touch-action: none` and nothing here is a `<button>`: a tap must do
+   NOTHING, and a button that ignores taps is a lie the eye reads first. */
+.t-stamps {
+  display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+  gap: 16px; flex: none;
+  padding: 4px 12px 12px;
+  border-bottom: 1px solid var(--ph-faint);
+  user-select: none; -webkit-tap-highlight-color: transparent;
+}
+/* the slot holds the space while the stamp is in the air */
+.t-stamp-slot { position: relative; width: 128px; height: 86px; flex: none; }
+.t-stamp {
+  --sc: var(--ph);
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+  color: var(--sc); cursor: grab; touch-action: none;
+}
+.t-stamp.ok    { --sc: var(--ok); }
+.t-stamp.red   { --sc: var(--bad); }
+.t-stamp.amber { --sc: var(--amber); }
+/* the handle: a rounded knob on a straight neck. The one rounded thing in
+   here, and it is rounded because the wooden object is. */
+.t-stamp .knob {
+  width: 36px; height: 21px; flex: none; box-sizing: border-box;
+  border: 2px solid var(--sc); border-radius: 16px 16px 3px 3px;
+  background: var(--bg);
+}
+.t-stamp .neck {
+  width: 18px; height: 13px; flex: none; box-sizing: border-box; margin-top: -2px;
+  border-left: 2px solid var(--sc); border-right: 2px solid var(--sc);
+  background: var(--bg);
+}
+/* the base block, and the verdict word small on it */
+.t-stamp .base {
+  width: 100%; flex: none; box-sizing: border-box; margin-top: -2px;
+  border: 2px solid var(--sc); background: var(--bg); color: var(--sc);
+  padding: 7px 4px 6px;
+  font-size: var(--fs-xs); letter-spacing: 1px; text-align: center; line-height: 1.15;
+}
+/* the rubber die under it — the part that actually meets the paper */
+.t-stamp .die {
+  width: 74%; height: 7px; flex: none; box-sizing: border-box;
+  border: 2px solid var(--sc); border-top: none; background: var(--bg);
+}
+.t-stamp:hover .base { background: var(--sc); color: var(--bg); }
+.t-stamp.on .base { background: var(--sc); color: var(--bg); }
+.t-stamp.on .die { background: var(--sc); }
+/* in the air: it leaves the flow (its slot keeps the space), tilts, and
+   carries its own glow so it reads as lifted off the desk */
+.t-stamp.carried {
+  position: fixed; inset: auto; z-index: 96;
+  cursor: grabbing; pointer-events: none;
+  transform: rotate(-11deg);
+  filter: drop-shadow(0 0 9px color-mix(in srgb, var(--sc) 40%, transparent));
+}
+.t-stamp.springing { transition: left .18s ease, top .18s ease; }
+/* the paper, while a stamp is over it */
+.t-ink-hot { outline: 2px dashed var(--ph-bright); outline-offset: 4px; }
+/* locked: the verdict is final, so the rest stops offering itself */
+.t-stamps.locked .t-stamp { cursor: default; }
+.t-stamps.locked .t-stamp:not(.on) { --sc: var(--ph-faint); }
+.t-stamps.locked .t-stamp:not(.on):hover .base { background: var(--bg); color: var(--sc); }
+
+.t-stamp-ink {
+  position: absolute; left: 50%; top: 48%; z-index: 6;
+  pointer-events: none; user-select: none;
+  border: 3px solid var(--ph); border-radius: 8px;
+  padding: 9px 20px 10px;
+  color: var(--ph); text-shadow: var(--glow);
+  font-size: var(--fs-xl); letter-spacing: 9px; white-space: nowrap;
+  /* the thump: it comes down big and lands at size */
+  transform: translate(-50%, -50%) rotate(-8deg) scale(1.85);
+  opacity: 0;
+  transition: transform .17s cubic-bezier(.2, .85, .3, 1), opacity .09s linear;
+}
+.t-stamp-ink.down { transform: translate(-50%, -50%) rotate(-8deg) scale(1); opacity: 1; }
+.t-stamp-ink.ok { border-color: var(--ok); color: var(--ok); text-shadow: var(--glow-ok); }
+.t-stamp-ink.red { border-color: var(--bad); color: var(--bad); text-shadow: var(--glow-bad); }
+.t-stamp-ink.amber { border-color: var(--amber); color: var(--amber);
+  text-shadow: 0 0 6px color-mix(in srgb, var(--amber) 50%, transparent); }
+/* an impression restored from a record was never stamped in front of you, so
+   it does not get the thump */
+.t-stamp-ink.quiet { transition: none; }
+
+/* ==== PRIMITIVES: the in / out trays (primitives/trays.js) ==================
+   Shallow open boxes in the line idiom: an outer silhouette, the far lip
+   inset and narrower, and two short walls between them — a tray seen from
+   slightly above, drawn flat. The thing being sorted sits on a perch above
+   them and is CARRIED down into one. */
+.t-trays {
+  display: flex; flex-direction: column; align-items: center; gap: 20px;
+  user-select: none;
+}
+.t-tray-perch { min-height: 92px; display: grid; place-items: center; }
+.t-tray-item { cursor: grab; touch-action: none; }
+.t-tray-item.carried { cursor: grabbing; position: relative; z-index: 9; }
+.t-tray-item.home { transition: transform .2s ease; }
+.t-tray-item.landed { transition: transform .18s ease, opacity .18s linear; opacity: 0; }
+.t-tray-row { display: flex; gap: 24px; }
+.t-tray {
+  position: relative; width: 154px; height: 94px; box-sizing: border-box;
+  border: 2px solid var(--ph-dim);
+  display: flex; align-items: flex-end; justify-content: center;
+  padding-bottom: 11px;
+  color: var(--ph-dim);
+  transition: border-color .12s linear, color .12s linear;
+}
+.t-tray .mouth { position: absolute; left: 15px; right: 15px; top: 17px; border-top: 2px solid currentColor; }
+.t-tray .mouth::before, .t-tray .mouth::after {
+  content: ""; position: absolute; bottom: 0;
+  width: 2px; height: 23px; background: currentColor;
+  transform-origin: 50% 100%;
+}
+.t-tray .mouth::before { left: -2px; transform: rotate(-41deg); }
+.t-tray .mouth::after { right: -2px; transform: rotate(41deg); }
+.t-tray .lab { font-size: var(--fs-s); letter-spacing: 3px; }
+.t-tray.hot { border-color: var(--ph); color: var(--ph); }
+.t-tray.hot .lab { color: var(--ph-bright); text-shadow: var(--glow); }
+
+/* ==== the judging bench — REPLAY and CALIBRATE ==============================
+   Objects on a desk, not panels (Asher, 2026-09-02). The DECK on the left
+   (the flip card is the sequence, and the front card is the item you are on,
+   with a tiny unboxed counter under it), and on the right the PAPER you are
+   judging with the STAMP REST standing beside it — beside, because the stamp
+   has to be carried ONTO the card and a carry of 10px is not a carry. The
+   reveal slides in underneath as a second, smaller piece of the same paper.
+   A phone stacks it all, deck first, because the deck is what tells you where
+   you are; there the rest sits under the card, which is still a real trip. */
+.t-body.t-flush { display: flex; flex-direction: column; overflow: hidden; }
+.t-body.t-flush > .t-bench { flex: 1; min-height: 0; }
+.t-bench {
+  display: grid; grid-template-columns: minmax(0, 40fr) minmax(0, 60fr);
+  gap: 18px; align-items: stretch;
+}
+.t-bench > .deck {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 10px; min-width: 0;
+}
+/* the deck is the LEFT HALF of the bench and has one object in it, so the card
+   grows to own the column rather than sitting in the middle of a dark field */
+.t-bench > .deck .t-flip { --flip-w: 296px; --flip-h: 392px; }
+/* the counter, kept quiet: the navigation is the cards themselves now, so
+   this says only where you are (2026-09-02 — the ◀ ▶ pads are gone) */
+.t-bench .deck-at {
+  font-size: var(--fs-xs); color: var(--ph-dim); letter-spacing: 3px;
+}
+.t-bench > .pane {
+  display: grid; min-width: 0; min-height: 0;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: 14px 18px;
+}
+.t-bench > .pane > .t-card { grid-area: 1 / 1; min-height: 180px; }
+.t-bench > .pane > .rest { grid-area: 1 / 2; display: flex; align-items: flex-end; }
+.t-bench > .pane > .reveal { grid-area: 2 / 1 / 3 / 3; }
+.t-bench > .pane > .reveal .t-card-body { max-height: 168px; }
+/* the reveal is an aside that ARRIVES — it slides out from under the card it
+   belongs to rather than appearing as a third panel */
+.t-bench > .pane > .reveal .t-card { animation: reveal-slide .3s cubic-bezier(.2,.8,.3,1); }
+@keyframes reveal-slide {
+  from { transform: translateY(-14px); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+
+@media (max-width: 760px) {
+  .t-body.t-flush { display: block; overflow-y: auto; }
+  .t-bench { grid-template-columns: 1fr; gap: 16px; }
+  /* the deck is the whole width of a phone, so it does NOT get the desktop
+     column's oversized card — one screenful of flip card and nothing else is
+     not "deck first", it is "deck only" */
+  .t-bench > .deck .t-flip { --flip-w: 200px; --flip-h: 262px; }
+  .t-bench > .pane { grid-template-columns: 1fr; grid-template-rows: auto auto auto; }
+  .t-bench > .pane > .t-card { grid-area: 1 / 1; min-height: 260px; }
+  .t-bench > .pane > .rest { grid-area: 2 / 1; justify-content: center; }
+  .t-bench > .pane > .reveal { grid-area: 3 / 1; }
+  .t-bench > .pane > .t-card .t-card-body { max-height: 300px; }
+  /* the card foot's "ITEM 01 / 4" is what the deck's own counter already says,
+     and on a 412px foot it wraps to two lines — so the phone drops it */
+  .t-card-foot .item-of { display: none; }
+  /* a phone's rest lies along the desk rather than standing beside the paper */
+  .t-stamps { flex-direction: row; align-items: flex-end; gap: 12px; }
+  .t-stamp-slot { width: 104px; height: 80px; }
+  .t-stamp-ink { font-size: var(--fs-m); letter-spacing: 4px; padding: 7px 14px; }
+  .t-ticks { gap: 12px; }
+  .t-tray { width: 130px; height: 84px; }
+  .t-tray-row { gap: 16px; }
+}

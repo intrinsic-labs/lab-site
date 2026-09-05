@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // The vendored TychoOS shell + its mock layer: no-build browser JS, not this app's code.
+    "public/tycho-demo/**",
   ]),
 ]);
 

@@ -21,7 +21,16 @@ import { ButtonLink } from "@/components/ui/ButtonLink";
  * `object-contain` under a viewport-relative cap, which is what lets one component seat a
  * 16:9 plate and a portrait phone screenshot without either overflowing a small screen.
  */
-export function ProductHero({ product, images }: { product: Product; images: ProductImages }) {
+export function ProductHero({
+  product,
+  images,
+  demo = false,
+}: {
+  product: Product;
+  images: ProductImages;
+  /** True when the page carries an interactive demo — it is the visual, so no image here. */
+  demo?: boolean;
+}) {
   return (
     <section className="relative overflow-hidden">
 
@@ -37,9 +46,9 @@ export function ProductHero({ product, images }: { product: Product; images: Pro
 
         {/* The hero image is a STAND-IN for a gallery, not a companion to one (Asher,
             2026-09-04: "drop the header image and just feature the screenshots"). A product
-            with slides shows none here; IntrinsicOS, which has no screenshots, keeps its
-            plate. */}
-        {images.gallery.length === 0 && (
+            with slides shows none here, and so does one with an interactive demo (Tycho);
+            IntrinsicOS, which has neither, keeps its plate. */}
+        {!demo && images.gallery.length === 0 && (
           // Full-bleed on a phone (the section clips, so the negative margin cannot widen
           // the page), inset again from `sm` up.
           <div className="relative -mx-6 mt-10 sm:mx-0 sm:mt-14">
