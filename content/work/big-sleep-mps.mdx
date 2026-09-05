@@ -1,0 +1,22 @@
+---
+name: big-sleep-mps
+kind: open-source
+line: Big Sleep on Apple silicon — CLIP-guided BigGAN text-to-image, from 128 seconds a step to one.
+repo: https://github.com/intrinsic-labs/big-sleep-mps
+status: Mac/MPS port · 128 s → 1 s per step · deep performance pass under way
+order: 50
+scene: chip
+tint: sky
+---
+
+## What it is
+
+Big Sleep (Ryan Murdock, 2021; packaged by lucidrains) optimises the latent and class vectors of a pretrained BigGAN-deep generator so that random crops of its output score highly against a text prompt under CLIP. Upstream requires CUDA. This fork replaces the device plumbing so it runs on Apple's Metal backend, and adds a few command-line conveniences.
+
+## What we found
+
+It ran, and produced images, but one optimisation step at the defaults took about 128 seconds on an M1 Max — a documented run would take a month. Bisecting it came down to a single backward pass: the gradient reaching CLIP's patch-embedding convolution arrives in the exact memory layout that `cat().narrow()` produces — permuted, with a storage offset and an over-allocated batch stride — and that layout sends `mps_convolution_backward` down a path roughly two hundred times slower than the contiguous one. A plain channels-last permutation is fine; only that specific shape hits it.
+
+## The fix, and the numbers
+
+One `.contiguous()` on that tensor, plus freezing the two networks that were never in the optimiser, took a step from 128 s to 1.02 s at the defaults, from 86 s to 0.74 s with `--fast`, and from 10.8 s to 0.15 s at 128 px. An end-to-end `--fast` run finishes in about three minutes including model load. A second, deeper performance pass is under way now — profiling first, then whatever the profile justifies, down to hand-written Metal where a library op is provably the bottleneck. The bug itself is being written up for PyTorch, and as a field note here.

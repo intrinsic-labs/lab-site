@@ -18,6 +18,16 @@ export const allCaseStudies = cache(async (): Promise<CaseStudy[]> => {
     .sort((a, b) => a.order - b.order);
 });
 
+/** The client portfolio — everything not marked `kind: open-source`. */
+export async function clientWork(): Promise<CaseStudy[]> {
+  return (await allCaseStudies()).filter((c) => c.kind === "client");
+}
+
+/** The open-source projects, in `order`. */
+export async function openSourceWork(): Promise<CaseStudy[]> {
+  return (await allCaseStudies()).filter((c) => c.kind === "open-source");
+}
+
 export async function caseStudyBySlug(slug: string): Promise<CaseStudy | undefined> {
   return (await allCaseStudies()).find((c) => c.slug === slug);
 }

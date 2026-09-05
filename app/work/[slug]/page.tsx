@@ -30,12 +30,25 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
         )}
       </div>
       <header className="pt-4 pb-8 sm:pt-10 sm:pb-10 border-b border-rule mx-auto max-w-[68ch]">
-        {c.client && c.client !== c.name && <p className="label">{c.client}</p>}
+        {/* "Open source" is only claimed when the source is actually public (`repo`); a project
+            sold from a store with a private repo (Record Machine) shows its status alone. */}
+        {c.kind === "open-source"
+          ? <p className="label">{[c.repo ? "Open source" : null, c.status].filter(Boolean).join(" · ")}</p>
+          : c.client && c.client !== c.name && <p className="label">{c.client}</p>}
         <h1 className="font-serif text-4xl sm:text-5xl font-medium tracking-tight leading-[1.05] mt-2">{c.name}</h1>
         <p className="mt-5 text-xl text-ink-2 max-w-2xl leading-snug">{c.line}</p>
-        {c.url && (
-          <div className="mt-6">
-            <ButtonLink href={c.url} tone="green" external>Visit</ButtonLink>
+        {/* Actions, in the order a visitor wants them: the live thing, the source, the store.
+            An open-source project whose repo is private (Record Machine) simply has no repo
+            line and shows only its store. */}
+        {(c.url || c.repo || c.store) && (
+          <div className="mt-6 flex flex-wrap gap-3">
+            {c.url && <ButtonLink href={c.url} tone="green" external>Visit</ButtonLink>}
+            {c.repo && <ButtonLink href={c.repo} tone={c.url ? "ink" : "green"} external>View on GitHub</ButtonLink>}
+            {c.store && (
+              <ButtonLink href={c.store} tone={c.url || c.repo ? "ink" : "green"} external>
+                App Store{c.price ? ` · ${c.price}` : ""}
+              </ButtonLink>
+            )}
           </div>
         )}
       </header>

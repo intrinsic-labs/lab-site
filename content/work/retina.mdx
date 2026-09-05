@@ -1,0 +1,22 @@
+---
+name: Retina
+kind: open-source
+line: A SwiftUI spirograph — three trochoid curves, drawn by hand, animated, and pinched.
+repo: https://github.com/intrinsic-labs/Retina
+status: Supporting piece · hygiene pass pending
+order: 10
+scene: spirograph
+tint: sky
+---
+
+## What it is
+
+A small, hand-written SwiftUI toy: three `Shape`s — a hypotrochoid, an epitrochoid and a hypocycloid — built from raw `CGPoint` loops, animated on a timer, zoomed with a pinch, regenerated from a menu of buttons. Every curve is a standard trochoid parametric equation with a reveal parameter that decides how far around the circle to draw.
+
+## Why it is here
+
+It is the direct ancestor of this site's masthead. The same three formulas, the same rotation multipliers, the same habit of letting the curves spin at different rates relative to each other — the spirograph on the home page is Retina's drawing model ported to a canvas. Publishing the original is publishing the sketchbook.
+
+## Status
+
+Builds clean on current Xcode with zero warnings and zero code changes. The pending hygiene pass is exactly what the audit found and no more: untracked user data in the repo, a leading-zero literal in an unused colour file, and a README that describes the app as it is.

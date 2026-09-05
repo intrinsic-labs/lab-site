@@ -1,0 +1,22 @@
+---
+name: TimeLogger
+kind: open-source
+line: A stdlib-only Python time logger, written on a phone, for billing hours against a budget.
+repo: https://github.com/intrinsic-labs/TimeLogger
+status: Hardening in progress
+order: 30
+scene: clock
+tint: ember
+---
+
+## What it is
+
+One prompt loop, one plain-text log, one JSON file of totals. It was written in 2024 in an iOS terminal emulator to bill a client at an hourly rate against a remaining-hours budget, and it still has no dependencies outside the Python standard library — which is the whole point: it runs anywhere Python runs, including the terminal apps on a phone or tablet.
+
+## What we like about it
+
+It is as small as a tool like this can be and still be real. No tags, no projects, no sync, no interface beyond `start`, `stop`, `summary`, `edit last`. The ambition is to keep it that way.
+
+## Status
+
+The audit found real bugs — the packaging shipped an empty wheel, the data directory resolved relative to the installed file rather than the home directory, the daily summary was off by one, and a recovery prompt could fabricate an entry from a single accidental keypress. All are small, well-scoped fixes, and they are being made now. Published as-is, it would not install cleanly; that is why the status line says what it says.

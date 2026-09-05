@@ -36,6 +36,31 @@ const SCENES: Record<WorkSceneId, ComponentType<{ tint?: WorkTint; zoom?: number
     ssr: false,
     loading: () => <GenerativeCover seed="total-station" className="h-full w-full" />,
   }),
+  // Open-source projects (2026-09-05) — same registry, one metaphor each.
+  spirograph: dynamic(() => import("./WireframeSpirograph").then((m) => m.WireframeSpirograph), {
+    ssr: false,
+    loading: () => <GenerativeCover seed="spirograph" className="h-full w-full" />,
+  }),
+  weave: dynamic(() => import("./WireframeWeave").then((m) => m.WireframeWeave), {
+    ssr: false,
+    loading: () => <GenerativeCover seed="weave" className="h-full w-full" />,
+  }),
+  clock: dynamic(() => import("./WireframeClock").then((m) => m.WireframeClock), {
+    ssr: false,
+    loading: () => <GenerativeCover seed="clock" className="h-full w-full" />,
+  }),
+  tree: dynamic(() => import("./WireframeTree").then((m) => m.WireframeTree), {
+    ssr: false,
+    loading: () => <GenerativeCover seed="tree" className="h-full w-full" />,
+  }),
+  chip: dynamic(() => import("./WireframeChip").then((m) => m.WireframeChip), {
+    ssr: false,
+    loading: () => <GenerativeCover seed="chip" className="h-full w-full" />,
+  }),
+  vinyl: dynamic(() => import("./WireframeVinyl").then((m) => m.WireframeVinyl), {
+    ssr: false,
+    loading: () => <GenerativeCover seed="vinyl" className="h-full w-full" />,
+  }),
 };
 
 /**

@@ -1,0 +1,23 @@
+---
+name: Record Machine
+kind: open-source
+line: An offline iPhone app for musicians organising a release — demos in, albums and tracks out, metadata attached.
+store: https://apps.apple.com/us/app/record-machine/id6478185491
+price: $14.99
+status: Paid iOS app · 1.0.2 on the App Store · release cleanup pending
+order: 60
+scene: vinyl
+tint: ink
+---
+
+## What it is
+
+A paid, offline-first utility for a musician putting together an album or EP. You import the audio you already have — voice memos, demos, mixes — through the Files picker, organise it into albums and tracks, attach the metadata a release needs (writers, BPM, key, genre, lyrics, liner notes, artwork), and play it back through a custom player. It is not a recorder; it never touches the microphone.
+
+## How it is built
+
+SwiftUI with the Observation framework, SwiftData for the library, AVFoundation for playback behind a small provider protocol, iOS 17 and up, iPhone only. Straight paid-up-front: no in-app purchases, no accounts, and the privacy label says truthfully that the developer collects no data.
+
+## Status
+
+Version 1.0.2 has been live on the App Store since October 2024. The source is not public — this is the one project in this section sold rather than cloned. The repository's tip carries an unreleased experiment (sign-in plus streaming) that must not ship as it stands, so the next update is a cleanup: strip that branch, restore a dropped fix for audio files surviving app updates, add the privacy manifest, and then an on-device pass before it goes out.

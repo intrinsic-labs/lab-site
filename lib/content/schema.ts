@@ -91,7 +91,11 @@ export type ProductFrontMatter = z.infer<typeof productFrontMatter>;
  * component in that registry (`components/work/scenes/WorkSceneCanvas.tsx`), not a
  * free-form label.
  */
-export const WORK_SCENE_IDS = ["dog-head", "wifi", "church", "bible", "total-station"] as const;
+export const WORK_SCENE_IDS = [
+  "dog-head", "wifi", "church", "bible", "total-station",
+  // Open-source projects (2026-09-05): one small metaphor each, built from primitives.
+  "spirograph", "weave", "clock", "tree", "chip", "vinyl",
+] as const;
 export type WorkSceneId = (typeof WORK_SCENE_IDS)[number];
 
 /**
@@ -104,9 +108,29 @@ export type WorkSceneId = (typeof WORK_SCENE_IDS)[number];
 export const WORK_TINTS = ["accent", "marker", "ember", "sky", "ink"] as const;
 export type WorkTint = (typeof WORK_TINTS)[number];
 
-/** Work = the client portfolio, ported from the old intrinsiclabs.co case studies. */
+/**
+ * Which half of /work an item belongs to. `client` is the portfolio the page was built for;
+ * `open-source` (2026-09-05, Asher: "a second section listing open source projects and cool
+ * little 3d scenes") is the repos under github.com/intrinsic-labs — same card, same scenes,
+ * listed below the client work.
+ */
+export const WORK_KINDS = ["client", "open-source"] as const;
+export type WorkKind = (typeof WORK_KINDS)[number];
+
+/** Work = the client portfolio, ported from the old intrinsiclabs.co case studies — plus,
+ *  since 2026-09-05, the open-source projects (`kind: open-source`). */
 export const caseStudyFrontMatter = z.object({
   name: z.string().min(1),
+  kind: z.enum(WORK_KINDS).default("client"),
+  /** Source repository, when it is public. Renders the "View on GitHub" action. */
+  repo: z.string().url().optional(),
+  /** App Store (or other storefront) listing, for a project sold rather than cloned. */
+  store: z.string().url().optional(),
+  /** Price as shown on the storefront, verbatim ("$14.99"). Only meaningful with `store`. */
+  price: z.string().optional(),
+  /** One short, honest status line ("Hardening in progress") — the card's label where a
+   *  client item shows its client, and the eyebrow on the project page. */
+  status: z.string().optional(),
   /** The client or organization, when it can be named. Confidential engagements omit it. */
   client: z.string().optional(),
   /** One sentence describing the engagement. */

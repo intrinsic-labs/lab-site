@@ -1,0 +1,22 @@
+---
+name: weft
+kind: open-source
+line: A typed specification language, with the toolchain to check a design doc the way a compiler checks code.
+repo: https://github.com/intrinsic-labs/weft
+status: Works · 33/33 tests · an experiment, framed honestly
+order: 20
+scene: weave
+tint: marker
+---
+
+## What it is
+
+`.weft` files declare types, structs, protocols, services and views, and annotate them with the institutional knowledge that usually lives in prose: `@Rule` for an invariant, `@Decision` for a rationale, `@Role` for the Clean Architecture layer a thing belongs to, `@Implements` to say which rule a piece of code satisfies. The toolchain — a CLI, a language server, a tree-sitter grammar with VS Code and Zed extensions, and an MCP server — then validates the spec: broken references, unimplemented rules, layer violations, all reported like compiler errors.
+
+## What is interesting
+
+The architecture is the kind you hope to find and rarely do: lexer → parser → AST → analyzer → CLI and server, each stage with one job, a recursive-descent parser written by hand, and a build-freshness check that refuses to run stale code. Its `contract` and `bootstrap` commands exist to hand a downstream coding agent grounded facts instead of letting it re-derive them from prose.
+
+## Status, honestly
+
+It installs, builds, and passes all 33 tests today after six months dormant; every documented command works. But the core bet — that a small team needs a bespoke syntax to keep design docs honest — has been undercut by the arrival of agents that can read plain markdown and catch the same drift. What survives is a narrow, real niche: deterministic, free, offline validation that cannot hallucinate. We keep it as a finished experiment, not a product.
