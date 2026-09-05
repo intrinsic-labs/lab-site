@@ -52,7 +52,7 @@ export function ProductHero({
         {!demo && images.gallery.length === 0 && (
           // Full-bleed on a phone (the section clips, so the negative margin cannot widen
           // the page), inset again from `sm` up.
-          <div className="relative -mx-6 mt-10 sm:mx-0 sm:mt-14">
+          <div className="relative mt-10 sm:mt-14">
             {images.hero ? (
                   <Image
                 src={images.hero.src}
@@ -65,10 +65,10 @@ export function ProductHero({
                 sizes="(min-width: 1152px) 1104px, 100vw"
                 priority
                 style={containedImageStyle(images.hero, 64)}
-                className="relative mx-auto h-auto max-h-[64vh] w-auto max-w-full sm:rounded-xl"
+                className="relative mx-auto h-auto max-h-[64vh] w-auto max-w-full rounded-xl"
               />
             ) : (
-              <div className="relative mx-auto aspect-[16/9] w-full max-w-4xl overflow-hidden sm:rounded-xl">
+              <div className="relative mx-auto aspect-[16/9] w-full max-w-4xl overflow-hidden rounded-xl">
                 <GenerativeCover seed={product.slug} className="h-full w-full" />
               </div>
             )}
