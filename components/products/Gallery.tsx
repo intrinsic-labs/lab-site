@@ -14,7 +14,9 @@ import type { SizedImage } from "@/lib/content/products";
  * lays a single arrow over it pointing the way it will travel (← for a slide left of centre,
  * → for one right of it). The centred slide is full opacity, its neighbours are dimmed, so
  * "which one is focused" is legible without a chrome element saying so. The only thing left
- * under the strip is the indicator, and it is always centred.
+ * under the strip is the dot indicator, and it is always centred (the `n / total` counter
+ * beside it and the "Gallery" eyebrow above the strip were dropped 2026-09-04 — the dots say
+ * where you are).
  *
  * Keyboard still works (the strip is focusable, ← / → step it) and so does native touch
  * snapping — the click handling is additive, never a replacement for the scroller.
@@ -74,11 +76,15 @@ export function Gallery({ images, label = "Gallery" }: { images: SizedImage[]; l
 
   if (images.length === 0) return null;
 
+  // A strip of phone screenshots (Aspen Grove's fourteen) reads differently from a strip of
+  // landscape frames: the focused slide is narrow, so it can grow more without leaving the
+  // screen, and its neighbours need more air so they don't rub against it (Asher, 2026-09-04).
+  // Judged per strip, not per slide, so the gap never changes as focus moves — `syncIndex`
+  // measures offsetLeft and a moving gap would make it pick the wrong slide.
+  const portrait = images.every((img) => (img.height ?? 0) > (img.width ?? 0));
+
   return (
     <section aria-label={label} className="py-14">
-      <div className="mx-auto max-w-6xl px-6">
-        <p className="label">{label}</p>
-      </div>
 
       <ul
         ref={scroller}
@@ -93,7 +99,7 @@ export function Gallery({ images, label = "Gallery" }: { images: SizedImage[]; l
             goTo(index - 1);
           }
         }}
-        className="mt-5 flex snap-x snap-mandatory items-center gap-5 overflow-x-auto scroll-smooth px-[50%] py-12 sm:py-16 outline-none [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        className={`flex snap-x snap-mandatory items-center overflow-x-auto scroll-smooth px-[50%] py-12 sm:py-16 outline-none [scrollbar-width:none] [&::-webkit-scrollbar]:hidden ${portrait ? "gap-10 sm:gap-16" : "gap-5"}`}
       >
         {images.map((img, i) => {
           const focused = i === index;
@@ -110,7 +116,11 @@ export function Gallery({ images, label = "Gallery" }: { images: SizedImage[]; l
                 // the strip's layout — and `syncIndex`'s offsetLeft measurements — never
                 // change; the `py-*` on the list is the room the scale needs vertically.
                 className={`group relative block cursor-pointer overflow-hidden rounded-xl outline-none transition-[opacity,transform] duration-300 focus-visible:ring-1 focus-visible:ring-accent ${
-                  focused ? "z-10 scale-[1.08] opacity-100 sm:scale-[1.2]" : "opacity-55 hover:opacity-80"
+                  focused
+                    ? portrait
+                      ? "z-10 scale-[1.15] opacity-100 sm:scale-[1.35]"
+                      : "z-10 scale-[1.08] opacity-100 sm:scale-[1.2]"
+                    : "opacity-55 hover:opacity-80"
                 }`}
               >
                 {/* A slide's box comes from its intrinsic ratio, so without the attributes
@@ -163,9 +173,6 @@ export function Gallery({ images, label = "Gallery" }: { images: SizedImage[]; l
             />
           ))}
         </div>
-        <p className="label tabular-nums">
-          {index + 1} / {images.length}
-        </p>
       </div>
     </section>
   );

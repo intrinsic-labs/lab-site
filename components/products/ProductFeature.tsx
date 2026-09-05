@@ -45,9 +45,6 @@ export function ProductFeature({
   return (
     <section
       aria-labelledby={`product-${product.slug}`}
-      // `start` rather than `center`: the sticky header would otherwise cover the name.
-      // The page's snap is `proximity` (SnapSections), so this never traps a scroll.
-      style={{ scrollSnapAlign: "start" }}
       // `overflow-hidden` is load-bearing, not decoration: the glow below is inset NEGATIVELY
       // and would otherwise stick out past the viewport and give the page 9px of horizontal
       // scroll on a phone. Same reason `ProductHero` clips.

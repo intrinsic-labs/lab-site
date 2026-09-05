@@ -1,6 +1,6 @@
 <!-- Source: ~/dev/mobile/aspen-grove/docs/open-loom/spec.md — copied 2026-09-04. This is the single canonical copy on the site; do not hand-edit. Update at the source and re-copy instead. -->
 
-# Open Loom — Portable Loom Tree Interchange Format
+# OpenLoom — Portable Loom Tree Interchange Format
 
 **Version 2.0 (draft)** · Maintained by Intrinsic Labs / Aspen Grove
 **Media type:** `application/vnd.openloom+json` · **Extension:** `.openloom` (plain JSON also accepted as `.json`)
@@ -9,7 +9,7 @@
 
 ## 1. Purpose & design goals
 
-Open Loom is a JSON interchange format for **loom trees** — branching, multi-author
+OpenLoom is a JSON interchange format for **loom trees** — branching, multi-author
 explorations of language-model output. It exists so a tree created in one loom
 (Aspen Grove, socketteer loom, Loomsidian, MiniLoom, ExoLoom, …) can be opened in
 another without losing structure, attribution, or provenance.
@@ -26,20 +26,11 @@ Design goals, in priority order:
 4. **Forward-compatible.** Versioned, with explicit rules for unknown fields and
    a namespaced extension mechanism.
 
-### 1.1 Relationship to Open Loom v1
-
-Open Loom v1 (the Loom Swift prototype format) was an unversioned flat node map
-with `parentId`/`childrenIds` pointers and a duplicated `bookmarkedNodes`
-dictionary. v2 is a redesign, not an evolution: topology moves into explicit
-edges (hypergraph support), authorship becomes a first-class object, provenance
-is structured, and the container is versioned. v1 files remain importable
-(§ 8.1); v2 is the only export target.
-
-### 1.2 Lessons from the ecosystem
+### 1.1 Lessons from the ecosystem
 
 The format normalizes divergences observed across community looms:
 
-| Concern | Community reality | Open Loom v2 answer |
+| Concern | Community reality | OpenLoom answer |
 |---|---|---|
 | Topology encoding | Nested `children` objects (socketteer), flat map + parent pointer (Loomsidian), flat map + both pointers (MiniLoom) | Flat node map + explicit **edge list** (§ 4.4) |
 | Multi-root | Faked with immutable empty roots, or unsupported | `rootNodeIds` array (§ 4.2) |
@@ -58,7 +49,7 @@ interpreted as described in RFC 2119.
 
 Two conformance roles:
 
-- **Exporter** — produces Open Loom documents.
+- **Exporter** — produces OpenLoom documents.
 - **Importer** — consumes them. Importers SHOULD be lenient (accept what they
   can interpret, preserve what they can't) and MUST NOT fail on unknown fields.
 
@@ -212,7 +203,7 @@ display label when no registry entry exists.
 - `{ "type": "audio", "ref": string, "mimeType": string, "durationMs"?: number, "transcript"?: string }`
 
 `ref` is either a `data:` URI (self-contained documents) or a relative path
-inside an Open Loom **bundle** — a ZIP whose root contains `tree.openloom` plus
+inside an OpenLoom **bundle** — a ZIP whose root contains `tree.openloom` plus
 referenced media files. Exporters SHOULD prefer bundles above ~1 MB of media.
 Unknown block types MUST be preserved on re-export and rendered as a
 placeholder. Text-only importers MAY substitute `altText`/`transcript`.
@@ -388,20 +379,10 @@ Rules:
 
 ## 8. Importing foreign formats
 
-Open Loom is the export target; import should accept **any** loom. Adapters
-normalize into the v2 model. Canonical mappings:
+OpenLoom is the export target; import should accept **any** loom. Adapters
+normalize into the OpenLoom model. Canonical mappings:
 
-### 8.1 Open Loom v1 (Loom Swift prototype)
-
-Detect: object with `nodes`, `bookmarkedNodes`, `rootNodeId`, and no `format`
-field. Map: `parentId` → single-source continuation edge (children order from
-`childrenIds`); `author` `user|assistant|system` → `human|model|system`;
-`modelId` → `generation.model`; `rememberedChildId`, `currentNodeId` →
-`currentNodeId`; `isBookmarked`/`bookmarkTitle` → `meta`. Ignore the redundant
-`bookmarkedNodes` map. Dates are Swift reference-date seconds (seconds since
-2001-01-01T00:00:00Z) when numeric.
-
-### 8.2 socketteer/loom (original Python loom)
+### 8.1 socketteer/loom (original Python loom)
 
 Detect: object with nested `root` node carrying `text`/`children`. Also accept
 a bare node or bare node array (its loader's leniency, mirrored). Map: nested
@@ -412,7 +393,7 @@ a bare node or bare node array (its loader's leniency, mirrored). Map: nested
 `meta.bookmarked`/`meta.tags`; `chapters`/`summaries`/`canonical` →
 `extensions["socketteer-loom"]`; `selected_node_id` → `currentNodeId`.
 
-### 8.3 Loomsidian (cosmicoptima/loom for Obsidian)
+### 8.2 Loomsidian (cosmicoptima/loom for Obsidian)
 
 Detect: `NoteState` shape — object with `nodes` map whose values carry
 `parentId` + `unread`, plus `current`. Map: `parentId` → continuation edges
@@ -422,7 +403,7 @@ the root, `"model"` otherwise is *wrong* often enough that adapters SHOULD mark
 all non-root nodes `"mixed"` unless better information exists; `unread`,
 `collapsed`, `lastVisited` → `extensions["loomsidian"]`.
 
-### 8.4 MiniLoom (JD-P/minihf)
+### 8.3 MiniLoom (JD-P/minihf)
 
 Detect: object with `loomTree.nodeStore` or nodes carrying `patch` +
 `type: root|user|gen`. Nodes are **diff-match-patch patches against the
@@ -431,7 +412,7 @@ applying the patch chain from the root, storing the result as text content and
 the original patch under `extensions["miniloom"].patch`. `type` `user|gen` →
 `human|model`; `rating` → `meta.rating`; `summary` → `meta.note`.
 
-### 8.5 General adapter rules
+### 8.4 General adapter rules
 
 - Never invent provenance: if the source has no generation info, emit none.
 - Mint ULIDs for missing/duplicate IDs; keep originals in

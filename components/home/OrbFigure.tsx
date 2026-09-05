@@ -197,7 +197,7 @@ export function OrbFigure({
                 fontSize={size.valueSize}
                 fill={`var(${o.colorVar})`}
               >
-                {o.value.toFixed(1)}
+                {Math.round(o.value)}
                 <tspan fontSize={size.valueSize * 0.5} fill="var(--color-ink-3)">
                   %
                 </tspan>
@@ -221,7 +221,7 @@ export function OrbFigure({
                 style={boxStyle(o.cx, o.cy, o.r, size)}
               >
                 <span className="sr-only">
-                  {o.label}: {o.value.toFixed(1)} percent
+                  {o.label}: {Math.round(o.value)} percent
                 </span>
               </button>
             ))}

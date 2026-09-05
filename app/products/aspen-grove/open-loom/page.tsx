@@ -5,8 +5,8 @@ import path from "node:path";
 import { renderMarkdown } from "@/lib/mdx/markdown";
 
 export const metadata: Metadata = {
-  title: "Open Loom — Aspen Grove",
-  description: "Open Loom: a portable JSON interchange format for loom trees, so a tree built in one loom opens in another without losing structure or provenance.",
+  title: "OpenLoom — Aspen Grove",
+  description: "OpenLoom: a portable JSON interchange format for loom trees, so a tree built in one loom opens in another without losing structure or provenance.",
 };
 
 const SPEC_PATH = path.join(process.cwd(), "content", "products", "aspen-grove", "open-loom.md");
@@ -15,7 +15,7 @@ const SPEC_PATH = path.join(process.cwd(), "content", "products", "aspen-grove",
 const BANNER = "/products/aspen-grove/hero.jpg";
 
 /**
- * Renders the Open Loom spec as plain markdown rather than through the MDX pipeline: the
+ * Renders the OpenLoom spec as plain markdown rather than through the MDX pipeline: the
  * spec's own tables use raw `map<id, Node>`-style angle brackets outside code spans, which
  * `next-mdx-remote-client`'s MDX/acorn parser reads as broken JSX and fails to compile. A
  * plain remark→HTML pass has no JSX layer to trip on. See lab-site AGENTS.md task notes —
@@ -50,7 +50,7 @@ export default async function OpenLoomPage() {
 
         <div className="mx-auto max-w-6xl px-6 py-24 text-center sm:py-32">
           <h1 className="font-sans font-medium tracking-[-0.035em] leading-[0.92] text-[clamp(2.75rem,11vw,7rem)] break-words">
-            Open Loom
+            OpenLoom
           </h1>
           <p className="mt-5 font-code text-base text-ink-2 sm:text-lg">A protocol for loom interfaces</p>
           {version && (

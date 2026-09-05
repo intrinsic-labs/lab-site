@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { allProducts, productImages } from "@/lib/content/products";
 import { ProductFeature } from "@/components/products/ProductFeature";
-import { SnapSections } from "@/components/products/SnapSections";
 
 export const metadata: Metadata = { title: "Products", description: "The company's own product bets." };
 
@@ -14,22 +13,19 @@ export const metadata: Metadata = { title: "Products", description: "The company
  * makes each one arrive on its own. `ProductCard` still exists and is still what the home
  * page's products row uses — it just isn't this page any more.
  *
- * The tail: anything left at the default `order` (100) is rendered `quiet` — smaller, last.
- * That is the vault, which is internal, and keying off the order it already declares avoids
- * a slug check here (the same reasoning as `theme` being front matter rather than
- * `slug === "tycho"`).
+ * Only products with an explicit `order` (< 100) are listed. IntrinsicOS keeps the default
+ * order (100) and is deliberately NOT on this page: since 2026-09-04 it is its own nav item —
+ * it is the thing the whole site is about, not one bet among four. The scroll-snap this page
+ * had (`SnapSections`) was removed the same day at Asher's request.
  */
 export default async function ProductsPage() {
   const items = await allProducts();
   const withImages = await Promise.all(items.map(async (i) => ({ ...i, images: await productImages(i.slug) })));
   const features = withImages.filter((i) => i.order < 100);
-  const tail = withImages.filter((i) => i.order >= 100);
 
   return (
     <div>
-      <SnapSections />
-
-      <header className="mx-auto max-w-6xl px-6 pt-8 pb-2 sm:pt-24 sm:pb-8" style={{ scrollSnapAlign: "start" }}>
+      <header className="mx-auto max-w-6xl px-6 pt-8 pb-2 sm:pt-24 sm:pb-8">
         <p className="label mb-4">Products</p>
         <h1 className="font-sans text-4xl font-medium leading-[1.05] tracking-tight sm:text-5xl">
           What the workshop is building for itself.
@@ -46,13 +42,6 @@ export default async function ProductsPage() {
         <ProductFeature key={i.slug} product={i} images={i.images} flip={n % 2 === 1} priority={n === 0} className={n === 0 ? "-mt-4 sm:mt-0" : undefined} />
       ))}
 
-      {tail.length > 0 && (
-        <div className="border-t border-rule">
-          {tail.map((i) => (
-            <ProductFeature key={i.slug} product={i} images={i.images} quiet />
-          ))}
-        </div>
-      )}
     </div>
   );
 }

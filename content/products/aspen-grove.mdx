@@ -1,8 +1,7 @@
 ---
 name: Aspen Grove
 line: A mobile loom — an LLM interface that treats a conversation as an explorable tree instead of a single linear thread.
-status: paused
-statusNote: Iceboxed 2026-08-13, reopening now as a personal, open-source project.
+status: in-development
 url: https://github.com/intrinsic-labs/aspen-grove
 accent: marker
 order: 4
@@ -10,10 +9,8 @@ order: 4
 
 Aspen Grove is a mobile interface for large language models that treats a conversation as an explorable tree instead of a single linear thread — branch, backtrack, and compare alternate responses to the same prompt instead of losing every path but the one you kept. It's built local-first on React Native and WatermelonDB, with a Clean Architecture split between domain, application, infrastructure, and interface layers, and a provenance system that hashes and chains every model response as it arrives.
 
-It was iceboxed in August 2026 — third-party AI-chat clients looked like a shrinking niche against how fast the first-party apps were improving — and is reopening now as a personal, open-source project rather than a company bet.
+## OpenLoom
 
-## Open Loom
+OpenLoom is a JSON interchange format for loom trees — the branching, multi-author explorations of language-model output this app and others like it are built around — designed so a tree created in one loom can be opened in another without losing its structure, its authorship, or its provenance. Aspen Grove is where the format originates, and the full draft specification is documented separately.
 
-Open Loom is a JSON interchange format for loom trees — the branching, multi-author explorations of language-model output this app and others like it are built around — designed so a tree created in one loom can be opened in another without losing its structure, its authorship, or its provenance. Aspen Grove is where the format originates, and the full draft specification is documented separately.
-
-[Read the Open Loom spec →](/products/aspen-grove/open-loom)
+[Read the OpenLoom spec →](/products/aspen-grove/open-loom)

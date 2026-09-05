@@ -5,6 +5,7 @@ import { MobileMenu } from "./MobileMenu";
 import { AREAS, AREA_INFO } from "@/lib/content/areas";
 
 const NAV = [
+  ["IntrinsicOS", "/products/intrinsic-os"],
   ["Products", "/products"],
   ["Work", "/work"],
   ["About", "/about"],

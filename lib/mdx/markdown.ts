@@ -7,7 +7,7 @@ import rehypeShiki from "@shikijs/rehype";
 import { rehypeShikiOptions } from "./highlight";
 
 /**
- * Plain-markdown → HTML, for prose that can't go through MDX. The Open Loom spec is
+ * Plain-markdown → HTML, for prose that can't go through MDX. The OpenLoom spec is
  * the one caller: its tables carry raw `map<id, Node>`-style angle brackets outside
  * code spans, which the MDX/acorn parser reads as broken JSX.
  *
