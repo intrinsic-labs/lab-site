@@ -35,18 +35,21 @@ latent-spaces value it is.
 | `--color-ink-2` | `#cccccc` | `ls.textSecondary` `rgba(255,255,255,0.8)`, flattened to opaque hex |
 | `--color-ink-3` | `#8c8c8c` | ours — a third step latent-spaces doesn't name |
 | `--color-rule` | `#2a2a2a` | ours — hairlines; latent-spaces uses `neutral-800/50` for the same job |
-| `--color-accent` | `#6cba78` | `ls.accentLight` — `rgb(108,186,120)` |
-| `--color-verdant` | `#4d8c56` | `ls.accent` — `rgb(77,140,86)` |
-| `--color-marker` | `#c9b374` | `ls.yellowLight` — `rgb(201,179,116)` |
-| `--color-marker-2` | `#a4915c` | `ls.yellow` — `rgb(164,145,92)` |
+| `--color-accent` | `#51a2ff` | Tailwind blue-400 — the UI accent since 2026-09-04 (Asher: "ship blue") |
+| `--color-verdant` | `#155dfc` | Tailwind blue-600 — the fill |
+| `--color-marker` | `#c9b374` | `ls.yellowLight` — rgb(201,179,116) |
+| `--color-marker-2` | `#a4915c` | `ls.yellow` — rgb(164,145,92) |
+| `--color-link` | `#51a2ff` | Tailwind blue-400 — the live intrinsiclabs.co's link colour (Asher, 2026-09-04) |
+| `--color-sky` | `#5c91e7` | latent-spaces-web's `--accent` blue, also the old Intrinsic Labs blue — work-page scene tints |
 | `--color-ember` | `#e07a55` | latent-spaces `orange` — its **dark** inline-code colour |
 | `--color-surface` | `rgba(255,255,255,0.08)` | `ls.surfaceHover`; `ls.surface` (0.03) is invisible on `#000` |
 | `--color-surface-hover` | `rgba(255,255,255,0.14)` | ours, one step up from the above |
 
-**Two accents, two jobs.** Green (`accent` / `verdant`) is the *UI* accent — buttons,
-generative covers, the `paper` kind label, "draft" status text. Sand (`marker` /
-`marker-2`) is the *reading* accent — prose links (latent-spaces' `CodeChip` colour), the
-`.marker` highlight, `::selection`, the Draft badge. Ember is inline code only.
+**Accents and roles.** Blue (`accent` / `verdant`) is the *UI* accent — buttons,
+generative covers, filter chips, draft status. Sand (`marker` / `marker-2`) is the
+*highlight* band (`.marker`, `::selection`, the Draft badge). Blue (`link`) is for prose
+links (Asher, 2026-09-04: "hyperlinks blue, not gold" — it no longer wears sand). Ember
+is inline code only.
 
 The old cream/paper palette (`#f3eee4` / `#1b1915` / `#b5471f` …) is gone entirely.
 
@@ -199,18 +202,17 @@ itself, so the column is cream before `html`'s background composites.
 | `--color-ink-2` | `#55524d` | ours — 7.2:1 |
 | `--color-ink-3` | `#87837c` | ours — 3.5:1, decorative only |
 | `--color-rule` | `#ded7ca` | ours — hairlines |
-| `--color-accent` | `#2d7038` | latent-spaces light `--terminal-green` `#3B9A4B`, darkened to 5.6:1 |
-| `--color-verdant` | `#5EA36B` | latent-spaces light `--green`, verbatim — now the FILL |
-| `--color-marker` | `#6f5f2e` | `ls.yellow` darkened for cream (5.8:1) — prose links |
+| `--color-accent` | `#1447e6` | Tailwind blue-700 on cream, 5.4:1 — the UI accent |
+| `--color-verdant` | `#51a2ff` | Tailwind blue-400 — the pale fill |
+| `--color-marker` | `#6f5f2e` | `ls.yellow` darkened for cream (5.8:1) — highlight band only |
 | `--color-marker-2` | `#a4915c` | `ls.yellow` verbatim — the highlight band, never text |
+| `--color-link` | `#155dfc` | Tailwind blue-600 — prose links on cream, 5.2:1 |
 | `--color-ember` | `#a8481d` | latent-spaces `--orange` `#E07A55`, darkened to 5.4:1 |
 | `--color-surface` | `rgba(33,32,31,0.06)` | mirrored — a wash of the ink, not of white |
 
-**The green pair swaps roles.** On black the light green is the text and the dark green
-the fill; on cream `accent` has to be the dark tone and `verdant` the light one.
-latent-spaces only ever paints these three accents on its *dark* theme, and the
-light-theme values it does define (`--green #5EA36B` at 2.8:1) don't clear AA on cream —
-hence the darkening. Every tone above clears 4.5:1 on `#f9f6f2`.
+**The blue pair on cream.** On black the light blue is the text and the dark blue
+the fill; on cream `accent` is the dark tone and `verdant` the light one. Every tone
+above clears 4.5:1 on `#f9f6f2`.
 
 ### Code, on cream
 
@@ -253,6 +255,15 @@ Only the places the dark sheet hardcodes a `#fff` or `#000` the token remap can'
 - **`components/research/PostHeader.tsx`** — two measures on purpose: the type block keeps
   the reading column's 68ch, the hero image breaks out to `max-w-5xl` at `rounded-2xl`.
   The `GenerativeCover` fallback renders at the identical size.
+
+## Favicon and app icons
+
+`app/icon.png` (192×192) and `app/apple-icon.png` (180×180) are the site's favicon and
+Apple touch icon. They are Next.js file-convention metadata files — no `<link>` tags or
+`icons` key in the metadata object — and are automatically served as `/icon` and
+`/apple-icon` by the framework. Both are rendered from the same source art (the Intrinsic
+Labs robot mark). There is no `public/favicon.ico` and no separate SVG variant. The prior
+`app/icon.svg` was replaced by the PNG files in commit 510a4f1 (2026-09-04).
 
 ---
 

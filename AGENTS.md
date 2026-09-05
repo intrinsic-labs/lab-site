@@ -16,7 +16,7 @@ app/            routes only — thin, compose components + lib
   work/         index + [slug] — the CLIENT portfolio (case studies ported from intrinsiclabs-co-v3)
   about/ about/editorial/
   feed.xml/     RSS (published posts only)
-  sitemap.ts robots.ts not-found.tsx icon.svg
+  sitemap.ts robots.ts not-found.tsx icon.png apple-icon.png
 components/     layout/ ui/ research/ home/ about/ — presentational, no fs access except the
                 home plate and ProductsGrid (reads public/products/<slug>/ for images)
 content/        the CMS. research/*.mdx, products/*.mdx, work/*.mdx, specimen/ (home-page plate),
