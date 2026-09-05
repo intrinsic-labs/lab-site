@@ -50,8 +50,8 @@ export function ProductHero({
             with slides shows none here, and so does one with an interactive demo (Tycho);
             IntrinsicOS, which has neither, keeps its plate. */}
         {!demo && images.gallery.length === 0 && (
-          // Full-bleed on a phone (the section clips, so the negative margin cannot widen
-          // the page), inset again from `sm` up.
+          // Inset at every size, rounded at every size — the height cap meant it never
+          // reached a phone's edges anyway, so a full-bleed variant only lost its corners.
           <div className="relative mt-10 sm:mt-14">
             {images.hero ? (
                   <Image
