@@ -11,9 +11,13 @@ published) are the design docs. This file is the engineering entry point.
 ```
 app/            routes only — thin, compose components + lib
   research/     index, [slug] posts, areas/[area]
-  products/     index + [slug] (the company's own bets: GlyphDeck, Liturgos, Tycho, Aspen Grove;
-                the vault listed last) + aspen-grove/open-loom (the spec, plain markdown)
-  work/         index + [slug] — the CLIENT portfolio (case studies ported from intrinsiclabs-co-v3)
+  products/     index + [slug] (the company's own bets: GlyphDeck, Liturgos, Tycho, Aspen
+                Grove) + aspen-grove/open-loom (the spec, plain markdown). IntrinsicOS
+                (`content/products/intrinsic-os.mdx`) is its own nav item, not listed on
+                the index — see `app/products/page.tsx`.
+  work/         index + [slug] — two halves of one collection: the CLIENT portfolio (case
+                studies ported from intrinsiclabs-co-v3) and the open-source projects
+                (see below)
   about/ about/editorial/
   feed.xml/     RSS (published posts only)
   sitemap.ts robots.ts not-found.tsx icon.png apple-icon.png
@@ -40,6 +44,26 @@ edits. An empty artifacts block says why.** Those three are the house style — 
 
 Areas and kinds are closed vocabularies in `lib/content/areas.ts` / `kinds.ts`; area slugs are
 permanent URLs (ruled 2026-09-03).
+
+### Work: client portfolio + open-source projects
+
+`content/work/*.mdx` is one collection (`caseStudyFrontMatter` in `lib/content/schema.ts`)
+split by `kind: client | open-source` (`WORK_KINDS`, default `client`). `lib/content/work.ts`
+exposes `clientWork()` and `openSourceWork()`; `app/work/page.tsx` renders both as two grids
+on the same page through the same `WorkCard` — client leads (it's what funds the workshop),
+open source follows under its own head and only appears when non-empty. An open-source card
+carries no client/status line (GitHub is the source of truth for where a repo stands); a
+client card's eyebrow names the client.
+
+Each card's cover is a ported 3D wireframe point-cloud scene (`scene`, one of the closed
+`WORK_SCENE_IDS` in `schema.ts`, rendered by `components/work/scenes/WorkSceneCanvas.tsx`)
+tinted by `tint` (`WORK_TINTS`); absent `scene` falls back to `cover`, then a generated cover.
+Six scene ids are reserved for open source, one per project, built from primitives rather than
+ported from intrinsiclabs-co-v3: `spirograph` (retina), `weave` (weft), `clock` (timelogger),
+`tree` (loom-swift), `chip` (big-sleep-mps), `vinyl` (record-machine). To add another
+open-source entry: write `content/work/<slug>.mdx` with `kind: open-source`, pick or add a
+`WORK_SCENE_IDS` entry (new metaphor → new component in `components/work/scenes/` plus its
+registry entry in `WorkSceneCanvas`'s `SCENES` map), and set a `tint`.
 
 **Prose lives in `content/pages/`, never hardcoded as JSX text.** Static pages (about, editorial,
 work, research, the home masthead, `HowThisWorks`) read their copy from
