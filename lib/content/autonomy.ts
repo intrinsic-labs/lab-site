@@ -1,6 +1,9 @@
 import { promises as fs } from "node:fs";
 import path from "node:path";
 import { z } from "zod";
+import { autonomyData, type AutonomyData } from "./autonomy-schema";
+export { fraction, plotted, coverageNote } from "./autonomy-schema";
+export type { AutonomyMetric, AutonomyData } from "./autonomy-schema";
 import { CONTENT_ROOT } from "./fs";
 
 /**
@@ -8,49 +11,6 @@ import { CONTENT_ROOT } from "./fs";
  * logs and committed; the site never reads the vault live. A malformed file fails the
  * build loudly, like every other piece of content here.
  */
-const isoDate = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "ISO date (YYYY-MM-DD)");
-
-export const autonomyMetric = z.object({
-  key: z.string().min(1),
-  label: z.string().min(1),
-  /** The plain phrase set under the drawing. `label` is a footnote sentence, not a caption. */
-  shortLabel: z.string().min(1).optional(),
-  /** One or two sentences explaining the metric to somebody who has never seen this site. */
-  blurb: z.string().min(1).optional(),
-  /** What the numerator and denominator count — "270 of 369 <sessions>". */
-  countNoun: z.string().min(1).default("of these"),
-  value: z.number(),
-  numerator: z.number(),
-  denominator: z.number(),
-  unit: z.string().default("%"),
-  /** `up` = higher is better. `down` = lower is better (drift). */
-  direction: z.enum(["up", "down"]),
-  method: z.string().default(""),
-  source: z.string().default(""),
-});
-
-export const autonomyData = z.object({
-  generated: isoDate,
-  window: z.object({ from: isoDate, to: isoDate, days: z.number() }),
-  goal: z.object({ low: z.number(), high: z.number(), text: z.string() }),
-  /** Copy for the figure itself — the sentence the context panel rests on. */
-  figure: z.object({ intro: z.string().min(1) }).optional(),
-  metrics: z.array(autonomyMetric).min(1),
-});
-
-export type AutonomyMetric = z.infer<typeof autonomyMetric>;
-export type AutonomyData = z.infer<typeof autonomyData>;
-
-/** The raw counts behind a percentage, as the context panel says them: "270 of 369 sessions". */
-export function fraction(m: AutonomyMetric): string {
-  return `${m.numerator} of ${m.denominator} ${m.countNoun}`;
-}
-
-/** Height a metric is plotted at: for `down` metrics the complement, so up is always better. */
-export function plotted(m: AutonomyMetric): number {
-  return m.direction === "down" ? 100 - m.value : m.value;
-}
-
 export async function readAutonomy(): Promise<AutonomyData> {
   const file = path.join(CONTENT_ROOT, "specimen/autonomy.json");
   const parsed = autonomyData.safeParse(JSON.parse(await fs.readFile(file, "utf8")));
