@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { pageContent } from "@/lib/content/pages";
 import { fraction, coverageNote, readAutonomy } from "@/lib/content/autonomy";
 import { OrbFigure } from "./OrbFigure";
 import { OrbInteraction, type PanelMetric } from "./OrbInteraction";
@@ -12,7 +13,7 @@ const COLOR: Record<string, string> = {
 };
 
 /**
- * How much of the company runs itself, drawn as three orbs rising out of a haze.
+ * Recorded operating measures, drawn as three orbs rising out of a haze.
  *
  * Each plotted disc represents its own recorded percentage. Missing rates have no disc;
  * they remain visible as unavailable in the context panel and coverage note. The measures
@@ -23,8 +24,8 @@ const COLOR: Record<string, string> = {
  *
  * The names under the numbers are plain phrases, and the panel underneath carries the
  * explanation — a reader who has never seen this site gets a sentence about the whole
- * figure, and one about whichever orb they point at. All of that copy lives in
- * content/specimen/autonomy.json beside the numbers it describes, not in this file.
+ * figure, and one about whichever orb they point at. Metric definitions live in
+ * content/specimen/autonomy.json; research direction lives in content/pages/operating-measures.md.
  *
  * The drawing is rendered by the server; `OrbInteraction` adds pointer response and the
  * panel on top of a figure that is already finished. Data is a committed file, never a
@@ -32,6 +33,7 @@ const COLOR: Record<string, string> = {
  */
 export async function AutonomyOrbs() {
   const data = await readAutonomy();
+  const { content: researchDirection } = await pageContent("operating-measures");
   const up = data.metrics.filter((m) => m.direction === "up");
   const available = up.filter((m): m is typeof m & { value: number } => m.value !== null);
   const coverageNotes = up.map(coverageNote).filter((note): note is string => note !== null);
@@ -64,8 +66,8 @@ export async function AutonomyOrbs() {
       </OrbInteraction>
 
       <div className="mx-auto max-w-3xl px-6 text-center">
+        <p className="mt-4 text-sm leading-relaxed text-ink-2">{researchDirection}</p>
         {coverageNotes.map((note) => <p key={note} className="mt-4 text-sm leading-relaxed text-ink-2">{note}</p>)}
-        <p className="mt-4 text-sm leading-relaxed text-ink-2">These measures describe operations. Company autonomy also depends on accepted outcomes and founder involvement.</p>
       </div>
 
       {/* One caption row under the figure (Asher, 2026-09-04: the heading/measured-date

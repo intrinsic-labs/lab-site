@@ -1,13 +1,15 @@
 import Link from "next/link";
+import { pageContent } from "@/lib/content/pages";
 import { site } from "@/lib/site";
 
-export function Footer() {
+export async function Footer() {
+  const tagline = await pageContent("home-tagline");
   return (
     <footer className="border-t border-rule mt-24">
       <div className="mx-auto max-w-6xl px-6 py-10 grid gap-8 sm:grid-cols-3">
         <div>
           <p className="font-sans font-medium">Intrinsic Labs LLC</p>
-          <p className="text-ink-2 text-sm mt-1">A company that runs itself. Mostly.</p>
+          <p className="text-ink-2 text-sm mt-1">{tagline.content}</p>
         </div>
         <div className="flex flex-col gap-2">
           <Link href="/feed.xml" className="label hover:text-ink">RSS feed</Link>

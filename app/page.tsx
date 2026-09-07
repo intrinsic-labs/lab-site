@@ -10,7 +10,7 @@ import { Mdx } from "@/lib/mdx/render";
 import { pageContent } from "@/lib/content/pages";
 
 export default async function Home() {
-  const [posts, products, subtitle] = await Promise.all([listablePosts(), allProducts(), pageContent("home-subtitle")]);
+  const [posts, products, subtitle, tagline] = await Promise.all([listablePosts(), allProducts(), pageContent("home-subtitle"), pageContent("home-tagline")]);
 
   return (
     <>
@@ -20,7 +20,7 @@ export default async function Home() {
       <Masthead className="border-b border-rule">
         <div className="mx-auto max-w-[680px] px-6 text-center">
           <h1 className="font-serif text-[2.4rem] sm:text-6xl font-medium tracking-tight leading-[1.05]">
-            A company that runs itself. Mostly.
+            {tagline.content}
           </h1>
           <div className="mt-5 text-lg sm:text-xl text-ink leading-snug">
             <Mdx source={subtitle.content} />
