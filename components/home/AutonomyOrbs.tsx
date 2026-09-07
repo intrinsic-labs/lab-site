@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { fraction, readAutonomy } from "@/lib/content/autonomy";
+import { fraction, coverageNote, readAutonomy } from "@/lib/content/autonomy";
 import { OrbFigure } from "./OrbFigure";
 import { OrbInteraction, type PanelMetric } from "./OrbInteraction";
 import { DESKTOP, MOBILE, type OrbInput } from "./orb-geometry";
@@ -14,10 +14,9 @@ const COLOR: Record<string, string> = {
 /**
  * How much of the company runs itself, drawn as three orbs rising out of a haze.
  *
- * The horizon is nothing running by itself; an orb wholly clear of the line is the stated
- * goal, 90–95%. So each disc's height above the water is its number, the three overlap
- * into one composition rather than three bars, and the shape of the picture — one nearly
- * out, one half out, one barely breaking the surface — is the honest shape of the claim.
+ * Each plotted disc represents its own recorded percentage. Missing rates have no disc;
+ * they remain visible as unavailable in the context panel and coverage note. The measures
+ * do not share a company-autonomy target.
  *
  * Only the three "higher is better" metrics are here. Drift is a quality measure, not an
  * autonomy one, and plotting its complement once read as a claim nobody was making.
@@ -34,8 +33,10 @@ const COLOR: Record<string, string> = {
 export async function AutonomyOrbs() {
   const data = await readAutonomy();
   const up = data.metrics.filter((m) => m.direction === "up");
+  const available = up.filter((m): m is typeof m & { value: number } => m.value !== null);
+  const coverageNotes = up.map(coverageNote).filter((note): note is string => note !== null);
 
-  const metrics: OrbInput[] = up.map((m) => ({
+  const metrics: OrbInput[] = available.map((m) => ({
     key: m.key,
     label: m.shortLabel ?? m.label,
     value: m.value,
@@ -43,7 +44,7 @@ export async function AutonomyOrbs() {
   }));
 
   // The panel opens on the highest number — the one the picture leads with.
-  const lead = up.reduce((a, b) => (b.value > a.value ? b : a)).key;
+  const lead = available.length ? available.reduce((a, b) => (b.value > a.value ? b : a)).key : up[0]?.key ?? "";
   const panel: PanelMetric[] = up.map((m) => ({
     key: m.key,
     label: m.shortLabel ?? m.label,
@@ -53,7 +54,7 @@ export async function AutonomyOrbs() {
   }));
 
   return (
-    <>
+    <section id="operating-measures">
       {/* The figure is full-bleed and the prose around it is not: the haze under the
           waterline has to reach the edges of the viewport, or it ends in the hard vertical
           edge the boxed version had. */}
@@ -62,22 +63,27 @@ export async function AutonomyOrbs() {
         <OrbFigure size={DESKTOP} metrics={metrics} className="hidden md:block" />
       </OrbInteraction>
 
+      <div className="mx-auto max-w-3xl px-6 text-center">
+        {coverageNotes.map((note) => <p key={note} className="mt-4 text-sm leading-relaxed text-ink-2">{note}</p>)}
+        <p className="mt-4 text-sm leading-relaxed text-ink-2">These measures describe operations. Company autonomy also depends on accepted outcomes and founder involvement.</p>
+      </div>
+
       {/* One caption row under the figure (Asher, 2026-09-04: the heading/measured-date
           strip above the orbs is gone; the date rides with the target). Three cells so the
           title sits dead centre at md+; on a phone the three stack. */}
       <div className="mx-auto max-w-6xl px-6">
         <div className="mt-8 grid gap-y-3 border-t border-rule pt-6 text-center md:mt-6 md:grid-cols-3 md:items-baseline md:pt-4 md:text-left">
           <p className="label text-ink-2">
-            Measured {data.generated}. Target: {data.goal.low}–{data.goal.high}%.
+            Measured {data.generated}.
           </p>
           {/* First on a phone, centre cell at md+ (Asher, 2026-09-04). */}
-          <h2 className="label order-first text-ink md:order-none md:text-center">Company autonomy rate</h2>
+          <h2 className="label order-first text-ink md:order-none md:text-center">Operating measures</h2>
           <Link href="/products/intrinsic-os" className="label text-accent hover:underline underline-offset-4 md:text-right">
             How these are computed →
           </Link>
         </div>
       </div>
-    </>
+    </section>
   );
 }
 

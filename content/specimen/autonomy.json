@@ -1,65 +1,80 @@
 {
-  "generated": "2026-09-03",
+  "generated": "2026-09-07",
   "window": {
     "from": "2026-07-07",
-    "to": "2026-09-03",
-    "days": 59
+    "to": "2026-09-07",
+    "days": 63
   },
   "goal": {
     "low": 90,
     "high": 95,
     "text": "Asher's stated goal is for the company to run 90-95% autonomously."
   },
+  "figure": {
+    "intro": "These operational measures describe recorded sessions and decisions. They do not establish a company autonomy rate."
+  },
   "metrics": [
     {
       "key": "execution",
-      "label": "Agent sessions that ran to completion with no human in the loop",
-      "value": 73.2,
-      "numerator": 270,
-      "denominator": 369,
+      "label": "Completion among executor sessions with valid recorded counts",
+      "shortLabel": "Recorded session completion",
+      "countNoun": "recorded attempts",
+      "blurb": "Sessions the system recorded as completed, including work that ended at a review or delivery boundary. Coverage is incomplete.",
+      "value": 69.6,
+      "numerator": 261,
+      "denominator": 375,
       "unit": "%",
       "direction": "up",
-      "method": "Sum of the \"executor\" attempted/completed counters the loop itself writes to every \"loop-run\" telemetry record (Tools/crons/telemetry/vault-loop.jsonl), across 204 ticks from 2026-07-30 to 2026-09-03. \"Completed\" means the session ran to a stop the chassis recognizes as done, not that the resulting work was correct.",
+      "coverage": {
+        "status": "incomplete",
+        "includedRecords": 193,
+        "excludedRecords": 32,
+        "missingCounters": 32,
+        "invalidCounters": 0,
+        "malformedLines": 0,
+        "unpairedCompletions": 35
+      },
+      "method": "Paired nonnegative integer attempted/completed counters from 193 loop-run records; counts exceeding attempts are excluded. 32 records have missing counters, 0 have invalid counters, and 0 lines are malformed. 35 observed completions with no attempt count are excluded from both totals. The date window describes included records with valid timestamps. Completion is the chassis's recorded session result, not independent acceptance, founder time or company autonomy.",
       "source": "Tools/crons/telemetry/vault-loop.jsonl",
       "window": {
         "from": "2026-07-30",
-        "to": "2026-09-03"
-      },
-      "shortLabel": "Work finished without a human",
-      "blurb": "Agent sessions that ran from start to finish with nobody stepping in. Finished means the run reached an ending the system recognises, not that the work was right.",
-      "countNoun": "sessions"
+        "to": "2026-09-07"
+      }
     },
     {
       "key": "outward",
-      "label": "Sessions aimed at client and product work rather than at the system itself (of the 211 with a run report)",
-      "value": 37,
-      "numerator": 78,
-      "denominator": 211,
+      "shortLabel": "Work aimed at clients and products",
+      "blurb": "Of the sessions with a written report, the share aimed at client work and products rather than at the vault itself.",
+      "countNoun": "sessions",
+      "label": "Sessions aimed at client and product work rather than at the system itself (among sessions with a run report)",
+      "value": 41.2,
+      "numerator": 84,
+      "denominator": 204,
       "unit": "%",
       "direction": "up",
-      "method": "Counts each \"## <task-id> — <project-slug> (...)\" session header the chassis writes into its own run reports (Mechanical/logs/executor-runs/*.md, 18 files, 2026-08-13 to 2026-09-03); every slug other than \"vault\" (Projects/meta/vault) counts as outward.",
+      "method": "Counts each \"## <task-id> — <project-slug> (...)\" session header the chassis writes into its own run reports (Mechanical/logs/executor-runs/*.md, 18 files, 2026-08-17 to 2026-09-07); every slug other than \"vault\" (Projects/meta/vault) counts as outward.",
       "source": "Mechanical/logs/executor-runs/",
       "window": {
-        "from": "2026-08-13",
-        "to": "2026-09-03"
-      },
-      "shortLabel": "Work aimed at clients and products",
-      "blurb": "Of the sessions that left a written report, the share spent on client work and the company’s own products rather than on the system that runs them.",
-      "countNoun": "sessions"
+        "from": "2026-08-17",
+        "to": "2026-09-07"
+      }
     },
     {
       "key": "decisions",
+      "shortLabel": "Decisions made without the owner",
+      "blurb": "Entries in the decision log carrying the recorded marker for a queued choice that stood without Asher overruling it.",
+      "countNoun": "decisions",
       "label": "Material decisions made without the founder",
-      "value": 9.5,
+      "value": 8.7,
       "numerator": 2,
-      "denominator": 21,
+      "denominator": 23,
       "unit": "%",
       "direction": "up",
-      "method": "Every \"## YYYY-MM-DD — title\" entry in Mechanical/docs/Decision Log.md (21 entries, 2026-07-07 to 2026-09-02) is counted as made \"without Asher\" only when its body carries the log's own literal promotion marker \"decided by the ghost, veto window passed\" (a queued call that stood because he did not veto it in time); every other entry attributes the choice to Asher's own hand or session. Hand-verifiable, deterministic on the exact phrase — a conservative rule that undercounts autonomy rather than overcounts it.",
+      "method": "Every \"## YYYY-MM-DD — title\" entry in Mechanical/docs/Decision Log.md (23 entries, 2026-07-07 to 2026-09-05) is counted as made \"without Asher\" only when its body carries the log's own literal promotion marker \"decided by the ghost, veto window passed\" (a queued call that stood because he did not veto it in time); every other entry attributes the choice to Asher's own hand or session. Hand-verifiable, deterministic on the exact phrase — a conservative rule that undercounts autonomy rather than overcounts it.",
       "source": "Mechanical/docs/Decision Log.md",
       "window": {
         "from": "2026-07-07",
-        "to": "2026-09-02"
+        "to": "2026-09-05"
       },
       "withoutAsherEntries": [
         {
@@ -70,31 +85,25 @@
           "date": "2026-07-31",
           "title": "Dog Body Mind: push the verified test work; port the pattern per-project, not as one sweep"
         }
-      ],
-      "shortLabel": "Decisions made without the owner",
-      "blurb": "Entries in the decision log that were settled without Asher — a queued call that stood because he did not overrule it in time.",
-      "countNoun": "decisions"
+      ]
     },
     {
       "key": "drift",
+      "shortLabel": "Documentation that had gone false",
+      "blurb": "Documentation claims that no longer matched the code when checked.",
+      "countNoun": "claims",
       "label": "Documentation claims that no longer matched the code when audited",
-      "value": 17.7,
-      "numerator": 93,
-      "denominator": 524,
+      "value": 19,
+      "numerator": 103,
+      "denominator": 543,
       "unit": "%",
       "direction": "down",
-      "method": "Sum of the \"N drift item(s)\" / \"N claim(s) checked\" counters the Arbiter writes into its own \"## checked\" section per project per run (Mechanical/logs/arbiter-runs/*.md, 19 of 21 files carry a checked section, 2026-08-14 to 2026-09-03). A claim is a documentation assertion the Arbiter verified against running code that tick; drift is a claim it found false. Real code defects the Arbiter also flags that were never a documentation claim are not counted here.",
+      "method": "Sum of the \"N drift item(s)\" / \"N claim(s) checked\" counters the Arbiter writes into its own \"## checked\" section per project per run (Mechanical/logs/arbiter-runs/*.md, 18 of 21 files carry a checked section, 2026-08-17 to 2026-09-05). A claim is a documentation assertion the Arbiter verified against running code that tick; drift is a claim it found false. Real code defects the Arbiter also flags that were never a documentation claim are not counted here.",
       "source": "Mechanical/logs/arbiter-runs/",
       "window": {
-        "from": "2026-08-14",
-        "to": "2026-09-03"
-      },
-      "shortLabel": "Documentation that had gone false",
-      "blurb": "Claims in the documentation that no longer matched the code when they were checked against it.",
-      "countNoun": "claims"
+        "from": "2026-08-17",
+        "to": "2026-09-05"
+      }
     }
-  ],
-  "figure": {
-    "intro": "Three measures of how much of Intrinsic Labs runs without Asher. Each orb rises out of the blur by its percentage; at 90–95% the company runs itself."
-  }
+  ]
 }
