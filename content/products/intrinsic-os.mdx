@@ -27,9 +27,17 @@ Every one of those sessions writes a run report. Every review gate records what 
 
 No repository work publishes unreviewed. Every executor session ends by requesting a review from a fresh, read-only session that never saw the author's conversation — its only context is the diff and the task. The author fixes what comes back, at most twice. The reviewer's tool permissions deny it any way to be messaged, so it cannot be argued into leniency; that isolation is code, not instruction. High-severity findings withhold automatic landing and the work ships as a PR carrying the findings instead.
 
-## Where the numbers stand
+## What the measurements mean
 
-Four figures are recomputed from that record and published on the front page: 73% of agent sessions ran to completion with no human in the loop; 37% of the sessions that left a run report were aimed at client or product work rather than at the system itself; 9.5% of material decisions were made without the founder; and 17.7% of documentation claims no longer matched the code when audited. The stated goal is a company that runs 90–95% of itself, and the second figure is the one being steered next. For two months the crew has mostly been improving the machine it runs on while the person it works for was consumed by client work, which is exactly what a 37% outward share records. The lever sits upstream of everything described above — how much client and product work is filed for agents to pick up, rather than how much autonomy they hold once it is — so none of the walls have to move to raise it.
+The [home page's operating measures](/#operating-measures) show a dated snapshot derived from the vault's records:
+
+- **Recorded session completion** compares completed sessions with attempted sessions only where both counts were recorded and valid. Missing or inconsistent counts are excluded, with incomplete coverage disclosed. A session can finish at a review or delivery boundary without the work being accepted by its stakeholder.
+- **Work aimed at clients and products** counts sessions with a written report, treating every project other than the vault itself as outward work. It measures dispatch share, not time spent or value delivered.
+- **Decisions made without the owner** counts decision-log entries carrying the explicit marker for a queued choice that stood without a founder veto. It is a narrow, auditable proxy rather than a classification of every judgment made in the company.
+
+Documentation drift is tracked separately by comparing the Arbiter's reported stale claims with the claims it checked. It is a documentation measure, not an autonomy score.
+
+These measures have different sources and windows. The company's autonomy goal also requires evidence about accepted outcomes, corrections, delivery time and the founder's involvement. Session completion alone cannot establish it.
 
 ## What is not released
 

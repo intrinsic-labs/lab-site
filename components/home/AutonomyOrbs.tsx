@@ -54,7 +54,7 @@ export async function AutonomyOrbs() {
   }));
 
   return (
-    <>
+    <section id="operating-measures">
       {/* The figure is full-bleed and the prose around it is not: the haze under the
           waterline has to reach the edges of the viewport, or it ends in the hard vertical
           edge the boxed version had. */}
@@ -83,7 +83,7 @@ export async function AutonomyOrbs() {
           </Link>
         </div>
       </div>
-    </>
+    </section>
   );
 }
 

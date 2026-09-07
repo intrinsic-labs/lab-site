@@ -6,11 +6,13 @@ date: 2026-09-03
 cover: /covers/a-company-that-runs-out-of-a-folder.jpg
 coverAlt: "A single red house and one tree on an empty plain under a clear sky"
 status: published
-summary: "A one-person company run through five named agents over Markdown files, measured against a 90–95% autonomy target: 73% of sessions complete, 37% aimed outward, 9.5% of decisions made alone."
+summary: "How Intrinsic Labs coordinates agent work through Markdown files, and what its operational records can establish about autonomy."
 caveats: []
 artifacts: []
 artifactsNote: The operating folder is live state and isn't released. Design docs and a scrubbed prompt set are public.
-corrections: []
+corrections:
+  - date: 2026-09-07
+    text: "The original summary and Progress section quoted a 73% execution rate from a calculator that included completions whose attempt counts were missing. That figure is withdrawn. The other percentages described a September 3 snapshot, not current operations. This note now links to the dated measures and their limitations rather than repeating changing figures."
 ---
 
 This note is about [IntrinsicOS](/products/intrinsic-os), the vault Intrinsic Labs runs out of — the system the numbers below are measuring.
@@ -57,6 +59,8 @@ start: pnpm dev
 
 ## Progress
 
-Published on the [product page](/products/intrinsic-os): 73% of agent sessions ran to completion; 37% of them were aimed at client or product work rather than the system itself; 9.5% of material decisions were made without the founder; 17.7% of documentation claims had drifted from the code when audited. The target is 90–95%.
+The original September 3 snapshot reported session completion, outward dispatch share, a narrow proxy for decisions made without the founder, and documentation drift. The execution rate was later found to include historical completions without their attempted-session counts; the dated correction records why that figure was withdrawn.
+
+The [current snapshot](/#operating-measures) shows the measured subset and its coverage. The [methodology](/products/intrinsic-os) explains the sources and limits. These operational measures do not establish whether the company has reached its autonomy goal; that also requires accepted outcomes and evidence of the founder's involvement.
 
 The question this system exists to answer: can a solo operator run a real business through scheduled agent sessions over plain text, with measurable fidelity?
