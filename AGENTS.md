@@ -39,8 +39,11 @@ A post is `content/research/<slug>.mdx` with front matter validated by `lib/cont
 date (ISO string) · summary · status (draft|published) · caveats[] · artifacts[{label,href?,note?}]
 · artifactsNote · corrections[{date,text}]`. A build fails loudly on a bad file.
 
-**Caveats render in the header, above the fold. Corrections are appended, dated, never silent
-edits. An empty artifacts block says why.** Those three are the house style — don't remove them.
+**Caveats, corrections and artifacts render beneath the post body in `PostMeta`, only
+when their respective arrays are non-empty.** This follows Asher's September 4 reading
+layout and September 7 editorial direction; do not move caveats back into the header.
+Corrections are appended and dated rather than silently rewriting the historical claim.
+An `artifactsNote` renders with a non-empty artifact list; an empty list renders no block.
 
 Areas and kinds are closed vocabularies in `lib/content/areas.ts` / `kinds.ts`; area slugs are
 permanent URLs (ruled 2026-09-03).

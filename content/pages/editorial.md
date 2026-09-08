@@ -10,8 +10,7 @@ rest on enough hand-labelled pairs to quote.
 ## 2. Negative results publish, with their caveats attached
 
 A method that didn't work is a result. A benchmark that turned out to be saturated is a result. We publish
-them at the rung they earned, and every post carries its **caveats** in the header, above the
-fold, not in a limitations section at the end.
+them at the rung they earned, with **caveats** beneath the main text when needed.
 
 ## 3. The method is published; the corpus never is
 
