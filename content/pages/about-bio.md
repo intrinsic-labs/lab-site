@@ -2,7 +2,7 @@
 
 I'm a self-taught software engineer with a little over 4 years of building behind me. I grew up playing in rock bands and being obsessed with Apple; the junction of incredible art and technology is my favorite space to work. I strive to understand how the inspirational figures in my domains work, then translate that to something that makes sense for my current scale.
 
-Intrinsic Labs is where all of that work lives. It's currently just me, with occasionally collaborators. I have plans to grow it to a small team in the not-so-distant future.
+Intrinsic Labs is where all of that work lives. It's currently just me, with occasional collaborators. I have plans to grow it to a small team in the not-so-distant future.
 
 ### How I Work
 

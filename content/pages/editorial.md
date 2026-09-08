@@ -10,8 +10,7 @@ rest on enough hand-labelled pairs to quote.
 ## 2. Negative results publish, with their caveats attached
 
 A method that didn't work is a result. A benchmark that turned out to be saturated is a result. We publish
-them at the rung they earned, and every post carries its **caveats** in the header, above the
-fold, not in a limitations section at the end.
+them at the rung they earned, with **caveats** beneath the main text when needed.
 
 ## 3. The method is published; the corpus never is
 
@@ -22,15 +21,14 @@ can't be released says so instead of leaving the block empty.
 
 ## 4. Disclosure: agents draft, a human approves
 
-Posts are drafted by agents from the lab's own records — run reports, bench write-ups, design documents —
-as a branch and a pull request. A human reads the rendered draft, corrects it, and merges it or doesn't.
-Nothing appears here without that explicit yes. This is not a footnote: running real work through agents
-is one of the three things we study, and this site is produced by that pipeline.
+Agents may draft posts from the lab's records, including run reports, benchmark write-ups and design
+documents. Our publication policy requires a human to review the rendered draft, make any necessary
+corrections and explicitly approve publication.
 
 ## 5. Corrections are appended and dated
 
 When something turns out to be wrong, the correction is added beneath the post with its date. The original
-text is not silently edited. Every post shows its corrections block even when it is empty.
+text is not silently edited. The corrections block appears only when a post has corrections.
 
 ## 6. What we don't do
 
