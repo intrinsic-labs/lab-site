@@ -4,8 +4,8 @@ reconciling what each project says against what its code actually does, drafting
 surfacing the handful of decisions that need a human. Every project declares in its own file how much
 those agents may do — draft only, build to a boundary and stop, or run to completion — and the
 declaration is enforced in code. Every change to a code repository is supposed to be reviewed by a
-second session that never saw the first one's conversation; in the measured window, 51 of 58 branches
-actually were, and the rest are next. Nothing outward-facing happens without an explicit human yes.
+second session that never saw the first one's conversation. The [review study](/research/the-reviewer-that-never-saw-the-authors-conversation)
+reports the historical results and their limitations. Nothing outward-facing happens without an explicit human yes.
 
 We treat that arrangement as an experiment as much as an operating model. The agent-operations research
 area is built on what it records. It is being pushed toward more work aimed outward — at
