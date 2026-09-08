@@ -21,15 +21,14 @@ can't be released says so instead of leaving the block empty.
 
 ## 4. Disclosure: agents draft, a human approves
 
-Posts are drafted by agents from the lab's own records — run reports, bench write-ups, design documents —
-as a branch and a pull request. A human reads the rendered draft, corrects it, and merges it or doesn't.
-Nothing appears here without that explicit yes. This is not a footnote: running real work through agents
-is one of the three things we study, and this site is produced by that pipeline.
+Agents may draft posts from the lab's records, including run reports, benchmark write-ups and design
+documents. Our publication policy requires a human to review the rendered draft, make any necessary
+corrections and explicitly approve publication.
 
 ## 5. Corrections are appended and dated
 
 When something turns out to be wrong, the correction is added beneath the post with its date. The original
-text is not silently edited. Every post shows its corrections block even when it is empty.
+text is not silently edited. The corrections block appears only when a post has corrections.
 
 ## 6. What we don't do
 
