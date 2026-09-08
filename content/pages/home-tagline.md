@@ -1,1 +1,1 @@
-Building a company that can run itself.
+A company that runs itself. Mostly.
