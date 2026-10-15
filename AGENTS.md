@@ -11,10 +11,11 @@ published) are the design docs. This file is the engineering entry point.
 ```
 app/            routes only — thin, compose components + lib
   research/     index, [slug] posts, areas/[area]
-  products/     index + [slug] (the company's own bets: GlyphDeck, Liturgos, Tycho, Aspen
-                Grove) + aspen-grove/open-loom (the spec, plain markdown). IntrinsicOS
-                (`content/products/intrinsic-os.mdx`) is its own nav item, not listed on
-                the index — see `app/products/page.tsx`.
+  products/     index + [slug] (the company's own bets: GlyphDeck, Liturgos; Tycho, paused)
+                + aspen-grove/open-loom (the spec, plain markdown). IntrinsicOS
+                (`content/products/intrinsic-os.mdx`) is its own nav item and Aspen Grove a
+                personal open-source project; neither is listed on the index or the home
+                grid (no `order`), both pages stay reachable — see `app/products/page.tsx`.
   work/         index + [slug] — two halves of one collection: the CLIENT portfolio (case
                 studies ported from intrinsiclabs-co-v3) and the open-source projects
                 (see below)
@@ -94,8 +95,14 @@ with a `draft` chip so a reviewer can navigate to them. Publishing is a one-word
 
 ## Publishing flow
 
-An agent drafts a post as a branch + PR; Vercel builds a preview; Asher reads it, corrects it,
-flips `status`, merges. Production promotion is a human act — there is no agent path to prod.
+The procedure is the vault skill `Tools/skills/lab-publishing/SKILL.md`; the rationale is the
+vault's `Projects/meta/lab/docs/publication-cadence.md` (rewritten 2026-10-15). A real trigger
+passes the three-question gate → an agent drafts `content/research/<slug>.mdx` with
+`status: draft` on branch `lab/<date>-<slug>` + PR → Vercel builds an unlisted preview → one
+VISR card carries the preview URL, rung, gate answers and caveats. **Only Asher's accept on
+that card publishes:** the owning agent then flips `status: published` in one commit and lands
+it on `main`, which Vercel deploys to production (`www.intrinsiclabs.co`). A reject closes the
+branch with the reason. No agent publishes without that accept; no rule auto-publishes.
 
 ## Gotchas
 

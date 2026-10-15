@@ -14,8 +14,10 @@ I write for web, desktop, and mobile (native or cross-platform). I learn new fra
 
 ### What I'm Building
 
-Right now I'm working on [Aspen Grove](/products/aspen-grove), an exploration-first AI interface, and shipping client work that ranges from [multilingual fitness platforms](/work/dog-body-mind) to [operational tools for field sales](/work/gfbr).
+Right now I'm working on [GlyphDeck](/products/glyphdeck), a game console that exists only as software and draws its games in text, and [Liturgos](/products/liturgos), worship planning for Presbyterian and Reformed churches. Both are built with help from [IntrinsicOS](/products/intrinsic-os), the agent system the company runs on.
 
-I keep the [work section](/work) on this site up to date — look for details there.
+Client work pays for the products and the research. Current engagements: a [dog fitness and rehabilitation platform](/work/dog-body-mind), a mobile app for a ministry's articles, videos and podcast, the front end of an app medical providers use to log billable charges for a billing company, and a new website and app refresh for an app that helps someone act quickly on a suspected heart attack or stroke.
+
+Case studies of finished and ongoing projects are in the [work section](/work).
 
 I'm always interested in hard problems and good conversation. [Say hi](mailto:{email}) if you have ideas.

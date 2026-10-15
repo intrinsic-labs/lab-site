@@ -36,12 +36,13 @@ export const postFrontMatter = z.object({
 export type PostFrontMatter = z.infer<typeof postFrontMatter>;
 
 /**
- * Products = the company's own product bets (GlyphDeck, Liturgos, Tycho, Aspen Grove, the
- * vault) — distinct from Work, the client portfolio (`caseStudyFrontMatter` below).
+ * Products = the company's own product bets (GlyphDeck, Liturgos), the paused Tycho, the
+ * vault, and Aspen Grove (unlisted: a personal open-source project since 2026-10-15) —
+ * distinct from Work, the client portfolio (`caseStudyFrontMatter` below).
  * `released`/`in-development` cover the shipping lifecycle; `private` (running, code
  * withheld), `described` (no code released — the vault) and `in-design` are inherited from
- * the old instrument vocabulary; `paused` is Aspen Grove's honest label while it's
- * reopening. Labels live in one place: `STATUS_LABEL` in `lib/content/products.ts`.
+ * the old instrument vocabulary; `paused` is a product that was built and is now on hold
+ * (Tycho). Labels live in one place: `STATUS_LABEL` in `lib/content/products.ts`.
  */
 export const PRODUCT_STATUSES = [
   "released",
