@@ -15,7 +15,10 @@ export const metadata: Metadata = { title: "Products", description: "The company
  *
  * Only products with an explicit `order` (< 100) are listed. IntrinsicOS keeps the default
  * order (100) and is deliberately NOT on this page: since 2026-09-04 it is its own nav item —
- * it is the thing the whole site is about, not one bet among four. The scroll-snap this page
+ * it is the thing the whole site is about, not one bet among four. Aspen Grove has no `order`
+ * either since 2026-10-15: it was iceboxed as a company bet and continues as a personal
+ * open-source project, so `/products/aspen-grove` and its OpenLoom spec stay reachable but
+ * are not listed here. The scroll-snap this page
  * had (`SnapSections`) was removed the same day at Asher's request.
  */
 export default async function ProductsPage() {

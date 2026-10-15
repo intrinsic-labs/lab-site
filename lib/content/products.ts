@@ -41,7 +41,7 @@ export const STATUS_LABEL: Record<ProductStatus, string> = {
   private: "Private — running, code not released",
   described: "Internal — described here, no code released",
   "in-design": "In design — not yet built",
-  paused: "Paused — resuming",
+  paused: "Paused",
 };
 
 export const allProducts = cache(async (): Promise<Product[]> => {

@@ -11,10 +11,11 @@ published) are the design docs. This file is the engineering entry point.
 ```
 app/            routes only — thin, compose components + lib
   research/     index, [slug] posts, areas/[area]
-  products/     index + [slug] (the company's own bets: GlyphDeck, Liturgos, Tycho, Aspen
-                Grove) + aspen-grove/open-loom (the spec, plain markdown). IntrinsicOS
-                (`content/products/intrinsic-os.mdx`) is its own nav item, not listed on
-                the index — see `app/products/page.tsx`.
+  products/     index + [slug] (the company's own bets: GlyphDeck, Liturgos; Tycho, paused)
+                + aspen-grove/open-loom (the spec, plain markdown). IntrinsicOS
+                (`content/products/intrinsic-os.mdx`) is its own nav item and Aspen Grove a
+                personal open-source project; neither is listed on the index or the home
+                grid (no `order`), both pages stay reachable — see `app/products/page.tsx`.
   work/         index + [slug] — two halves of one collection: the CLIENT portfolio (case
                 studies ported from intrinsiclabs-co-v3) and the open-source projects
                 (see below)
