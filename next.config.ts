@@ -36,6 +36,32 @@ const nextConfig: NextConfig = {
         destination: "/products",
         permanent: true,
       },
+      // intrinsiclabs.co served the old portfolio (intrinsiclabs-co-v3) until 2026-10-15.
+      // Its published URLs land on their counterparts here. Aspen Grove was a case study
+      // there and is a product page here; it must precede the general rule.
+      {
+        source: "/case-studies/aspen-grove",
+        destination: "/products/aspen-grove",
+        permanent: true,
+      },
+      {
+        source: "/case-studies/:slug",
+        destination: "/work/:slug",
+        permanent: true,
+      },
+      {
+        source: "/case-studies",
+        destination: "/work",
+        permanent: true,
+      },
+      {
+        // The résumé PDF was linked from the old site; it stays hosted by the retired
+        // project rather than being copied into this repo. Temporary: the host may change.
+        source: "/W_ASHER_POPE_Resume_20260325.pdf",
+        destination:
+          "https://intrinsic-labs-website.vercel.app/W_ASHER_POPE_Resume_20260325.pdf",
+        permanent: false,
+      },
     ];
   },
 };
