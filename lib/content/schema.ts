@@ -58,10 +58,10 @@ export type ProductStatus = (typeof PRODUCT_STATUSES)[number];
  * Interactive demos a product page can carry in place of its screenshots. The value names a
  * component in `components/products/demos/` (the registry is `ProductDemo`); a page with one
  * renders it where the gallery would go and shows no hero image. Data, not a slug check —
- * `content/products/tycho.mdx` is the only file that sets it (2026-09-04, Asher: "ditch the
+ * `content/products/tycho.mdx` and `visr.mdx` set it (2026-09-04, Asher: "ditch the
  * screenshots and instead inline an interactive prototype").
  */
-export const PRODUCT_DEMOS = ["tycho"] as const;
+export const PRODUCT_DEMOS = ["tycho", "visr"] as const;
 export type ProductDemo = (typeof PRODUCT_DEMOS)[number];
 
 export const productFrontMatter = z.object({

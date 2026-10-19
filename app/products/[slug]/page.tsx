@@ -5,6 +5,7 @@ import { Mdx } from "@/lib/mdx/render";
 import { ProductHero } from "@/components/products/ProductHero";
 import { Gallery } from "@/components/products/Gallery";
 import { ProductDemo } from "@/components/products/demos";
+import { SystemCards } from "@/components/products/SystemCards";
 
 export const dynamicParams = false;
 export async function generateStaticParams() { return (await allProducts()).map((p) => ({ slug: p.slug })); }
@@ -45,7 +46,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
         <div className="mx-auto max-w-6xl px-6">
           <div className="mx-auto max-w-[68ch] border-t border-rule py-14">
             {statusLine && <p className="label mb-8">{statusLine}</p>}
-            <div className="prose prose-post"><Mdx source={p.body} /></div>
+            <div className="prose prose-post"><Mdx source={p.body} components={{ SystemCards }} /></div>
           </div>
         </div>
       </article>

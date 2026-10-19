@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+  <title>VISR — demo</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="tycho.css">
+  <meta name="theme-color" content="#07090c">
+</head>
+<body>
+  <div id="frame">
+    <div id="boot">
+      <div class="boot-gate">
+        <div class="prompt">TAP TO POWER ON</div>
+      </div>
+      <div class="boot-panel" aria-hidden="true">
+        <div class="boot-meta">
+          <div class="boot-box boot-unit boot-flicker">VISR-ID: 42</div>
+          <div class="boot-link boot-flicker"></div>
+          <div class="boot-box boot-status boot-flicker">STATUS: ACTIVE</div>
+        </div>
+        <div class="boot-lab boot-flicker">
+          <span class="boot-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+          <span class="boot-lab-name">INTRINSIC LABS</span>
+          <span class="boot-rule"></span>
+          <span class="boot-six" aria-hidden="true">
+            <i></i><i></i><i></i><i></i><i></i><i></i>
+          </span>
+        </div>
+        <div class="boot-hero">
+          <div class="boot-thanks boot-reveal">Thank you for using</div>
+          <div class="boot-red-rule"></div>
+          <!-- the wordmark is a drawing, not type: an SVG that fits its width
+               exactly, so it is outside the three-size type scale by nature -->
+          <svg class="boot-wordmark" viewBox="0 0 1000 150" role="img" aria-label="VISR">
+            <text x="500" y="122" font-size="150" text-anchor="middle">VISR</text>
+          </svg>
+        </div>
+        <div class="boot-lower">
+          <div class="boot-terminal boot-reveal">
+            <span>OPERATOR TERMINAL</span>
+            <span class="boot-stages" aria-label="Four initialization stages">
+              <i></i><i></i><i></i><i></i>
+            </span>
+          </div>
+          <div class="boot-dots boot-reveal"></div>
+          <div class="boot-tagline boot-reveal">
+            <i aria-hidden="true"></i>
+            <span>Visual Intelligence System: Reconnaissance</span>
+            <i aria-hidden="true"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="wake" aria-hidden="true"><i></i></div>
+    <div id="main">
+      <div id="app"></div>
+    </div>
+  </div>
+  <!-- the kernel, in dependency order: helpers first, the core after the
+       services it calls, the extensions after the core they attach to -->
+  <!-- DEMO: the mock server, installed before the first request (demo/shim.js) -->
+  <script src="demo/corpus.js"></script>
+  <script src="demo/shim.js"></script>
+  <script src="kernel/net.js"></script>
+  <script src="kernel/helpers.js"></script>
+  <script src="kernel/store.js"></script>
+  <script src="kernel/sound.js"></script>
+  <script src="kernel/log.js"></script>
+  <script src="kernel/boot.js"></script>
+  <script src="kernel/wake.js"></script>
+  <script src="kernel/tycho.js"></script>
+  <script src="kernel/auth.js"></script>
+  <script src="kernel/dialogs.js"></script>
+  <script src="kernel/viewer.js"></script>
+  <script src="kernel/email.js"></script>
+  <script src="kernel/lifecycle.js"></script>
+  <script src="kernel/update.js"></script>
+  <script src="mobile.js"></script>
+  <script src="primitives/stamp.js"></script>
+  <script src="primitives/ring-scrub.js"></script>
+  <script src="primitives/flipcard.js"></script>
+  <script src="primitives/indexcard.js"></script>
+  <!-- the REVIEW desk: the wire and memory first, then the pieces, then the
+       controller that composes them -->
+  <script src="review/wire.js"></script>
+  <script src="review/snapshot.js"></script>
+  <script src="review/link.js"></script>
+  <script src="review/attempts.js"></script>
+  <script src="review/format.js"></script>
+  <script src="review/working.js"></script>
+  <script src="review/interactive.js"></script>
+  <script src="review/drafts.js"></script>
+  <script src="review/session.js"></script>
+  <script src="review/place.js"></script>
+  <script src="review/cards.js"></script>
+  <script src="review/deck-fit.js"></script>
+  <script src="review/icons.js"></script>
+  <script src="review/dropdown.js"></script>
+  <script src="review/deck-filter.js"></script>
+  <script src="review/home-bar.js"></script>
+  <script src="review/home.js"></script>
+  <script src="review/visual.js"></script>
+  <script src="review/brief.js"></script>
+  <script src="review/fields.js"></script>
+  <script src="review/doc-view.js"></script>
+  <script src="review/doc-sheet.js"></script>
+  <script src="review/content.js"></script>
+  <script src="review/preview.js"></script>
+  <script src="review/shots.js"></script>
+  <script src="review/sections.js"></script>
+  <script src="review/stack.js"></script>
+  <script src="review/voice.js"></script>
+  <script src="review/dictate.js"></script>
+  <script src="review/attach.js"></script>
+  <script src="review/text-cap.js"></script>
+  <script src="review/compose.js"></script>
+  <script src="review/park.js"></script>
+  <script src="review/block.js"></script>
+  <script src="review/handback.js"></script>
+  <script src="review/owner-pick.js"></script>
+  <script src="review/repo-pick.js"></script>
+  <script src="review/approve-sheet.js"></script>
+  <script src="review/actions.js"></script>
+  <script src="review/topbar.js"></script>
+  <script src="review/desk.js"></script>
+  <script src="review/capture.js"></script>
+  <script src="review/telemetry.js"></script>
+  <script src="review/panic.js"></script>
+  <script src="review/monday-view.js"></script>
+  <script src="review/monday.js"></script>
+  <script src="review/settings-controls.js"></script>
+  <script src="review/settings.js"></script>
+  <script src="review/deeplink.js"></script>
+  <script src="review/app.js"></script>
+  <!-- DEMO: hide what a visitor cannot use (demo/tune.js) -->
+  <script src="demo/tune.js"></script>
+</body>
+</html>

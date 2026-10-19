@@ -7,9 +7,9 @@ import { DESKTOP, MOBILE, type OrbInput } from "./orb-geometry";
 
 /** Token names, never literal colours — the skin decides what they are. */
 const COLOR: Record<string, string> = {
-  execution: "--color-accent",
+  released: "--color-accent",
   outward: "--color-ink",
-  decisions: "--color-marker",
+  accepted: "--color-marker",
 };
 
 /**

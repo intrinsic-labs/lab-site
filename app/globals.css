@@ -248,6 +248,9 @@ h1, h2, h3, h4, h5, h6 { font-family: var(--font-sans); }
 .prose strong { font-weight: 700; color: var(--color-ink); }
 .prose ul, .prose ol { padding-left: 1.4em; }
 .prose ul { list-style: disc; }
+.prose ol { list-style: decimal; }
+/* A component set into prose (e.g. <SystemCards />) opts out of link styling. */
+.prose .not-prose a { color: inherit; text-decoration: none; background: none; }
 .prose li + li { margin-top: 0.35em; }
 .prose li::marker { color: var(--color-ink-3); }
 /* latent-spaces: `border-l-4 border-primary/30 pl-4 italic`. */

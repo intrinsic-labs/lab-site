@@ -1,0 +1,40 @@
+---
+name: VISR
+line: The review desk for IntrinsicOS.
+status: private
+statusNote: Running for one person on a private network. The source is private; the demo above is a front-end copy with invented data.
+order: 101
+demo: visr
+---
+
+VISR is where the founder does his part of the company's work. Everything the agents need from a person (a decision, a review, a login, a chore) arrives as one card in one deck, and nothing that isn't on a card is waiting on him. It runs as a web app on his own private network and is used mostly from a phone.
+
+The demo above is the same app with invented projects and no connection to anything: approve a draft by dragging the stamp onto it, open a card, edit its document, send feedback. Nothing you do leaves your browser.
+
+## The deck
+
+Cards are shown one at a time, as a split-flap stack: tap the top half for the next card, the bottom half to go back. The order is computed, not chosen: cards he can act on come first, then work whose decision releases something, client work before products before internal work, with real due dates and what a decision unblocks moving a card up. A filter in the corner splits the deck into three lanes:
+
+- **Decide**: drafts to approve, finished work to accept, questions only he can answer.
+- **Do**: chores that need his hands, and issues assigned to him in client trackers.
+- **Happened**: receipts for things the system did on a standing rule, each undoable for a week.
+
+## The desk
+
+Opening a card shows its desk. The first page is a short brief written by a model from the whole item: what it is, what is being asked, and a recommendation. Below it are the screenshots and the link to a live preview when there is one. Further pages hold the full outcome document, the agent's checkpoint, earlier feedback and the facts (state, branch, what it is waiting on).
+
+Documents can be edited in place. A save is refused if the file changed underneath, so an edit never overwrites an agent's newer version.
+
+## Stamps and verbs
+
+The common decisions are rubber stamps: **APPROVE**, **REFUSE** and **DONE**. A stamp is picked up and dragged onto the page; letting go over the page commits it, letting go anywhere else puts it back. A tap does nothing. The physical gesture is deliberate: a decision should cost a motion, not happen by accident.
+
+The rest are buttons: **ACCEPT** releases finished work to its destination; **FEEDBACK** (typed or dictated, with attachments) sends it back to the same agent; **PARK**, **LATER**, **NOT NEEDED** and **I'M ON IT** keep the deck honest about what he is actually going to do.
+
+## Getting things in
+
+A pencil on the home screen files a note about any project, by typing or dictation. A note sits for a few minutes so it can still be edited, then a drafting agent turns it into a draft outcome, a chore or nothing, and the result comes back as a card.
+
+## What it does not do
+
+VISR has no authority of its own. It shows the runtime's state and sends the founder's actions to it; whether an action is allowed is checked by IntrinsicOS. It is not a dashboard of everything the agents did: routine sessions, alerts and internal runs stay out of the deck unless they need him.

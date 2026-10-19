@@ -1,9 +1,9 @@
 {
-  "generated": "2026-09-07",
+  "generated": "2026-10-16",
   "window": {
-    "from": "2026-07-07",
-    "to": "2026-09-07",
-    "days": 63
+    "from": "2026-10-01",
+    "to": "2026-10-16",
+    "days": 16
   },
   "goal": {
     "low": 90,
@@ -11,99 +11,50 @@
     "text": "Asher's stated goal is for the company to run 90-95% autonomously."
   },
   "figure": {
-    "intro": "These operational measures describe recorded sessions and decisions. They do not establish a company autonomy rate."
+    "intro": "These measures follow approved work through acceptance and release, and show where agent time goes. They are not a company autonomy rate: the founder's time is not yet measured."
   },
   "metrics": [
     {
-      "key": "execution",
-      "label": "Completion among executor sessions with valid recorded counts",
-      "shortLabel": "Recorded session completion",
-      "countNoun": "recorded attempts",
-      "blurb": "Sessions the system recorded as completed, including work that ended at a review or delivery boundary. Coverage is incomplete.",
-      "value": 69.6,
-      "numerator": 261,
-      "denominator": 375,
+      "key": "released",
+      "label": "Outcomes accepted October 13–16 that were released to their destination within 72 hours",
+      "shortLabel": "Accepted work released",
+      "countNoun": "accepted outcomes",
+      "blurb": "Since October 13, the founder's accept releases the work: merged, deployed or sent. This counts accepted work with a recorded release within 72 hours. One release waited on a system update; one was never scheduled.",
+      "value": 75.0,
+      "numerator": 6,
+      "denominator": 8,
       "unit": "%",
       "direction": "up",
-      "coverage": {
-        "status": "incomplete",
-        "includedRecords": 193,
-        "excludedRecords": 32,
-        "missingCounters": 32,
-        "invalidCounters": 0,
-        "malformedLines": 0,
-        "unpairedCompletions": 35
-      },
-      "method": "Paired nonnegative integer attempted/completed counters from 193 loop-run records; counts exceeding attempts are excluded. 32 records have missing counters, 0 have invalid counters, and 0 lines are malformed. 35 observed completions with no attempt count are excluded from both totals. The date window describes included records with valid timestamps. Completion is the chassis's recorded session result, not independent acceptance, founder time or company autonomy.",
-      "source": "Tools/crons/telemetry/vault-loop.jsonl",
-      "window": {
-        "from": "2026-07-30",
-        "to": "2026-09-07"
-      }
+      "method": "review accept events 2026-10-13T21:00Z – 2026-10-16T22:00Z paired with owner_release_done within 72 h. Release is the agent's recorded release, not an independent check that a user received it.",
+      "source": "IntrinsicOS journal (events)"
     },
     {
       "key": "outward",
-      "shortLabel": "Work aimed at clients and products",
-      "blurb": "Of the sessions with a written report, the share aimed at client work and products rather than at the vault itself.",
-      "countNoun": "sessions",
-      "label": "Sessions aimed at client and product work rather than at the system itself (among sessions with a run report)",
-      "value": 41.2,
-      "numerator": 84,
-      "denominator": 204,
+      "label": "Agent working minutes on client and product projects, October 13–16",
+      "shortLabel": "Agent time on clients and products",
+      "countNoun": "agent minutes",
+      "blurb": "Since October 13, the share of agents' working minutes spent on client projects and our own products rather than on the system that runs the company.",
+      "value": 72.6,
+      "numerator": 947,
+      "denominator": 1305,
       "unit": "%",
       "direction": "up",
-      "method": "Counts each \"## <task-id> — <project-slug> (...)\" session header the chassis writes into its own run reports (Mechanical/logs/executor-runs/*.md, 18 files, 2026-08-17 to 2026-09-07); every slug other than \"vault\" (Projects/meta/vault) counts as outward.",
-      "source": "Mechanical/logs/executor-runs/",
-      "window": {
-        "from": "2026-08-17",
-        "to": "2026-09-07"
-      }
+      "method": "Owner-session minutes clipped to 2026-10-13T21:00Z – 2026-10-16T22:00Z, by project category (client and product vs internal).",
+      "source": "IntrinsicOS journal (runs)"
     },
     {
-      "key": "decisions",
-      "shortLabel": "Choices that passed without veto",
-      "blurb": "The share of logged decisions explicitly recorded as proceeding after the founder’s veto window passed. This does not measure how much he shaped the choice.",
-      "countNoun": "decisions",
-      "label": "Logged choices recorded as proceeding without a founder veto",
-      "value": 8.7,
-      "numerator": 2,
-      "denominator": 23,
+      "key": "accepted",
+      "label": "Outcomes approved October 1–13 that the founder accepted by the end of that window",
+      "shortLabel": "Approved work accepted",
+      "countNoun": "approved outcomes",
+      "blurb": "Every piece of work approved in our first two-week trial (October 1–13), followed to the trial's end: how much the founder accepted. Accepted means he took a demo-ready result, not that it reached anyone.",
+      "value": 61.9,
+      "numerator": 13,
+      "denominator": 21,
       "unit": "%",
       "direction": "up",
-      "method": "Of 23 dated decision-log entries, 2 carry the literal promotion phrase \"decided by the ghost, veto window passed\". The denominator includes all dated entries, not only queued choices. This measures recorded non-veto promotions, not absence of founder involvement; an entry without the phrase is unclassified by this proxy.",
-      "source": "Mechanical/docs/Decision Log.md",
-      "window": {
-        "from": "2026-07-07",
-        "to": "2026-09-05"
-      },
-      "withoutAsherEntries": [
-        {
-          "date": "2026-08-01",
-          "title": "GlyphDeck: Poly Pizza joins as third asset source, via API key not scraping"
-        },
-        {
-          "date": "2026-07-31",
-          "title": "Dog Body Mind: push the verified test work; port the pattern per-project, not as one sweep"
-        }
-      ]
-    },
-    {
-      "key": "drift",
-      "shortLabel": "Documentation that had gone false",
-      "blurb": "Documentation claims that no longer matched the code when checked.",
-      "countNoun": "claims",
-      "label": "Documentation claims that no longer matched the code when audited",
-      "value": 19,
-      "numerator": 103,
-      "denominator": 543,
-      "unit": "%",
-      "direction": "down",
-      "method": "Sum of the \"N drift item(s)\" / \"N claim(s) checked\" counters the Arbiter writes into its own \"## checked\" section per project per run (Mechanical/logs/arbiter-runs/*.md, 18 of 21 files carry a checked section, 2026-08-17 to 2026-09-05). A claim is a documentation assertion the Arbiter verified against running code that tick; drift is a claim it found false. Real code defects the Arbiter also flags that were never a documentation claim are not counted here.",
-      "source": "Mechanical/logs/arbiter-runs/",
-      "window": {
-        "from": "2026-08-17",
-        "to": "2026-09-05"
-      }
+      "method": "Cohort of outcome_approved events 2026-10-01T04:00Z to 2026-10-13T21:00Z; accepted = status accepted (version-control history) or a review accept action before the cutoff.",
+      "source": "IntrinsicOS journal + vault history"
     }
   ]
 }

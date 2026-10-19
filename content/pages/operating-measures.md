@@ -1,1 +1,1 @@
-We’re studying how far agents can take a real company, from deciding what matters to delivering work people value. These figures track parts of its operations; our next step is to measure the quality of delivered work and the founder’s time and corrections along the way.
+We’re studying how far agents can take a real company, from deciding what matters to delivering work people value. Each figure has its own window and count; tap one to see them. What we can’t yet measure is the founder’s own time, so none of this is an autonomy rate.

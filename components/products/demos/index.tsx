@@ -1,5 +1,6 @@
 import type { ProductDemo as ProductDemoId } from "@/lib/content/schema";
 import { TychoDemo } from "./TychoDemo";
+import { VisrDemo } from "./VisrDemo";
 
 /**
  * The registry behind the `demo:` front-matter field: one component per id in
@@ -8,6 +9,7 @@ import { TychoDemo } from "./TychoDemo";
  */
 const DEMOS: Record<ProductDemoId, () => React.JSX.Element> = {
   tycho: TychoDemo,
+  visr: VisrDemo,
 };
 
 export function ProductDemo({ id }: { id: ProductDemoId }) {
