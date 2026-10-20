@@ -17,29 +17,23 @@ IntrinsicOS is a small program that runs continuously on one Mac. It does not do
 
 1. He writes or dictates a note about a project. A drafting agent turns it into a draft outcome, a task for him, or nothing.
 2. Once a week, a strategist agent reads each client project and product and proposes up to three outcomes.
-3. An issue assigned to him in a client's issue tracker arrives as a card for him to route.
+3. An issue assigned to him in [Linear](https://linear.app) arrives as a card for him to route; the integration only reads from Linear.
 
-Nothing starts until he approves it. On approval he picks which agent owns the outcome and which code repositories it may change.
+Nothing starts until it is approved. The founder approves outcomes and picks which agent owns each one and which code repositories it may change. A manager agent may open a small number itself, three at most at once, but cannot accept the result.
 
-**An owner session** works in its own copy of the repository, on its own branch. A session runs for at most two hours and must record a checkpoint (what changed, what is next, what it is waiting on) at least every 25 minutes; the runtime enforces both, not the prompt. When the work meets its criteria, the owner marks it ready for review. If it needs the founder (a decision, a login, a physical action) it says so and waits.
+**An owner session** works in its own copy of the repository, on its own branch. It runs for at most two hours and records a checkpoint (what changed, what is next, what it is waiting on) at least every 25 minutes. When the work meets its criteria, the owner marks it ready for review. If it needs the founder (a decision, a login, a physical action), it says so and waits.
 
-**Accepting releases the work.** When the founder accepts, the same owner gets one more session to merge, deploy or send the result to where it is meant to end up, and records whether it got there.
+## Gates and approvals
 
-**What an agent may do is set per project**, in one line the agents cannot change:
+The safeguards that matter most, in order:
 
-```
-autonomy: gated
-```
+1. **Nothing reaches a person until the founder accepts it.** Finished work waits on a review card. His accept releases exactly that work: the same owner gets one more session to merge, deploy or send it, and must record where it ended up. Accepting is never delegated to an agent.
+2. **Some things always need his separate approval.** Spending money, new commitments to anyone outside the company, and anything beyond the accepted scope are never covered by an accept.
+3. **Work is re-checked before every session.** Before each session starts, the runtime confirms the outcome is still approved, the owner and repositories are the ones he picked, and neither the outcome nor the project's standing direction has changed since the last session. If either changed, autonomous work stops until he continues it.
+4. **Routine requests follow rules he wrote, within fixed limits.** Moving a date or filing a task for him can happen automatically when it matches one of his rules, with a receipt he can undo for a week. The code refuses any rule that would spend, send, publish, deploy, merge code, assign an owner or accept work.
+5. **Runs are bounded and visible.** A stop switch prevents new sessions from starting. Weekly usage is paced across the business days. Sessions are capped in length and must checkpoint, and every session and decision is recorded.
 
-`locked` means changes go to a pull request for the founder. `gated` adds a review by a model from the other provider before anything merges. `open` merges once automated checks pass. A project with no line runs nothing. Some actions are never automatic at any level: spending money, sending anything to a client or the public, deploying to production and accepting finished work.
-
-**Other rules the runtime enforces:**
-
-- *Review across providers.* Work written by a Claude model is reviewed by an OpenAI model, and the reverse.
-- *A stop switch.* One command, or one button in VISR, stops new sessions from starting; running sessions finish.
-- *Pacing.* Each provider's weekly usage is spread across the business days; a session that would start over pace asks first.
-- *Standing approvals.* Routine requests that match a rule the founder wrote (moving a date, filing a task for him) are carried out with a receipt he can undo for a week.
-- *Self-update.* When a change to the runtime is merged, it updates itself between sessions, runs its own tests and rolls back if they fail.
+Review across providers is part of how work lands: work written by a Claude model is reviewed by an OpenAI model before it merges, and the reverse. Some of these rules are enforced by the runtime's code (the session checks, limits, stop switch and standing-rule limits); others, such as reviewing before merging, are instructions the agents follow and the review record shows.
 
 <h2 id="visr">VISR, the review desk</h2>
 
@@ -51,15 +45,15 @@ Everything that needs a person reaches the founder as a card in [VISR](/products
 |---|---|
 | **Claude** (Anthropic) | The default owner of an outcome (Opus, at medium effort), which hands smaller pieces to Sonnet and Haiku. Writes the brief on each review card. Reviews work written by OpenAI models. Runs the nightly documentation audit. |
 | **ChatGPT / Codex** (OpenAI) | Drafts outcomes from the founder's notes and runs the weekly strategist. Owns some outcomes. Reviews work written by Claude models. |
-| **Grok** (xAI) | Three assistants in a team chat with the founder: administration (calendar, inbox, client email drafts), finance (invoices, receivables, cash) and IT (monitoring). They reach the runtime's records through an authenticated connector and file work for it; they do not write code. |
+| **[Grok Bot](https://x.ai/bot)** (xAI) | Three hosted Grok Bot teammates the founder works with in chat: administration (calendar, inbox, client email drafts), finance (invoices, receivables, cash) and IT (monitoring). They reach the runtime's records through an authenticated connector and file work for it; they do not write code. |
 
 Which model fills which role is a setting, not code, and changes as the models do.
 
 ## Measuring progress toward autonomy
 
-Our goal is a company that can carry work from an idea to its destination with far less day-to-day involvement from its founder, while meeting or exceeding his standard of quality. The [home page's operating measures](/#operating-measures) follow work along that path, each read from the runtime's records with its own window:
+Our goal is a company that can carry work from an idea to its destination with far less day-to-day involvement from its founder, while meeting or exceeding his standard of quality. The [home page's operating measures](/#operating-measures) follow work along that path. Each is read from the runtime's records and shown with its count and window:
 
-- **Approved work accepted** follows every outcome approved in a window to a fixed cutoff and counts how many the founder accepted. Accepted means he took a demo-ready result; it does not mean the work reached anyone.
+- **Approved work accepted** counts how much of the work approved since a start date the founder has accepted, leaving out the last three days. Accepted means he took the result; whether it reached anyone is the next measure.
 - **Accepted work released** counts accepted outcomes with a recorded release (merge, deploy or send) within 72 hours. The release is the agent's own record, not an independent check that a user received it.
 - **Agent time on clients and products** is the share of agent working minutes spent on client projects and our own products rather than on the system itself.
 

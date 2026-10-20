@@ -1,1 +1,1 @@
-We’re studying how far agents can take a real company, from deciding what matters to delivering work people value. Each figure has its own window and count; tap one to see them. What we can’t yet measure is the founder’s own time, so none of this is an autonomy rate.
+Read from our runtime’s records. Not an autonomy rate: the founder’s own time isn’t measured yet.

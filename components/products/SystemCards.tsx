@@ -21,8 +21,8 @@ const CARDS = [
   {
     href: "#agents",
     name: "The agents",
-    role: "Claude · ChatGPT · Grok",
-    text: "Claude and ChatGPT do the engineering and review each other. Grok runs administration and finance.",
+    role: "Claude · ChatGPT · Grok Bot",
+    text: "Claude and ChatGPT do the engineering and review each other. Grok Bot runs administration and finance.",
   },
 ] as const;
 

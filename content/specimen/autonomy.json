@@ -1,9 +1,9 @@
 {
-  "generated": "2026-10-16",
+  "generated": "2026-10-20",
   "window": {
-    "from": "2026-10-01",
-    "to": "2026-10-16",
-    "days": 16
+    "from": "2026-10-13",
+    "to": "2026-10-20",
+    "days": 7
   },
   "goal": {
     "low": 90,
@@ -19,42 +19,42 @@
       "label": "Outcomes accepted October 13–16 that were released to their destination within 72 hours",
       "shortLabel": "Accepted work released",
       "countNoun": "accepted outcomes",
-      "blurb": "Since October 13, the founder's accept releases the work: merged, deployed or sent. This counts accepted work with a recorded release within 72 hours. One release waited on a system update; one was never scheduled.",
-      "value": 75.0,
+      "blurb": "Reached its destination (merged, deployed or sent) within 72 hours of acceptance. Since October 13.",
+      "value": 66.7,
       "numerator": 6,
-      "denominator": 8,
+      "denominator": 9,
       "unit": "%",
       "direction": "up",
-      "method": "review accept events 2026-10-13T21:00Z – 2026-10-16T22:00Z paired with owner_release_done within 72 h. Release is the agent's recorded release, not an independent check that a user received it.",
+      "method": "review accept events 2026-10-13T21:00Z to 72 h before 2026-10-20T16:00Z, paired with a recorded release within 72 h.",
       "source": "IntrinsicOS journal (events)"
     },
     {
-      "key": "outward",
-      "label": "Agent working minutes on client and product projects, October 13–16",
-      "shortLabel": "Agent time on clients and products",
-      "countNoun": "agent minutes",
-      "blurb": "Since October 13, the share of agents' working minutes spent on client projects and our own products rather than on the system that runs the company.",
-      "value": 72.6,
-      "numerator": 947,
-      "denominator": 1305,
-      "unit": "%",
-      "direction": "up",
-      "method": "Owner-session minutes clipped to 2026-10-13T21:00Z – 2026-10-16T22:00Z, by project category (client and product vs internal).",
-      "source": "IntrinsicOS journal (runs)"
-    },
-    {
       "key": "accepted",
-      "label": "Outcomes approved October 1–13 that the founder accepted by the end of that window",
+      "label": "Outcomes approved since October 13 (at least three days ago) that the founder has accepted",
       "shortLabel": "Approved work accepted",
       "countNoun": "approved outcomes",
-      "blurb": "Every piece of work approved in our first two-week trial (October 1–13), followed to the trial's end: how much the founder accepted. Accepted means he took a demo-ready result, not that it reached anyone.",
-      "value": 61.9,
-      "numerator": 13,
-      "denominator": 21,
+      "blurb": "Approved since October 13 and accepted since. The last three days are excluded.",
+      "value": 55.6,
+      "numerator": 15,
+      "denominator": 27,
       "unit": "%",
       "direction": "up",
-      "method": "Cohort of outcome_approved events 2026-10-01T04:00Z to 2026-10-13T21:00Z; accepted = status accepted (version-control history) or a review accept action before the cutoff.",
+      "method": "outcome_approved events 2026-10-13T21:00Z to 72 h before 2026-10-20T16:00Z; accepted = a review accept event for the same outcome.",
       "source": "IntrinsicOS journal + vault history"
+    },
+    {
+      "key": "outward",
+      "label": "Agent working minutes on client and product projects since October 13",
+      "shortLabel": "Agent time on clients and products",
+      "countNoun": "agent minutes",
+      "blurb": "Share of agent working time spent on client work and products. Since October 13.",
+      "value": 47.3,
+      "numerator": 1070,
+      "denominator": 2261,
+      "unit": "%",
+      "direction": "up",
+      "method": "Owner-session minutes clipped to 2026-10-13T21:00Z – 2026-10-20T16:00Z; internal = the runtime and the Lab site.",
+      "source": "IntrinsicOS journal (runs)"
     }
   ]
 }
