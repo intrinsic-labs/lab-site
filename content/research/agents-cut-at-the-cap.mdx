@@ -4,38 +4,38 @@ kind: field-note
 area: agent-operations
 date: 2026-10-15
 status: draft
-summary: "10 of 121 long-running agent sessions hit a 60-minute hard cap having recorded no status: 600 of 2,063 session-minutes. After telling the agent its budget and forcing a checkpoint every 25 minutes: 0 of 47 cut, over 2.2 days."
+summary: "10 of 121 agent sessions hit a 60-minute hard cap having recorded no status: 600 of 2,063 session-minutes. After raising the cap to 120 minutes, stating the budget in the prompt and nudging the agent to checkpoint every 25 minutes: 0 of 47 cut, over 2.2 days."
 caveats:
   - "The after-window is 2.2 days and 47 sessions. It shows the rule working as designed; it is not a rate."
-  - "Other changes landed the same day, including a different model on 19 of the 47 sessions. The effect is not isolated."
+  - "Other changes landed the same day, including a different model on 19 of the 55 sessions started since the change. The effect is not isolated."
   - "Only Claude-run sessions were ever cut; the same harness running Codex never hit the cap. Why is not established."
   - "No session since the change has run to the new 120-minute cap, so the longer cap itself is untested."
   - "Counts start on September 23, when the run journal begins."
 artifacts: []
-artifactsNote: "The harness is private. The rule is fully stated in the post; the counts come from one SQL query over our run journal, which holds private task names and is not released."
+artifactsNote: "The harness is private. The rule is fully stated in the post; the counts come from a few SQL queries over our run journal, which holds private task names and is not released."
 corrections: []
 ---
 
-Our company runs on agent sessions that each own a piece of work for as long as it takes: an agent works for a while, records where things stand, and is resumed later. The record is what a human reviews. A session that ends without one leaves the work done but invisible.
+We run software agents in sessions that each own a piece of work: an agent works for a while, records a checkpoint (a short status saying where things stand), and is resumed later. That checkpoint is what a person reviews. A session that ends without one leaves its files in place but its progress unreported.
 
-Between September 23 and October 13, 10 of 121 such sessions ended at exactly 60:00, the harness's hard cap, with nothing recorded. They were 8% of sessions and 29% of the minutes (600 of 2,063). The files survived; the status, the review card and the thread post did not. In 8 of the first 9 cases, a later session on the same work completed normally.
+Between September 23 and October 13, 10 of 121 such sessions ended at exactly 60:00, the hard cap set by the harness (the software that starts, times and stops each agent session), with nothing recorded. They were 8% of sessions and 29% of the minutes (600 of 2,063). The files survived; the status report and the item on the reviewer's queue did not. In 8 of the first 9 cases, a later session on the same work completed normally.
 
 ## What changed
 
 Four things, on October 13:
 
 - **The agent sees its budget.** The prompt states the start time, the hard cap (raised to 120 minutes), and the rule: record a working checkpoint at least every 25 minutes and the final one before 110.
-- **A harness hook enforces it.** About 24 minutes after the last checkpoint, the agent gets a nudge, repeated at most every 5 minutes. Foreground `sleep` of 10 minutes or more is blocked.
+- **A harness hook nudges it.** A hook is code that runs after each of the agent's tool calls. About 24 minutes after the last checkpoint, the agent gets a nudge, repeated at most every 5 minutes. A `sleep` of 10 minutes or more is blocked.
 - **A human is alerted at 90 minutes** with no checkpoint.
 - **A session cut at the cap keeps its card** on the review queue instead of disappearing.
 
 ## After
 
-Over the next 2.2 days, 0 of 47 sessions were cut at the cap. The 90th-percentile session got shorter (58.8 → 35.3 minutes); the median got slightly longer (7.7 → 10.8). Of the 8 nudged sessions that finished normally, the median time from first nudge to checkpoint was about 8 minutes.
+Over the next 2.2 days, 0 of 47 sessions were cut at the cap. Two of them ran past 60 minutes (78.7 and 86.0) and would have been cut under the old cap, so part of the zero is the longer cap, not the checkpoint rule. The 90th-percentile session got shorter (58.8 → 35.3 minutes); the median got slightly longer (7.7 → 10.8). Of the 8 nudged sessions that finished normally, the median time from first nudge to checkpoint was about 8 minutes.
 
-One session still failed. It sat waiting on a hung review, ignored 10 nudges, and was stopped by a separate stall check at 86 minutes. Its last working checkpoint was recovered.
+One session still failed. It sat waiting on a code review by another agent that had hung, ignored 10 nudges, and was stopped by a separate stall check at 86 minutes. Its last working checkpoint was recovered.
 
-**The prompt alone was not the fix.** An agent told about a deadline still waits on things. The hook turns the deadline into an interruption that happens inside the session, and the 25-minute checkpoint makes the hard cap cost at most one interval of unrecorded work.
+**The hook is a nudge, not a guarantee.** Telling the agent its budget and nudging it from inside the session kept 90th-percentile sessions near 35 minutes. The one session that stalled ignored ten nudges. If the agent complies, a 25-minute checkpoint caps what a cut can lose at one interval; if it doesn't, the stall check and the human alert are the backstop.
 
 ## Where this goes next
 
