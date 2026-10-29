@@ -1,0 +1,50 @@
+---
+title: An agent's Final Cut timeline can verify perfectly and still be unusable to the editor
+kind: field-note
+area: agent-operations
+date: 2026-10-15
+status: draft
+summary: "Two short client edits, drafted by a local agent writing FCPXML (Final Cut Pro's XML timeline format). At least seven failures passed validation and showed up only on import, playback or a native round trip. The bigger lesson came second: correct XML the human editor could not adjust."
+caveats:
+  - "Two jobs, one editor who briefed, judged and polished both. No outside or blind evaluation of the cuts."
+  - "No timed baseline. The jobs differ (a 180-file archive vs one interview), so there is no speedup claim."
+  - "The lessons were written after seeing the editor's polish, so the second job's improvements may partly reflect clearer direction, not the workflow learning."
+  - "The first video was delivered to the client; delivery of the second is not recorded."
+  - "Final Cut Pro 12.4 and one third-party MCP server. Other versions may import differently."
+artifacts:
+  - label: "fcp-mcp-server (third-party, MIT; an MCP server is a tool interface an agent can call)"
+    href: https://github.com/DareDev256/fcp-mcp-server
+    note: The server the agent used to inspect, preview and deliver timelines.
+artifactsNote: "Our helper scripts are job-specific, carry client paths and are not under version control, so they are not released. The procedure in the post is the transferable part. Client names and footage are withheld."
+corrections: []
+---
+
+We had a coding agent cut two short client videos in Final Cut Pro: a 90-second crowdfunding promo from an interview plus a 180-file B-roll archive, then an 80-second testimonial from one 28-minute interview. The agent transcribed and analysed everything locally, wrote the timeline as FCPXML, Final Cut's XML interchange format, imported it, and handed it to our in-house editor for polish.
+
+## Schema-valid is not native behaviour
+
+At least seven failures passed validation and showed up only when Final Cut imported the file or played it back:
+
+- music ducking (lowering the music under speech) written as `volume` did nothing; Final Cut wants `<param name="amount">`
+- camera audio re-enabled itself unless set both `enabled=0` and `active=0`
+- clip gain silently clamps at about +12 dB
+- a still image as a bare `asset-clip` crashed the importer
+- offsets in file-relative time instead of each source's own timecode
+- one delivery landed in the wrong library
+- subframe offsets were renormalised on import
+
+What catches them now: export the XML back out of Final Cut (a native round trip), diff it against intent, then decode the rendered movie and run speech recognition on the final mix. Final Cut has no scriptable export, so that round trip needs a person or UI automation every time.
+
+## Correct, and hostile to the editor
+
+The second job surfaced a different problem. Everything verified, and the editor still could not work with it: fades written as volume keyframes he could not drag, a logo that could not be extended, source footage he could not find in the browser. The response was to author for the GUI: native fade handles, real Cross Dissolves, stills with handle room, full source clips in a browser event, alternatives as separate labelled clips.
+
+And once the human has touched the timeline, **never regenerate from the plan**. Export the editor's version, patch only the subtree you need to change, then prove that everything else survived. One revision removed 99 frames of dialogue from a human-polished cut that way, leaving everything after the cut byte-identical once its timing was shifted to close the gap.
+
+## The numbers we have
+
+The editor's polish still changed a lot. On the first job he doubled the B-roll (13 → 26 clips, median clip 4.0 → 2.2 s) using footage the agent never scouted. On the second, he cut a further 18% (82 → 67 s). The agent's music suggestions were all rejected.
+
+## Where this goes next
+
+The second job wrote 54 job-local scripts and reused one from the first. The next useful step is shared tooling, and a timed edit with and without the agent.
