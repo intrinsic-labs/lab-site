@@ -92,7 +92,7 @@
             r = { text: "I tripped over that one; this is a script, and it has edges. Try *what needs me?*", used: [], offers: [] };
           }
           S.pending.shift();
-          S.add({ id, role: "assistant", at: L.clock.iso(p.due), text: r.text, attachments: [], cards: [],
+          S.add({ id, role: "assistant", at: L.clock.iso(p.due), text: L.text.quoted(r.text), attachments: [], cards: [],
             activity: (r.used || []).slice(0, 6), replyTo: [msg.id], ...(p.thread ? { thread: p.thread } : {}),
             ...(r.subjects?.length ? { subjects: r.subjects } : {}), ...(r.offers?.length ? { offers: r.offers } : {}) });
         }

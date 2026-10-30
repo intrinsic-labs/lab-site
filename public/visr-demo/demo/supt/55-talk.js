@@ -83,12 +83,12 @@
         + (ctx.walk ? " Say *next* to carry on through the deck." : " *Walk me through the deck* starts at the top.") };
     },
 
-    explain(c, ctx, msg) {
+    explain(c, ctx, msg, replyId) {
       const topic = L.intents.topic(msg.text);
       /* "what is the checklist?": a card named, so the card */
       if (!topic || topic === "deck") {
         const r = L.cards.content(msg.text).length ? L.cards.resolve(msg.text, ctx) : {};
-        if (r.item) return L.deck.describe(r.item, ctx);
+        if (r.item) return L.deck.describe(r.item, ctx, replyId);
       }
       const key = !topic || topic === "visr" ? "os" : topic;
       const text = TOPICS[key];

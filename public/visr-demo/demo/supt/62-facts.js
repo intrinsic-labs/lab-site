@@ -15,7 +15,7 @@
   const gone = key => !L.desk.find(key);
   const was = (key, ...actions) => actions.includes(S.settled.get(key)?.action);
 
-  const CHECKLIST = "owner:nw-launch-checklist", PLANNER = "draft:orc-season-planner";
+  const CHECKLIST = "owner:nw-launch-checklist", PLANNER = "draft:orc-season-planner", SONAR = "owner:lan-sonar-tuning";
 
   const LINES = {
     northwind() {
@@ -29,7 +29,8 @@
       return "The season planner is drafted and waits on your approval; the open question is whether growers share one frost date. The yield import shipped yesterday.";
     },
     lanternfish() {
-      return "agent/cedar is on the second sonar calibration pass: within 4 cm of the dock gauge down to 3 m, drifting past that. It's trying a slower ping rate next.";
+      if (was(SONAR, "feedback") || gone(SONAR)) return "agent/cedar has your answer on the sonar and is calibrating. The lake test waits until the sonar reads within half a metre.";
+      return "agent/cedar is stopped on one question for you: calibrate the sonar against the tank now, or wait for a dock test next week. The lake test is asking to be parked until it's tuned.";
     },
   };
 
@@ -46,7 +47,8 @@
           : "Orchard season planner: drafted it from your intake note; starts building once you approve.";
       return [
         { agent: "agent/birch", what: birch },
-        { agent: "agent/cedar", what: "Lanternfish sonar depth calibration: second pass running now." },
+        { agent: "agent/cedar", what: was(SONAR, "feedback") || gone(SONAR) ? "Lanternfish sonar tuning: calibrating, with your answer."
+          : "Lanternfish sonar tuning: waiting on your call, tank or dock." },
         { agent: "agent/ash", what: ash },
       ];
     },

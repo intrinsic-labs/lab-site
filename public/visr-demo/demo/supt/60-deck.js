@@ -17,7 +17,7 @@
 
   const WHY = {
     owner_waiting: "an owner stopped until you answer", owner_review: "ready for your accept",
-    decision: "a yes-or-no from the manager", status_request: "an owner asking where things stand",
+    decision: "a yes-or-no I asked you", status_request: "an owner asking to change an outcome's status",
     draft_outcome: "a draft outcome to approve or correct", proposal: "proposed tasks to approve",
     chore: "a task that's yours", linear: "an issue to route to an owner", receipt: "a rule acted for you; undo it if it got it wrong",
   };
@@ -101,12 +101,16 @@
       const read = a ? `\n\nMy read: ${a.text}${a.reason ? ` ${a.reason}` : ""}${a.doubt ? ` The doubt: ${a.doubt}` : ""}` : "";
       const offer = replyId ? L.offers.make(item, replyId) : null;
       const main = L.acts.fit(item, "accept") || L.acts.fit(item, "approve");
-      ctx.pending = offer && main ? { type: "confirm", action: main, key: item.key } : null;
-      const how = offer ? (main === "accept" ? "Accept it from the chip, or say *park it*, *later* or *next*."
-        : "Approve it from the chip, or say *later*, *refuse it* or *next*.")
-        : item.kind === "chore" ? "It's yours to do; say *done* once it is, or *next*."
-          : `It takes ${L.acts.takes(item)}; say which, or *next*.`;
-      return { text: `${C.link(item)}. ${C.gist(item)}${read}\n\n${ctx.walk ? how : how.replace(/,? or \*next\*/, "")}`,
+      const answerable = !offer && L.acts.fit(item, "feedback") && item.kind !== "chore" && a?.text;
+      ctx.pending = offer && main ? { type: "confirm", action: main, key: item.key }
+        : answerable ? { type: "confirm", action: "feedback", key: item.key, text: a.text } : null;
+      const then = ctx.walk ? ", or *next*" : "";
+      const how = offer ? (main === "accept" ? `Accept it from the chip, or say *park it* or *later*${then}.`
+        : `Approve it from the chip, or say *refuse it* or *later*${then}.`)
+        : item.kind === "chore" ? `It's yours to do; say *done* once it is${then}.`
+          : answerable ? `Say *yes* to send my read as your answer, or *tell the owner: …* to say something else${then}.`
+            : `It takes ${L.acts.takes(item)}; say which${then}.`;
+      return { text: `${C.link(item)}. ${C.gist(item)}${read}\n\n${how}`,
         offers: offer ? [offer] : [] };
     },
 
@@ -186,7 +190,7 @@
       ctx.project = p.slug;
       const items = C.rank(L.desk.items().filter(i => L.projects.of(i)?.slug === p.slug));
       if (items.length) { ctx.lastList = items.map(i => i.key); if (items.length === 1) ctx.lastCard = items[0].key; }
-      const shipped = L.desk.happened().filter(h => h.project === p.slug).slice(0, 1).map(h => ` Recently: ${h.summary}`).join("");
+      const shipped = L.desk.happened().filter(h => L.desk.project(h.project)?.slug === p.slug).slice(0, 1).map(h => ` Recently: ${h.summary}`).join("");
       return { text: `${lead}**${p.name}**: ${L.facts.line(p.slug)}${shipped}\n\n`
         + (items.length ? `Waiting on you: ${T.list(items.map(i => C.link(i)))}.` : `Nothing from ${p.name} waits on you.`),
         used: ["Read the deck", "Read the board"] };

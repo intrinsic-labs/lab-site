@@ -153,7 +153,7 @@
 
     of(i) { return L.desk.project(i?.project) || (i?.project ? { slug: i.project, ref: i.project, name: T.cap(i.project) } : null); },
 
-    names() { return T.list(L.desk.projects().map(p => p.name)).replace(/ and /, " or "); },
+    names() { return T.or(L.desk.projects().map(p => p.name)); },
   };
 
   Object.assign(L, { cards, projects });

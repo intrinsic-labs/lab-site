@@ -32,7 +32,7 @@
     ({ id, role: "assistant", at, text, attachments: [], cards: [], activity: used, replyTo: to, ...extra });
   const wake = (id, at, kind, name, text, extra = {}) => ({ id, role: "event", at, source: { kind, name }, text, ...extra });
 
-  const ORCHARD = "project:bets/orchard", NORTHWIND = "owner:nw-launch-checklist", LANTERN = "owner:lan-depth-calibration";
+  const ORCHARD = "project:bets/orchard", NORTHWIND = "owner:nw-launch-checklist", LANTERN = "owner:lan-sonar-tuning";
   const PLANNER = { kind: "outcome", id: "orc-season-planner", title: "Season planner" };
   const YIELDS = { kind: "outcome", id: "orc-yield-import", title: "Yield import" };
 
@@ -65,7 +65,7 @@
   function threads() {
     S.threads.set(ORCHARD, { kind: "project", title: "Orchard", project: "orchard", subjects: [PLANNER, YIELDS] });
     S.threads.set(NORTHWIND, { kind: "owner", title: "Northwind launch checklist", project: "northwind" });
-    S.threads.set(LANTERN, { kind: "owner", title: "Sonar depth calibration", project: "lanternfish" });
+    S.threads.set(LANTERN, { kind: "owner", title: "Sonar tuning", project: "lanternfish" });
     const t = (n, s = 0) => plus(min(n), s);
     return [
       /* Orchard: two outcomes, one question of yours scoped to the planner */
@@ -94,12 +94,15 @@
         + `guessed redirects are ${ref("chore:nw-12", "task nw-12")}, which is yours.`, ["m_seed_n3"],
         ["Read an outcome", "Read the deck"], { thread: NORTHWIND }),
 
-      /* Lanternfish: a timer the owner thread set */
-      wake("m_seed_l1", t(40), "timer", "Timer", "Check the second calibration pass against the dock's known depth.",
-        { thread: LANTERN }),
-      reply("m_seed_l2", t(40, 30), "agent/cedar's second pass reads within 4 cm of the dock gauge down to 3 m and "
-        + "drifts past that. It's trying a slower ping rate next. Nothing waits on you.", ["m_seed_l1"],
-        ["Read an outcome", "Asked an owner to continue"], { thread: LANTERN }),
+      /* Lanternfish: the owner stopped on a question for you */
+      wake("m_seed_l1", t(70), "timer", "Timer", "Check the tank test came back.", { thread: LANTERN }),
+      reply("m_seed_l2", t(70, 30), "The tank test is back: the transducer reads 0.7 m too deep. agent/cedar is "
+        + "deciding how to calibrate.", ["m_seed_l1"], ["Read an outcome"], { thread: LANTERN }),
+      wake("m_seed_l3", t(45), "owner", "Sonar tuning", "Waiting on you: calibrate against the tank now, or wait "
+        + "for a dock test next week?", { thread: LANTERN }),
+      reply("m_seed_l4", t(45, 35), `Put the question on your deck as ${ref(LANTERN, "Sonar calibration: tank or dock")}, `
+        + "with my read: calibrate against the tank now and recheck at the dock. agent/cedar waits for your answer.",
+        ["m_seed_l3"], ["Read an outcome", "Read the deck"], { thread: LANTERN }),
     ];
   }
 
@@ -113,14 +116,14 @@
     [1440, "outcome_open", "Opened a draft outcome in bets/lanternfish", "", null, "That outcome names no repo yet; nothing was opened."],
     [1300, "continue", "Continued the Northwind owner", "Redirects at 171 of 212; asked agent/birch to finish them.", NORTHWIND],
     [1210, "decided", "Moved orc-15's due date, as you said", "Moved it a week, quoting “push the yield table a week, the growers are late”.", "receipt:sa-0007"],
-    [400, "timer", "Set a timer for the Lanternfish calibration", "Check the second calibration pass at midday."],
+    [400, "timer", "Set a timer for the Lanternfish tank test", "Check the tank test came back."],
     [360, "continue", "Asked the Northwind owner to continue", "Finish the redirects, then checkpoint for review.", NORTHWIND],
     [300, "outcome_status", "Put the Northwind launch checklist on your deck", "Every acceptance criterion has evidence.", NORTHWIND],
     [200, "outcome_status", "Put the Orchard season planner on your deck", "With the strategist's note on frost dates.", "draft:orc-season-planner"],
     [130, "question", "Asked you about Thursday's Lanternfish call", "It clashes with the Northwind DNS move.", "decision:dec-7"],
     [110, "intake", "Filed intake for bets/orchard", "Growers want last season's plan beside this one."],
     [95, "feedback", "Gave the Orchard drafter feedback", "Two pilot growers share a frost date; the third is ten days later.", "draft:orc-season-planner"],
-    [40, "continue", "Continued the Lanternfish owner", "Second pass within 4 cm of the gauge to 3 m; try a slower ping."],
+    [44, "outcome_status", "Put the sonar question on your deck", "Tank now or dock next week; my read is the tank, then the dock.", LANTERN],
   ];
 
   function log() {

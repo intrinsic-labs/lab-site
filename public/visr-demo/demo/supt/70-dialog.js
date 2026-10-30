@@ -22,7 +22,7 @@
 
   const HANDLERS = {
     greet: (c, ctx, m) => L.talk.greet(c, ctx, m),
-    explain: (c, ctx, m) => L.talk.explain(c, ctx, m),
+    explain: (c, ctx, m, id) => L.talk.explain(c, ctx, m, id),
     thanks: (c, ctx, m) => L.talk.thanks(c, ctx, m),
     bye: (c, ctx, m) => L.talk.bye(c, ctx, m),
     voice: (c, ctx, m) => L.talk.voice(c, ctx, m),
@@ -40,6 +40,18 @@
 
   /* asking about something else ends a walk through the deck; acting, thanks or a stray question don't */
   const ENDS_WALK = new Set(["needs", "status", "who", "file", "log", "bye"]);
+
+  function about(msg, ctx, replyId) {
+    const words = L.cards.content(msg.text);
+    if (!words.length) return null;
+    const found = L.cards.match(words, L.desk.all());
+    if (!found.length || found[0].s < 1) return null;
+    const close = found.filter(x => x.s >= found[0].s - 0.3);
+    if (close.length === 1) return L.deck.describe(close[0].i, ctx, replyId);
+    ctx.lastList = close.slice(0, 3).map(x => x.i.key);
+    return { text: `Do you mean ${T.or(close.slice(0, 3).map(x => L.cards.link(x.i)))}? `
+      + "Name it, or give me its number." };
+  }
 
   async function answer(ctx, msg, replyId) {
     const p = ctx.pending, raw = String(msg.text || "");
@@ -65,7 +77,7 @@
         ctx.pending = null;
         const it = L.desk.find(p.key);
         if (!it) return { text: "That card has already left your deck, so there's nothing to do." };
-        return L.deck.doAct(it, p.action, ctx, msg, replyId);
+        return L.deck.doAct(it, p.action, ctx, msg, replyId, p.text || null);
       }
       ctx.pending = null;
       if (L.intents.no(raw)) return { text: `Left it as it is.${ctx.walk ? " Say *next* for the next card." : ""}` };
@@ -95,7 +107,9 @@
         const c = L.intents.classify(msg.text, ctx);
         ctx.pending = null;
         if (ENDS_WALK.has(c.intent)) ctx.walk = null;
-        out = await HANDLERS[c.intent](c, ctx, msg, replyId);
+        /* nothing else fits, but it names a card: say what that card is */
+        if (c.intent === "fallback") out = about(msg, ctx, replyId);
+        if (!out) out = await HANDLERS[c.intent](c, ctx, msg, replyId);
       }
       return { text: out.text, used: out.used || [], offers: out.offers || [],
         ...(msg.subject ? { subjects: [msg.subject] } : {}) };

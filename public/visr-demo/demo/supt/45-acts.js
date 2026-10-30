@@ -22,10 +22,10 @@
   const REVERSIBLE = new Set(["accept", "park", "later", "done", "not_needed"]);
   const LABEL = { accept: "accept", approve: "approve", park: "park", later: "later", done: "mark done",
     reject: "refuse", not_needed: "not needed", feedback: "feedback", acknowledge: "acknowledge", route: "route",
-    undo: "undo" };
+    undo: "undo", block: "block" };
   const PAST = { accept: "accepted", approve: "approved", park: "parked", later: "moved to later", done: "marked done",
     reject: "refused", not_needed: "closed as not needed", feedback: "sent feedback on", acknowledge: "acknowledged",
-    route: "routed", undo: "undid", mark_working: "marked as yours", clear_working: "cleared your mark on" };
+    route: "routed", undo: "undid", block: "blocked", mark_working: "marked as yours", clear_working: "cleared your mark on" };
 
   const DID = { accept: t => `accepted ${t}`, approve: t => `approved ${t}`, park: t => `parked ${t}`,
     later: t => `moved ${t} to later`, done: t => `marked ${t} done`, reject: t => `refused ${t}`,
@@ -37,16 +37,17 @@
     switch (action) {
       case "accept": return `Accepted ${n}: the outcome is closed with a receipt, and the card has left your deck.`;
       case "approve":
-        if (item.kind === "decision") return `Answered yes to ${n}; the manager acts on it.`;
+        if (item.kind === "decision") return `Answered yes to ${n}; I'll act on it.`;
+        if (item.kind === "status_request") return `Approved ${n}; the outcome's status changes as asked.`;
         if (item.kind === "proposal") return `Approved ${n}; the tasks are created and assigned.`;
         return `Approved ${n}. ${owner || item.defaultOwner || "Its owner"} starts on it at the supervisor's next tick.`;
       case "park": return `Parked ${n}. It comes back when it's due another look.`;
       case "later": return `Moved ${n} to later; it's back on your deck tomorrow at 06:00.`;
       case "done": return `Marked ${n} done.`;
-      case "reject": return item.kind === "decision" ? `Answered no to ${n}; the manager is told.`
+      case "reject": return item.kind === "decision" ? `Answered no to ${n}; it stays as it is.`
         : `Refused ${n}; the drafter is told why.`;
       case "not_needed": return `Closed ${n} as not needed.`;
-      case "feedback": return `Sent your note on ${n} to its owner: “${T.clip(text, 160)}”. It reads it on its next turn.`;
+      case "feedback": return `Sent your answer to the owner of ${n}: “${T.clip(text, 160).replace(/[.!?]+$/, "")}”. It reads it on its next turn.`;
       case "acknowledge": return `Acknowledged ${n}; the receipt is filed.`;
       default: return `Done: ${n} is ${PAST[action] || action}.`;
     }
@@ -69,7 +70,7 @@
       return null;
     },
 
-    takes(item) { return T.list((item?.actions || []).map(a => LABEL[a] || a)).replace(/ and ([^ ]+)$/, " or $1"); },
+    takes(item) { return T.or((item?.actions || []).map(a => LABEL[a] || a)); },
 
     owner(text, item) {
       const choices = item?.ownerChoices || [];

@@ -73,11 +73,15 @@
         .replace(/^\s*([-*+]|\d+\.)\s+/gm, "").replace(/\s+/g, " ").trim();
     },
 
+    /* the first sentences; "0.7 m" and "e.g." don't end one */
     sentence(md, max = 1) {
-      const p = this.plain(md);
+      const p = this.plain(md).replace(/(\d)\.(\d)/g, "$1\u2024$2");
       const parts = p.match(/[^.!?]+[.!?]+(\s|$)/g) || [p];
-      return parts.slice(0, max).join("").trim();
+      return parts.slice(0, max).join("").trim().replace(/\u2024/g, ".");
     },
+
+    /* the client draws *italics* underlined, like a link: a phrase to type is quoted instead */
+    quoted(md) { return String(md || "").replace(/(^|[^*\w])\*([^*\n]+?)\*(?![*\w])/g, "$1\u201c$2\u201d"); },
 
     clip(s, n) { const t = String(s || "").trim(); return t.length > n ? `${t.slice(0, n - 1).trimEnd()}…` : t; },
 
@@ -86,6 +90,11 @@
     list(xs) {
       const a = xs.filter(Boolean);
       return a.length < 2 ? a.join("") : `${a.slice(0, -1).join(", ")} and ${a.at(-1)}`;
+    },
+
+    or(xs) {
+      const a = xs.filter(Boolean);
+      return a.length < 2 ? a.join("") : `${a.slice(0, -1).join(", ")} or ${a.at(-1)}`;
     },
 
     count(n, one, many = `${one}s`) {

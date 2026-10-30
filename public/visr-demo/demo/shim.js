@@ -38,6 +38,8 @@
         desk.fileIntake({project, note, source})
                           files an intake note (project: ref or slug)
                           → {ok, path, project, id} or a refusal
+        desk.reopen(key)  undo: puts a card back as it was before its last
+                          act → {ok} or {ok: false, reason}
         desk.intake()     every filed note, newest first:
                           [{id, project, note, source, at}]
         desk.projects     the fictional projects [{slug, category, ref, name, relDir}]
@@ -273,11 +275,26 @@
     return { ok: true, result: { kind: RESULT_KIND[action] || action, message } };
   }
 
+  /* the card as it was before its last act, so the Superintendent's UNDO can put it back */
+  const undoable = new Map();
+  function reopen(key) {
+    const prior = undoable.get(key);
+    if (!prior) return { ok: false, reason: "There's nothing to undo for that card." };
+    undoable.delete(key);
+    const i = items.findIndex(x => x.key === key);
+    const restored = structuredClone(prior.snapshot);
+    if (i >= 0) items[i] = restored; else items.splice(Math.min(prior.at, items.length), 0, restored);
+    emit({ type: "act", key, action: "reopen", source: "superintendent", item: restored, at: now() });
+    return { ok: true };
+  }
+
   function act(req, source) {
     const before = items.find(i => i.key === req.key);
     const snapshot = before ? structuredClone(before) : null;
+    const at = before ? items.indexOf(before) : -1;
     const out = apply(req, { checkRevision: source === "visitor" });
     if (out.ok) {
+      if (snapshot) undoable.set(req.key, { snapshot, at });
       emit({ type: "act", key: req.key, action: req.action, source, text: req.text ?? null,
              result: out.result, item: snapshot, at: now() });
     }
@@ -313,6 +330,7 @@
       const out = fileNote({ project, note, source });
       return out.ok ? { ok: true, path: out.path, project: out.project, id: out.id } : out;
     },
+    reopen,
     intake: () => filed.map(({ id, project, note, source, at }) => ({ id, project, note, source, at })),
     projects: C.PROJECTS,
     on(fn) { listeners.add(fn); return () => listeners.delete(fn); },

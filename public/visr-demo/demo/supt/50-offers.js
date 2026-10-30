@@ -47,9 +47,9 @@
         revision: item.revision || `${key}:r1`,
         diff: `intrinsic queue act ${key} approve${owner ? ` --owner ${owner}` : ""}`,
         link: { label: "Open the card", href: `#item=${encodeURIComponent(key)}` } };
-      if (item.kind === "decision") Object.assign(o, { title: `Answer yes: ${name}`,
-        summary: `${L.cards.gist(item)} Yes tells the manager to go ahead.`,
-        undoNote: "Undo: none. The manager acts on your answer straight away." });
+      if (item.kind === "decision" || item.kind === "status_request") Object.assign(o, { title: `Answer yes: ${name}`,
+        summary: `${L.cards.gist(item)} ${item.kind === "decision" ? "Yes, and I act on it." : "Yes changes its status as the owner asked."}`,
+        undoNote: "Undo: none. A yes is acted on straight away." });
       else if (item.kind === "proposal") Object.assign(o, { title: `Approve: ${name}`,
         summary: `${L.cards.gist(item)} Yes creates the tasks as proposed.`,
         undoNote: "Undo: none. Unwanted tasks are closed one by one." });

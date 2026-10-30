@@ -146,7 +146,7 @@ test("a scripted conversation moves the desk and reads like the real thing", asy
   const v = new Visitor(sb, desk);
 
   const first = await v.open();
-  assert.ok(first.messages.some(m => m.routine?.name === "morning-pass"), "seeded morning pass");
+  assert.ok(first.messages.some(m => m.routine?.name === "blocker-check"), "seeded routine");
   assert.ok(first.messages.some(m => m.role === "user"), "seeded earlier exchange");
   assert.ok(first.threads.length >= 3, "seeded threads");
   assert.ok(first.threads.some(t => t.kind === "project" && t.subjects.length === 2), "Orchard project thread with subjects");
