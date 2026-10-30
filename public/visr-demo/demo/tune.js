@@ -15,7 +15,12 @@
    - Chat attachments: a stored chat file's URL is answered by the scripted
      Superintendent when it offers one (`VISR_DEMO_SUPT.fileUrl(id)`), else a
      drawn placeholder, so an <img> or <a> never asks the network for
-     /api/superintendent/file. */
+     /api/superintendent/file.
+   - Deck refresh: when the scripted Superintendent acts on a card from the
+     chat ("accept it"), the deck redraws at once, the way the shell already
+     does after a chip is decided (superintendent/offer-decide.js). On the real
+     desk the next queue poll catches up; here the act is instant, so the deck
+     should be too. */
 "use strict";
 
 (function () {
@@ -44,6 +49,14 @@
   };
 
   Voice.usable = () => false;
+
+  need(typeof App?.refresh === "function", "App.refresh");
+  window.VISR_DEMO_DESK?.on(ev => {
+    if (ev.source !== "superintendent") return;
+    App.refresh({ fresh: true }).then(() => {
+      if (!App.view && App.data && typeof Home?.render === "function") Home.render(App.data, App.fault, App.checked);
+    }).catch(() => {});
+  });
 
   const PLACEHOLDER = "data:image/svg+xml," + encodeURIComponent(
     '<svg xmlns="http://www.w3.org/2000/svg" width="320" height="200"><rect width="320" height="200" fill="#0d1218"/>'
