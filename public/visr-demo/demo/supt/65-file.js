@@ -111,7 +111,9 @@
         return { text: `I need a project for it: ${names()}?` };
       }
       if (L.intents.strong(raw, ctx, "file") && T.words(raw).length <= 6) { ctx.pending = null; return null; }
-      p.note = noteOf(raw) || T.cap(raw.trim().replace(/^(the idea is|it is|its|idea:?)\s+/i, ""));
+      /* it asked for the idea, so this answer is the idea: keep its words (only a stated
+         "the idea is …" lead-in and wrapping quotes come off) */
+      p.note = T.cap(raw.trim().replace(/^(the idea is|it is|it's|its|idea:?)\s+/i, "").replace(/^["“]|["”]$/g, "").trim());
       return this.advance(ctx, p, msg, replyId);
     },
   };
