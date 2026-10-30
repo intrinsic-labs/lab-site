@@ -169,8 +169,20 @@
       return { text: `${out.line}${undo}${next}${demo}`, used: [T.cap(out.did)] };
     },
 
-    async undo(c, ctx) {
-      const entry = L.log.lastUndoable();
+    async undo(c, ctx, msg) {
+      /* "undo the northwind one" names a card; "undo that" means the last thing done here,
+         and if that can't be taken back, say so rather than quietly undoing something older */
+      const said = T.words(String(msg?.text || "").toLowerCase()).filter(w => w.length > 4);
+      const undoable = [...L.log.entries].reverse().filter(x => x.undo && x.reopenKey);
+      const named = said.length ? undoable.find(x => T.words(String(x.reopenTitle || "").toLowerCase()).some(w => said.includes(w))) : null;
+      const last = [...L.log.entries].reverse().find(x => x.target?.key && !x.undone && /^(review_|chat_decision)/.test(x.tool || ""));
+      if (!named && last && !(last.undo && last.reopenKey)) {
+        const older = undoable[0];
+        return { text: `The last thing I did was on **${last.target.title || last.target.key}**, and that can't be taken back from here: `
+          + `once a card is approved or answered, its owner may already be on it.`
+          + (older ? ` The last thing I can undo is **${older.reopenTitle}**; say "undo ${older.reopenTitle}" if you meant that.` : "") };
+      }
+      const entry = named || L.log.lastUndoable();
       if (!entry) return { text: "There's nothing of mine to undo just now. Undo works on accepts, parks and the like made here." };
       const out = await L.acts.undo(entry);
       if (!out.ok) return { text: `I couldn't put it back: ${out.reason}` };

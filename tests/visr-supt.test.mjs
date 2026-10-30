@@ -251,7 +251,11 @@ test("a scripted conversation moves the desk and reads like the real thing", asy
   r = await v.say("how is lanternfish going");
   assert.match(r.text, /\*\*Lanternfish\*\*/);
   r = await v.say("undo that");
-  assert.equal(desk.has("owner:lan-depth-calibration"), true, "undo in words reopened the parked card");
+  assert.match(r.text, /can't be taken back/, "the last act was an approval, which undo must not skip past silently");
+  assert.match(r.text, /Sonar depth calibration/, "it names what can be undone instead");
+  assert.equal(desk.has("owner:lan-depth-calibration"), false);
+  r = await v.say("undo the sonar calibration");
+  assert.equal(desk.has("owner:lan-depth-calibration"), true, "undo by name reopened the parked card");
   assert.match(r.text, /Reopened \[Sonar depth calibration\]/);
   r = await v.say("can you read that out loud?");
   assert.match(r.text, /Voice isn't available in the demo/);

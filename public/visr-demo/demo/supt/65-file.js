@@ -22,7 +22,7 @@
 
   const LEADS = [
     /^(please|can you|could you|would you|hey|ok|okay|so|and)[\s,]+/i,
-    /^(i (have|had|got) (an|a) (idea|thought)|here is (an|a) (idea|thought)|(a |one )?(quick |new )?(idea|thought))[\s,:-]*/i,
+    /^(i(?: have|'ve|’ve|ve| had|'d|’d)?(?: just)? (?:got|have|had)? ?(an|a|one more|another) (idea|thought)|here is (an|a) (idea|thought)|(a |one )?(quick |new )?(idea|thought))[\s,:-]*/i,
     /^(file|note|jot( down)?|capture|write down|remember|log|add|make)( (an|a|this|that|my|the|one))?( (new|quick))?( (idea|note|thought|intake))?[\s,:-]*/i,
     /^(down|it|this)[\s,:-]+/i,
     /^(for|to|about|in|under|on|into)( the)? \S+( project| intake)?[\s,:-]*/i,
