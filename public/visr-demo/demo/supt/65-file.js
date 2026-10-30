@@ -1,11 +1,11 @@
 /* VISR DEMO · SUPERINTENDENT · filing — an idea, said in words, filed as a project's intake.
 
    Two slots, the project and the note. Said in one go ("file an idea for
-   Orchard: text growers when frost is due") it is filed at once; otherwise
-   whatever is missing is asked for, one question at a time, and the answer
-   fills it ("file an idea" → "Which project?" → "Orchard" → "What's the
-   idea?" → the idea). An idea with no project named goes where it plainly
-   belongs ("the sonar…" is Lanternfish) or is asked about. A project
+   Larkspur: text families the day before pickup") it is filed at once;
+   otherwise whatever is missing is asked for, one question at a time, and
+   the answer fills it ("file an idea" → "Which project?" → "Larkspur" →
+   "What's the idea?" → the idea). An idea with no project named goes where
+   it plainly belongs ("the litter…" is Larkspur) or is asked about. A project
    thread files to its own project. "Never mind" drops it; a clearly
    different request while a question waits drops the question and is
    answered instead.
@@ -31,7 +31,7 @@
 
   function names() { return L.projects.names(); }
 
-  /* the idea itself, without "file an idea for Orchard:" and the like */
+  /* the idea itself, without "file an idea for Larkspur:" and the like */
   function noteOf(raw) {
     let s = String(raw || "").trim();
     const colon = /^[^:]{0,80}:\s*([\s\S]+)$/.exec(s);

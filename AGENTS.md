@@ -260,13 +260,19 @@ founder's time is not measured. A daily automated recount is a separate Intrinsi
 [path/to/tycho/tycho/os]` (comments stripped, PWA/push/service worker left out, a checked
 table of string adaptations); provenance is written to `docs/visr-demo-vendored.md`. Never
 edit vendored files by hand. Everything under `public/visr-demo/demo/` is hand-written and
-survives re-vendoring: `corpus.js` (the invented Northwind/Orchard/Lanternfish world),
+survives re-vendoring: `corpus.js` (sample data adapted from the company's own outcomes,
+checkpoints and questions: IntrinsicOS, GlyphDeck and Liturgos under their real names, and
+three clients renamed and stripped of identifying detail — Harlow, a charge-capture app;
+Heelwork, a dog-training app; Larkspur, a breeder's website — with owners named by model,
+`claude/opus`, `codex/sol`, `claude/sonnet`, `codex/astra`),
 `shim.js` (answers every `/api/*` and `/health` in memory, in-memory localStorage, no token
 prompt, skipped boot), `supt/*.js` (the scripted Superintendent; `tests/visr-supt.test.mjs`,
 `VISR_TRANSCRIPT=<file>` prints a conversation) and `tune.js` (hides what a visitor can't use).
 It is embedded on `/products/intrinsic-os` (`<VisrDemo inline />` in the MDX) and
-`/products/visr`, and full screen at `/visr`. Every entry point says the data is invented and
-the Superintendent is a script. Before shipping a re-vendor, run
+`/products/visr`, and full screen at `/visr`. Every entry point says the data is a sample and
+the Superintendent is a script. Never put a real client, person, repo, host, issue id or amount
+in `demo/`; the scrub check below catches most of them. Before shipping a re-vendor or a corpus
+change, run
 `node scripts/scrub-check-visr-demo.mjs --vault <live-vault> --out <report outside the repo>`
 and review every match: the denylist is built from private sources at run time and is never
 committed.

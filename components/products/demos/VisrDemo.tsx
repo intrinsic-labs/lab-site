@@ -2,7 +2,7 @@ import Link from "next/link";
 
 /** The vendored desk; `scripts/vendor-visr-demo.mjs` builds it, `public/visr-demo/demo/` adapts it. */
 export const VISR_DEMO_SRC = "/visr-demo/index.html";
-export const VISR_DEMO_TITLE = "VISR, interactive demo with invented data";
+export const VISR_DEMO_TITLE = "VISR, interactive demo with sample data";
 
 /**
  * VISR, the IntrinsicOS review desk, live on a product page (`demo: visr` on VISR and on
@@ -10,7 +10,7 @@ export const VISR_DEMO_TITLE = "VISR, interactive demo with invented data";
  *
  * The frame is a same-origin `<iframe>` over `public/visr-demo/`: the real desk, vendored with
  * its comments stripped, plus hand-written files that answer every `/api/*` call from an
- * invented queue in memory, keep the desk's storage in memory (it never reads or writes this
+ * sample queue in memory, keep the desk's storage in memory (it never reads or writes this
  * origin's localStorage), seed the token so nothing asks for one, and skip the daily power-on
  * ritual. The Superintendent chat is a scripted module, not a model. A reload starts over.
  *
@@ -38,7 +38,7 @@ export function VisrDemo({ inline = false }: { inline?: boolean }) {
           />
         </div>
         <div className="mt-5 flex flex-col items-center gap-2 text-center sm:flex-row sm:justify-between sm:text-left">
-          <p className="label">Demo · invented data · the Superintendent chat is a script, not a model · nothing leaves your browser</p>
+          <p className="label">Demo · sample data, client names changed · the Superintendent chat is a script, not a model · nothing leaves your browser</p>
           <Link href="/visr" className="label shrink-0 text-accent underline-offset-4 hover:underline">
             Open full screen →
           </Link>

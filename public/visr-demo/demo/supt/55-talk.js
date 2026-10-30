@@ -27,10 +27,11 @@
     os: "IntrinsicOS is how Intrinsic Labs runs its work: agents called owners each take one outcome, a result with "
       + "acceptance criteria, and work it until it's ready for review. VISR is where a person reviews: anything that "
       + "needs your judgment lands on your deck as a card, and you accept it, park it or answer it. I'm the "
-      + "Superintendent; I keep the deck moving and answer for the whole company. On this page I'm a scripted stand-in "
-      + "for an invented company, so nothing leaves your browser.",
+      + "Superintendent; I keep the deck moving and answer for the whole company. On this page I'm a scripted stand-in, "
+      + "working on sample data adapted from the company's own work, and nothing leaves your browser.",
     owner: "An owner is an agent given one outcome to deliver. It works on its own branch, checkpoints when it needs "
-      + "you, and stops when the work is ready for review. Here the owners are agent/ash, agent/birch and agent/cedar.",
+      + "you, and stops when the work is ready for review. Owners are named by the model they run on: here claude/opus, "
+      + "codex/sol, claude/sonnet and codex/astra.",
     outcome: "An outcome is a result written down before work starts: what will be true, how you'll know (the "
       + "acceptance criteria) and what's out of scope. An owner works toward it, and you accept it when the evidence "
       + "meets the criteria.",
@@ -42,15 +43,16 @@
       + "drafts from intake, its proposals land on your deck to approve, refuse or correct.",
     park: "Park sets an outcome aside with a reason and a time to look again, and its owner stops. Later only takes "
       + "the card off your deck until tomorrow morning; nothing else changes.",
-    demo: "This is a demo. The company, its projects and its agents are invented, I'm a script rather than a model, "
-      + "and every act changes only this page in your browser. A reload puts everything back.",
+    demo: "This is a demo. The cards are sample data adapted from the company's own recent work, with client names "
+      + "and details changed. I'm a script rather than a model, and every act changes only this page in your browser. "
+      + "A reload puts everything back.",
     you: "I'm the Superintendent, the agent that runs the company day to day. I read the board, keep owners moving, "
       + "put decisions on your deck and act on your word. On this page I'm scripted.",
   };
   TOPICS.visr = TOPICS.os;
 
   const SUGGEST = [
-    "*What needs me?*", "*Walk me through the deck*", "*File an idea for Orchard: …*", "*How is Lanternfish going?*",
+    "*What needs me?*", "*Walk me through the deck*", "*File an idea for Larkspur: …*", "*How is GlyphDeck going?*",
     "*Who is working on what?*", "*What is an outcome?*",
   ];
 
@@ -85,7 +87,7 @@
 
     explain(c, ctx, msg, replyId) {
       const topic = L.intents.topic(msg.text);
-      /* "what is the checklist?": a card named, so the card */
+      /* "what is the pickup plan?": a card named, so the card */
       if (!topic || topic === "deck") {
         const r = L.cards.content(msg.text).length ? L.cards.resolve(msg.text, ctx) : {};
         if (r.item) return L.deck.describe(r.item, ctx, replyId);

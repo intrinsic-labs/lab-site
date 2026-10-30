@@ -1,7 +1,7 @@
 /* VISR DEMO · SUPERINTENDENT · cards — naming them, ordering them, finding the one meant.
 
    A deck item is named by its brief's short card title when it has one
-   ("Northwind launch checklist"), else its title. "Most important first"
+   ("Harlow patients and appointments"), else its title. "Most important first"
    is an order by kind (an owner stopped on you, then work ready to accept,
    then questions, drafts, proposals, your own tasks), oldest first within a
    kind. `resolve` turns what the visitor wrote into one card: "it" is the
@@ -135,9 +135,12 @@
   };
 
   const ALIAS = {
-    northwind: ["northwind", "nw", "client site", "website", "redirects", "launch"],
-    orchard: ["orchard", "planner", "growers", "planting", "yield", "yields", "frost"],
-    lanternfish: ["lanternfish", "sonar", "kayak", "lantern", "depth", "calibration"],
+    harlow: ["harlow", "charge", "charges", "patients", "appointments", "billing", "providers", "provider"],
+    heelwork: ["heelwork", "exercise", "exercises", "trainer", "training", "streak"],
+    larkspur: ["larkspur", "breeder", "puppy", "puppies", "litter", "pickup", "families", "family"],
+    glyphdeck: ["glyphdeck", "ringfall", "console", "handheld", "cartridge", "cartridges", "game", "games"],
+    liturgos: ["liturgos", "slides", "worship", "hymn", "hymns", "bulletin", "church", "pastor", "pastors"],
+    vault: ["intrinsicos", "intrinsic os", "runtime", "runner", "runners", "ci", "github app"],
   };
 
   const projects = {

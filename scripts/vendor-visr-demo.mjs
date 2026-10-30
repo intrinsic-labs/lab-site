@@ -9,7 +9,7 @@
  * (`~/dev/investigative/tycho/tycho/os/`): a no-build static shell whose every read and write
  * goes through `/api/*` and `/health`. The demo is that shell with its comments stripped, plus
  * hand-written files under `demo/` that this script never writes:
- *   - `demo/corpus.js` — the invented queue (fictional projects, agents and documents)
+ *   - `demo/corpus.js` — the sample queue (adapted from real outcomes; client names changed)
  *   - `demo/supt/*.js` — the scripted Superintendent (`window.VISR_DEMO_SUPT`)
  *   - `demo/shim.js`   — in-memory storage, a seeded token, and a fetch/XHR/beacon interceptor
  *                        that answers every `/api/*` route from memory
