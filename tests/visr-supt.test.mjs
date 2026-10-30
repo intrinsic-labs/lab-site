@@ -70,14 +70,14 @@ function fakeDesk() {
       { category: "bets", ref: "bets/orchard", name: "Orchard" }, { category: "bets", ref: "bets/lanternfish", name: "Lanternfish" }],
     queue: () => ({ ok: true, items, counts: { active: items.length }, happened: [] }),
     items: () => items,
-    act(req) {
+    act(req, source = "superintendent") {
       const it = items.find(i => i.key === req.key);
       if (!it) return { ok: false, reason: "That item is no longer waiting on you." };
       if (req.revision && req.revision !== it.revision) return { ok: false, reason: "stale" };
       if (!it.actions.includes(req.action)) return { ok: false, reason: `${req.action} isn't something this item takes.` };
       if (req.action === "later") it.deferred = { until: "tomorrow" };
       else if (req.action !== "feedback") { items.splice(items.indexOf(it), 1); removed.set(it.key, it); }
-      emit({ type: "act", key: req.key, action: req.action });
+      emit({ type: "act", key: req.key, action: req.action, source, item: structuredClone(it) });
       return { ok: true, result: { kind: req.action, message: "Done. (Demo: nothing was sent anywhere.)" } };
     },
     reopen(key) {
@@ -91,7 +91,7 @@ function fakeDesk() {
     fileIntake(req) {
       const id = `in-${intake.length + 1}`;
       intake.push({ ...req, id });
-      emit({ type: "intake", project: req.project });
+      emit({ type: "intake", project: req.project, source: req.source || "intake" });
       return { ok: true, id, project: req.project, path: `Projects/${req.project}/intake/${id}.md` };
     },
     intake: () => intake,
@@ -239,10 +239,10 @@ test("a scripted conversation moves the desk and reads like the real thing", asy
   assert.equal(view.items[0].state, "stale", "the chip reads stale after its review reopened");
 
   /* the visitor acts on the deck directly; the conversation knows */
-  desk.act({ key: "linear:nw:NW-42", action: "later", revision: "NW-42:r1" });
+  desk.act({ key: "linear:nw:NW-42", action: "later", revision: "NW-42:r1" }, "visitor");
   v.note("on the deck itself: moved NW-42 to later");
   r = await v.say("what's waiting on me now?");
-  assert.match(r.text, /Since we last spoke you moved to later/);
+  assert.match(r.text, /Since we last spoke you moved \*\*NW-42[^*]*\*\* to later on the deck/);
   assert.match(r.text, /Northwind launch checklist/, "the reopened card is back in the list");
 
   r = await v.say("who is working on what?");
@@ -250,6 +250,9 @@ test("a scripted conversation moves the desk and reads like the real thing", asy
   assert.match(r.text, /building/, "ash is building the planner you approved");
   r = await v.say("how is lanternfish going");
   assert.match(r.text, /\*\*Lanternfish\*\*/);
+  r = await v.say("undo that");
+  assert.equal(desk.has("owner:lan-depth-calibration"), true, "undo in words reopened the parked card");
+  assert.match(r.text, /Reopened \[Sonar depth calibration\]/);
   r = await v.say("can you read that out loud?");
   assert.match(r.text, /Voice isn't available in the demo/);
   r = await v.say("thanks, that's all");
@@ -275,6 +278,20 @@ test("the other routes answer as the client expects", async () => {
   assert.equal(t.ok, true);
   assert.ok(t.messages.length >= 3 && t.messages.every(m => m.thread === "project:bets/orchard"));
   assert.equal((await call("/api/superintendent/thread?subject=orc-season-planner")).ok, false);
+  /* a card attached with no words: described, with a YES / NO chip for its main answer */
+  const att = await call("/api/superintendent/send", "POST", { text: "", client_id: "att-1",
+    cards: [{ key: "decision:dec-7", title: "Move Thursday's call", kind: "decision", id: "dec-7" }] });
+  sb.VISR_SUPT_LIB.clock.advance(3000);
+  const desc = (await call(`/api/superintendent/thread?after=${att.message.id}`)).messages.find(m => m.role === "assistant");
+  const grant = desc.offers.find(o => o.kind === "action");
+  assert.equal(grant.action, "grant");
+  assert.match(grant.diff, /intrinsic queue act decision:dec-7 approve/);
+  const no = await call("/api/superintendent/decide", "POST", { offerId: grant.id, decision: "maybe", revision: grant.revision, requestId: "r0" });
+  assert.equal(no.ok, false);
+  const yes = await call("/api/superintendent/decide", "POST", { offerId: grant.id, decision: "yes", revision: grant.revision, requestId: "r1" });
+  assert.equal(yes.ok, true);
+  assert.equal(yes.offer.state, "done");
+  assert.equal(desk.has("decision:dec-7"), false);
   const resend = { text: "hello", client_id: "same-id" };
   const a = await call("/api/superintendent/send", "POST", resend);
   const b = await call("/api/superintendent/send", "POST", resend);

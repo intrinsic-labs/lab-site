@@ -7,7 +7,7 @@ import { VisrDemo } from "./VisrDemo";
  * the schema enum — the type makes a missing entry a compile error rather than an empty box.
  */
 const DEMOS: Record<ProductDemoId, () => React.JSX.Element> = {
-  visr: VisrDemo,
+  visr: () => <VisrDemo />,
 };
 
 export function ProductDemo({ id }: { id: ProductDemoId }) {

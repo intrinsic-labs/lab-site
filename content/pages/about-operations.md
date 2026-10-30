@@ -4,7 +4,8 @@ reconciling what each project says against what its code actually does, drafting
 surfacing the handful of decisions that need a human. Every project declares in its own file how much
 those agents may do — draft only, build to a boundary and stop, or run to completion — and the
 declaration is enforced in code. Code written by one AI provider's model is reviewed by another
-provider's model before it merges. Nothing outward-facing happens without an explicit human yes.
+provider's model before it merges. Nothing is spent or sent outside the company, and nothing appears on this site, without
+Asher's explicit yes.
 
 We treat that arrangement as an experiment as much as an operating model. The agent-operations research
 area is built on what it records. It is being pushed toward more work aimed outward — at

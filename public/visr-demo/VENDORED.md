@@ -8,7 +8,7 @@ overwritten.
 - Revision: `4a191bd7cbfdc9641cf195cee82c163c6e4ee198` (`4a191bd`)
 - Source tree dirty: no
 - Copied: 119 JS, 2 CSS, 1 HTML (comments stripped), 2 other files
-- Demo scripts: `demo/corpus.js`, `demo/supt/10-text.js`, `demo/supt/20-desk.js`, `demo/supt/25-cards.js`, `demo/supt/30-state.js`, `demo/shim.js` (before `kernel/net.js`); `demo/tune.js` (after `review/app.js`)
+- Demo scripts: `demo/corpus.js`, `demo/supt/10-text.js`, `demo/supt/20-desk.js`, `demo/supt/25-cards.js`, `demo/supt/30-state.js`, `demo/supt/35-seed.js`, `demo/supt/40-intents.js`, `demo/supt/45-acts.js`, `demo/supt/50-offers.js`, `demo/supt/55-talk.js`, `demo/supt/60-deck.js`, `demo/supt/62-facts.js`, `demo/supt/65-file.js`, `demo/supt/70-dialog.js`, `demo/supt/80-turns.js`, `demo/supt/90-api.js`, `demo/shim.js` (before `kernel/net.js`); `demo/tune.js` (after `review/app.js`)
 
 ## Adaptations
 

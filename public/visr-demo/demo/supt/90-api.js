@@ -33,11 +33,11 @@
     : { status, ...out };
 
   function heard(e) {
-    if (!e || typeof e !== "object") return;
+    if (!e || typeof e !== "object" || e.source === "superintendent") return;
     const at = e.at ? new Date(e.at).toISOString() : L.clock.iso();
     if (e.type === "act" && e.key && e.action && !SKIP.has(e.action)) {
       if (L.desk.self(e.key, e.action)) return;
-      const title = L.desk.title(e.key);
+      const title = e.item ? L.cards.name(e.item) : L.desk.title(e.key);
       S.deckActs.push({ key: e.key, action: e.action, title, at });
       if (!["feedback", "later"].includes(e.action)) {
         S.settled.set(e.key, { action: e.action, by: "deck", at, title });

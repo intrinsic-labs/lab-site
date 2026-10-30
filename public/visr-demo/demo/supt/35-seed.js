@@ -4,8 +4,9 @@
    link points at a card that exists (a card the corpus no longer has is
    named in bold instead). Every time is relative to page load:
 
-   - the main chat: yesterday evening's question, this morning's routine
-     pass, and a short exchange from this morning;
+   - the main chat: yesterday evening's question, a routine blocker check,
+     and a short exchange from fifty minutes ago, greeted for the visitor's
+     own time of day;
    - three threads (threads v1): Orchard's project thread, with two outcomes
      as subjects and one scoped question from you; the Northwind launch
      checklist's owner thread; the Lanternfish calibration's owner thread;
@@ -35,25 +36,25 @@
   const PLANNER = { kind: "outcome", id: "orc-season-planner", title: "Season planner" };
   const YIELDS = { kind: "outcome", id: "orc-yield-import", title: "Yield import" };
 
-  /* this morning: 09:02 when that is at least half an hour ago, else fifty minutes back */
-  function morning() {
-    const d = new Date(L.clock.loaded); d.setHours(9, 2, 0, 0);
-    return d.getTime() <= L.clock.loaded - 30 * 60_000 ? d.toISOString() : min(50);
-  }
+  /* the earlier exchange sits fifty minutes back, greeted for the visitor's own time of day */
+  const hello = () => {
+    const h = new Date(L.clock.loaded - 50 * 60_000).getHours();
+    return h >= 5 && h < 12 ? "Morning." : h >= 12 && h < 18 ? "Afternoon." : "Evening.";
+  };
 
   function chat() {
     const y = new Date(L.clock.loaded - 86_400_000); y.setHours(18, 10, 0, 0);
-    const yday = y.toISOString(), am = morning();
+    const yday = y.toISOString(), am = min(50);
     const top = L.cards.rank(L.desk.items());
     const pass = top.slice(0, 2).map(i => `- ${L.cards.link(i)}: ${L.cards.kind(i)}.`).join("\n");
     return [
       user("m_seed_01", yday, "Anything I should know before tomorrow?"),
       reply("m_seed_02", plus(yday, 40), "The Northwind checklist should reach your deck by morning, and the Orchard "
         + "planner draft is written. Nothing is stuck on anyone else.", ["m_seed_01"], ["Read the board"]),
-      reply("m_seed_r1", plus(am, -32 * 60), `${L.text.cap(L.text.count(top.length, "card"))} wait on you this morning; `
+      reply("m_seed_r1", plus(am, -32 * 60), `${L.text.cap(L.text.count(top.length, "card"))} wait on you; `
         + `nobody is stopped on anything but you.${pass ? `\n\n${pass}` : ""}`, [], ["Read the deck", "Read the board"],
-        { routine: { name: "morning-pass", title: "Morning pass" } }),
-      user("m_seed_03", am, "Morning. Anything on fire?"),
+        { routine: { name: "blocker-check", title: "Blocker check" } }),
+      user("m_seed_03", am, `${hello()} Anything on fire?`),
       reply("m_seed_04", plus(am, 30), `Nothing on fire. The one that matters today is the `
         + `${ref(NORTHWIND, "Northwind launch checklist")}: every criterion has evidence, `
         + `so it waits on your accept. Thursday's Lanternfish call clashes with the DNS move; `
@@ -78,8 +79,8 @@
         + "worth your eye: the frost dates come from a single note.", ["m_seed_o3"], ["Read an outcome", "Read the deck"],
         { thread: ORCHARD, subjects: [PLANNER.id] }),
       user("m_seed_o5", t(95), "Do the growers all share one frost date?", { thread: ORCHARD, subject: PLANNER.id }),
-      reply("m_seed_o6", t(95, 35), "No. Two of the three pilot growers are in the valley; the third is up on the ridge, "
-        + "about ten days later. I'd approve the planner with a frost date per grower, and say so in feedback.",
+      reply("m_seed_o6", t(95, 35), "They don't: two of the three pilot growers are in the valley, and the third is up on "
+        + "the ridge, about ten days later. I'd approve the planner with a frost date per grower, and say so in feedback.",
         ["m_seed_o5"], ["Read the intake note", "Gave the drafter feedback"], { thread: ORCHARD, subjects: [PLANNER.id] }),
 
       /* Northwind: the owner's two checkpoints */

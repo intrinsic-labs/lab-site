@@ -359,7 +359,14 @@ reading they doubt.
       ask: "Give the owner feedback or accept the work.",
       docs: [doc("Projects/bets/lanternfish/outcomes/lan-sonar-tuning.md")],
       interactive: { state: "unavailable", reason: "Not in the demo: there is no agent session to open." },
-      brief: { state: "pending" },
+      brief: brief("owner:lan-sonar-tuning", {
+        cardTitle: "Sonar calibration: tank or dock",
+        question: "Calibrate the sonar against the tank today, or wait a week for the dock test?",
+        recommendation: { text: "Calibrate against the tank now, and recheck at the dock.",
+          reason: "The tank gives a known depth today, so the owner can keep working; the dock test then confirms it in open water.",
+          doubt: "The tank's walls may echo, which could leave a small offset the dock test has to correct." },
+        body: "The transducer reads 0.7 m too deep in the tank. Everything else in the outcome is done.",
+      }),
     }),
 
     base({
@@ -373,7 +380,13 @@ reading they doubt.
       ],
       actions: ["approve", "reject", "later"],
       ask: "Approve or refuse these proposed tasks.",
-      brief: { state: "pending" },
+      brief: brief("proposal:run_9f2e", {
+        cardTitle: "Two tasks for Orchard's yield data",
+        question: "Approve two tasks: you ask two growers for their bed maps, and agent/ash builds one yield table?",
+        recommendation: { text: "Approve both.", reason: "The season planner can't propose beds until it has last year's yields in one place." },
+        answers: [{ action: "approve", effect: "Both tasks are created; agent/ash starts the table on its next turn." },
+                  { action: "reject", effect: "Nothing is created; the drafter is told why." }],
+      }),
     }),
 
     base({
@@ -400,7 +413,13 @@ reading they doubt.
       ask: "Do this, then mark it done.", textMax: 300,
       working: { since: ago(40) },
       docs: [doc("Projects/bets/orchard/tasks/orc-14.md")],
-      brief: { state: "pending" },
+      brief: brief("chore:orc-14", {
+        cardTitle: "Orchard yield sheets",
+        question: "Ask the three pilot growers for last year's yield sheets, then mark this done?",
+        answers: [{ action: "done", effect: "The task closes, and the import task can start." },
+                  { action: "feedback", effect: "Your note is added to the task." }],
+        body: "You marked this as yours 40 minutes ago. A photo of each paper sheet is enough.",
+      }),
     }),
 
     base({
