@@ -32,6 +32,8 @@ export const autonomyMetric = z.object({
 
 export const autonomyData = z.object({
   generated: isoDate,
+  /** The recount cutoff, an ISO instant. Every window above ends at or before it. */
+  asOf: z.string().datetime().optional(),
   window: z.object({ from: isoDate, to: isoDate, days: z.number() }),
   goal: z.object({ low: z.number(), high: z.number(), text: z.string() }),
   /** Copy for the figure itself — the sentence the context panel rests on. */

@@ -153,9 +153,8 @@ on cream the light-theme combination runs tighter.
 
 `theme: dark` front matter (Tycho) used to re-point the palette to a night/chalk set. On an
 all-dark site that is a no-op, so the `--color-night-*` / `--color-chalk-*` tokens and the
-`html:has(.dossier-dark)` remap are **deleted**. The front-matter field and the
-`.dossier-dark` class it emits are left in place (`lib/content/schema.ts`,
-`app/products/[slug]/page.tsx`) so no content file breaks — the class is simply inert.
+`html:has(.dossier-dark)` remap were deleted. When Tycho left the site (2026-10-30) nothing
+set the field any more, so the `theme` field and the `.dossier-dark` class went with it.
 
 ## Verified
 

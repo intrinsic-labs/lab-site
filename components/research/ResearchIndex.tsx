@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { KINDS, KIND_LABEL, type Kind } from "@/lib/content/kinds";
-import { AREAS, AREA_INFO, type Area } from "@/lib/content/areas";
+import { AREA_INFO, populatedAreas, type Area } from "@/lib/content/areas";
 import { PostCard, type PostCardItem } from "./PostCard";
 
 /** The serialisable slice of a post the research index needs. */
@@ -33,7 +33,8 @@ export function ResearchIndex({ items }: { items: IndexItem[] }) {
   const options: { value: FilterValue; label: string }[] = [
     { value: "all", label: "All" },
     ...KINDS.map((k) => ({ value: k as FilterValue, label: KIND_LABEL[k] })),
-    ...AREAS.map((a) => ({ value: a as FilterValue, label: AREA_INFO[a].name })),
+    // Only areas something is listed in: an empty area is hidden everywhere it would be a link.
+    ...populatedAreas(items).map((a) => ({ value: a as FilterValue, label: AREA_INFO[a].name })),
   ];
 
   return (

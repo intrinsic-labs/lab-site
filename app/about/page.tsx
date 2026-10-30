@@ -72,7 +72,7 @@ export default async function AboutPage() {
         <div className="prose text-lg">
           <p>
             <a href={`mailto:${site.email}`}>{site.email}</a> · <a href={site.github}>GitHub</a> ·{" "}
-            <a href="https://www.linkedin.com/in/asher-pope/">LinkedIn</a>. If you work on elicitation, evaluation,
+            <a href="https://www.linkedin.com/in/asher-pope/">LinkedIn</a>. If you work on evaluation,
             or running agents against real work and want to compare notes, write.
           </p>
         </div>

@@ -248,6 +248,9 @@ h1, h2, h3, h4, h5, h6 { font-family: var(--font-sans); }
 .prose strong { font-weight: 700; color: var(--color-ink); }
 .prose ul, .prose ol { padding-left: 1.4em; }
 .prose ul { list-style: disc; }
+.prose ol { list-style: decimal; }
+/* A component set into prose (e.g. <SystemCards />) opts out of link styling. */
+.prose .not-prose a { color: inherit; text-decoration: none; background: none; }
 .prose li + li { margin-top: 0.35em; }
 .prose li::marker { color: var(--color-ink-3); }
 /* latent-spaces: `border-l-4 border-primary/30 pl-4 italic`. */
@@ -376,14 +379,6 @@ h1, h2, h3, h4, h5, h6 { font-family: var(--font-sans); }
 }
 .btn-ink:hover { background: transparent; color: var(--color-ink); }
 
-/* ── Dark dossier (neutralised) ───────────────────────────────────────────────
-   The site is one colour mode and that mode is now dark, so the `theme: dark`
-   front-matter field no longer needs to invert anything — the page it marks
-   already looks like this. The field and the `.dossier-dark` class it emits are
-   left in place (lib/content/schema.ts, app/products/[slug]/page.tsx) so no
-   content file breaks; the class is simply inert, and no rule below re-points a
-   palette variable. */
-
 /* Hairline card grid: every seam — inner AND outer — is drawn by each card's own 1px
    outline, which overlaps into the 1px gap. The `<ul>` itself paints nothing: an outer
    border on it would trace an empty box around a short last row (Asher, 2026-09-04,
@@ -447,7 +442,7 @@ h1, h2, h3, h4, h5, h6 { font-family: var(--font-sans); }
    renders one wrapper carrying that attribute, the `:has()` matches at first
    paint with no client JS, and the override lands on `html` — so `html`'s own
    background, the sticky header's `bg-paper/90`, and the footer all invert
-   together. Same trick the retired `html:has(.dossier-dark)` rule used.
+   together.
    Specificity: 0,1,1 beats @theme's `:root` at 0,1,0.
 
    VALUES. The dark palette is latent-spaces-web's `ls.*` scale; this is that

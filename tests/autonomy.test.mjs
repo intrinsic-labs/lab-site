@@ -41,12 +41,14 @@ test("schema rejects impossible percentages and malformed coverage", () => {
   assert.equal(autonomyMetric.safeParse({ ...metric, coverage: { ...metric.coverage, excludedRecords: -1 } }).success, false);
 });
 
-test("generated public snapshot carries the narrower meaning and current coverage", () => {
+test("public snapshot states its counts, keeps the largest value first and disclaims an autonomy rate", () => {
   const data = autonomyData.parse(JSON.parse(fs.readFileSync(new URL("../content/specimen/autonomy.json", import.meta.url), "utf8")));
-  const execution = data.metrics.find((m) => m.key === "execution");
-  assert.match(execution.label, /valid recorded counts/);
-  assert.equal(execution.coverage?.status, "incomplete");
-  assert.ok(execution.coverage.missingCounters > 0);
-  assert.ok(execution.numerator <= execution.denominator);
-  assert.match(data.figure?.intro ?? "", /do not establish a company autonomy rate/);
+  for (const m of data.metrics) {
+    assert.ok(m.numerator <= m.denominator, m.key);
+    assert.equal(Math.round((m.numerator / m.denominator) * 1000) / 10, m.value, m.key);
+    assert.ok(m.method.length > 0 && m.source.length > 0, m.key);
+  }
+  const values = data.metrics.map((m) => m.value);
+  assert.deepEqual(values, [...values].sort((a, b) => b - a));
+  assert.match(data.figure?.intro ?? "", /not a company autonomy rate/);
 });

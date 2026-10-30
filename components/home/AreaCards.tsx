@@ -1,11 +1,11 @@
 import Link from "next/link";
-import { AREAS, AREA_INFO } from "@/lib/content/areas";
+import { AREA_INFO, type Area } from "@/lib/content/areas";
 
-/** Home page only: the three research areas, name + one line, nothing else. */
-export function AreaCards() {
+/** Home page only: the populated research areas (`listedAreas()`), name + one line, nothing else. */
+export function AreaCards({ areas }: { areas: readonly Area[] }) {
   return (
     <ol className="card-grid sm:grid-cols-3">
-      {AREAS.map((slug) => {
+      {areas.map((slug) => {
         const a = AREA_INFO[slug];
         return (
           <li key={slug} className="bg-paper p-6 flex flex-col">

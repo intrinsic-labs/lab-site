@@ -12,8 +12,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
-    // The vendored TychoOS shell + its mock layer: no-build browser JS, not this app's code.
-    "public/tycho-demo/**",
+    // The vendored VISR shell + its demo layer: no-build browser scripts sharing one global
+    // scope, not this app's code (scripts/vendor-visr-demo.mjs).
+    "public/visr-demo/**",
   ]),
 ]);
 

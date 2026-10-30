@@ -7,7 +7,7 @@ import { site } from "@/lib/site";
 export const dynamic = "force-static";
 
 export async function GET() {
-  const posts = await publishedPosts();
+  const posts = await publishedPosts(); // never a draft or a retired post
   const feed = new Feed({
     title: site.name,
     description: site.description,

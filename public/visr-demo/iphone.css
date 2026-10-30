@@ -1,0 +1,43 @@
+
+
+html.t-iphone {
+  --void: #020203;
+  --bg:   #030405;
+  --bg2:  #060708;
+  --ph:        #eaf4fd;
+  --ph-bright: #fff;
+  --ph-dim:    #9db5c4;
+  --thin: 0.2px;
+  --glow:      0 0 4px color-mix(in srgb, var(--ph) 22%, transparent);
+  --glow-hard: 0 0 7px color-mix(in srgb, var(--ph) 38%, transparent);
+}
+
+html.t-iphone #frame::after { display: none; }
+
+html.t-iphone .t-flip-title {
+  -webkit-text-stroke: 0;
+  color: #eaf4fd;
+  text-shadow: 0 0 6px color-mix(in srgb, #cfe3f0 35%, transparent);
+}
+
+html.t-iphone body {
+  -webkit-text-stroke: var(--thin) var(--bg);
+}
+
+html.t-iphone .t-btn.primary,
+html.t-iphone .t-btn:active:not(:disabled),
+html.t-iphone .t-btn.ok:active:not(:disabled),
+html.t-iphone .t-btn.danger:active:not(:disabled),
+html.t-iphone .t-btn.t-working-toggle[aria-pressed="true"],
+html.t-iphone .t-working-tag,
+html.t-iphone .t-seg-opt.on,
+html.t-iphone .t-stamp.on .base,
+html.t-iphone .t-drop-row:active,
+html.t-iphone .t-drop-row:active *,
+html.t-iphone .t-ctx .row:active,
+html.t-iphone .t-chatbox-ico:active:not(:disabled),
+html.t-iphone .t-chatbox-send,
+html.t-iphone .t-preview:active,
+html.t-iphone .t-preview.down:active {
+  -webkit-text-stroke: 0;
+}

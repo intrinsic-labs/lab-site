@@ -15,11 +15,7 @@ export async function ProductsGrid({ items }: { items: Product[] }) {
           key={item.slug}
           item={item}
           images={images}
-          blurb={
-            item.slug === "tycho"
-              ? <><span className="text-ink">Produces The Ghost.</span> Builds a model of one person&rsquo;s judgment from the decisions they have already made.</>
-              : item.line
-          }
+          blurb={item.line}
         />
       ))}
     </ul>

@@ -11,11 +11,13 @@ published) are the design docs. This file is the engineering entry point.
 ```
 app/            routes only — thin, compose components + lib
   research/     index, [slug] posts, areas/[area]
-  products/     index + [slug] (the company's own bets: GlyphDeck, Liturgos; Tycho, paused)
+  products/     index + [slug] (the company's own bets: GlyphDeck, Liturgos)
                 + aspen-grove/open-loom (the spec, plain markdown). IntrinsicOS
-                (`content/products/intrinsic-os.mdx`) is its own nav item and Aspen Grove a
-                personal open-source project; neither is listed on the index or the home
-                grid (no `order`), both pages stay reachable — see `app/products/page.tsx`.
+                (`content/products/intrinsic-os.mdx`) is its own nav item, VISR its review
+                desk (linked from it) and Aspen Grove a personal open-source project; none is
+                listed on the index or the home grid (`order` ≥ 100), all pages stay
+                reachable — see `app/products/page.tsx`.
+  visr/         full-screen VISR demo (an iframe over public/visr-demo/; noindex)
   work/         index + [slug] — two halves of one collection: the CLIENT portfolio (case
                 studies ported from intrinsiclabs-co-v3) and the open-source projects
                 (see below)
@@ -27,7 +29,7 @@ components/     layout/ ui/ research/ home/ about/ — presentational, no fs acc
 content/        the CMS. research/*.mdx, products/*.mdx, work/*.mdx, specimen/ (home-page plate),
                 pages/ (static-page prose — see below)
 lib/content/    schema.ts (zod, the front-matter contract) · posts.ts · products.ts · work.ts
-                areas.ts + kinds.ts (declared vocab) · draft-rail.ts · fs.ts · format.ts
+                areas.ts + kinds.ts (declared vocab) · draft-rail.ts · post-status.ts · fs.ts · format.ts
                 pages.ts (loads content/pages/*.md)
 lib/mdx/        render.tsx — next-mdx-remote-client RSC + remark-gfm
 lib/site.ts     name, url, email, github
@@ -37,8 +39,35 @@ lib/site.ts     name, url, email, github
 
 A post is `content/research/<slug>.mdx` with front matter validated by `lib/content/schema.ts`:
 `title · kind (paper|note|field-note) · area (elicitation|agent-operations|local-compute) ·
-date (ISO string) · summary · status (draft|published) · caveats[] · artifacts[{label,href?,note?}]
-· artifactsNote · corrections[{date,text}]`. A build fails loudly on a bad file.
+date (ISO string) · summary · status (draft|published|retired) · retired{date,reason} ·
+caveats[] · artifacts[{label,href?,note?}] · artifactsNote · corrections[{date,text}]`. A build
+fails loudly on a bad file.
+
+### Post status: where each one appears
+
+One module decides it — `lib/content/post-status.ts` (pure; `posts.ts` applies it, and
+`tests/content-status.test.mjs` checks it against the real content):
+
+| status | indexes (research, area pages, home) | feed + sitemap | `/research/<slug>` generated |
+|---|---|---|---|
+| `published` | yes | yes | always |
+| `draft` | previews only | never | previews only (404 in production) |
+| `retired` | never | never | always — renders a notice, not the body |
+
+**Retired** is a published post withdrawn because it no longer holds up (all six original
+posts, 2026-10-30). It needs `retired: {date, reason}` (the schema refuses either without the
+other). Its URL keeps resolving so old links don't dead-end: `components/research/RetiredNotice.tsx`
+shows the title, original date, retirement date and `reason` (markdown, one or two plain
+sentences for an outside reader — no self-flagellation), plus a link to `/research`, and the
+page is `noindex`. The body stays in the file but is never rendered. To retire a post:
+`status: published` → `status: retired` plus the `retired` block, in one commit.
+
+**Empty areas are hidden, not removed.** The nav, the area rows on `/research` and the home
+page, the research filter and the sitemap list only areas with at least one listed post
+(`listedAreas()` / `populatedAreas()`). Every declared area is still generated, because area
+slugs are permanent URLs; an empty one renders `content/pages/research-area-empty.md` and is
+`noindex`. With nothing listed at all, `/research` renders `content/pages/research-empty.md`
+and the home page drops its Latest and Research areas sections.
 
 **Caveats, corrections and artifacts render beneath the post body in `PostMeta`, only
 when their respective arrays are non-empty.** This follows Asher's September 4 reading
@@ -88,10 +117,11 @@ links) can stay in TSX rather than round-tripping through a template-substitutio
 
 `status: draft` posts are excluded from the feed and sitemap always, and their routes are
 **not generated when `VERCEL_ENV === "production"`** (`lib/content/draft-rail.ts`,
-`renderableSlugs()`, `dynamicParams = false` → 404). On previews, drafts render and are listed
+`lib/content/post-status.ts`, `renderableSlugs()`, `dynamicParams = false` → 404). On previews, drafts render and are listed
 with a `draft` chip so a reviewer can navigate to them. Publishing is a one-word diff:
 `status: draft` → `status: published`. Verify with `VERCEL_ENV=production pnpm build` — no
-`/research/<slug>` routes for drafts should appear.
+`/research/<slug>` routes for drafts should appear. `node --test tests/content-status.test.mjs`
+checks the same rule (and the retired-post rules) without a build.
 
 ## Publishing flow
 
@@ -166,7 +196,8 @@ that costs, both measured on 2026-09-04 rather than assumed:
 
 ## Commands
 
-`pnpm dev` · `pnpm build` · `pnpm lint` · `VERCEL_ENV=production pnpm build` (rail check)
+`pnpm dev` · `pnpm build` · `pnpm lint` · `VERCEL_ENV=production pnpm build` (rail check) ·
+`node --test tests/*.test.mjs`
 
 ## The cold-reader gate (standing, since 2026-09-03)
 
@@ -183,10 +214,11 @@ Asher's standing instruction is that the site must register with an outsider who
 context, and must not read as marketing.
 
 Related house rules from the same session: never narrate honesty ("and we say so") — state
-the fact and stop; never assert "every" where the site's own numbers say otherwise; The
-Ghost is always "The Ghost" and lives under Tycho; `/products/tycho` is the one dark
-page (`theme: dark` in its front matter) — a field that is now **inert**, since the whole
-site is dark; it and `.dossier-dark` are kept only so content doesn't break.
+the fact and stop; never assert "every" where the site's own numbers say otherwise. Tycho
+(and The Ghost) left the site on 2026-10-30: its page, demo, vendor script and images are
+gone, and `/products/tycho` and `/instruments/{tycho,ghost}` redirect to `/products`
+(`next.config.ts`). The product `theme` field and `.dossier-dark` class went with it — the
+whole site is one dark palette plus the research surfaces' light remap, nothing else.
 
 Rules from the 2026-09-03 outsider pivot (Asher's feedback on v1.1): **Haiku writes
 posts** (or the coordinating session itself) — never Opus, whose drafts ran long; Asher
@@ -208,10 +240,33 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 ## Operational metrics
 
-`content/specimen/autonomy.json` is generated by the vault's
-`Tools/lab/autonomy-snapshot.mjs --vault <live-vault> --out <snapshot-path>`.
-Do not hand-edit counts. The execution rate covers only valid paired session counters;
-`coverage` records historical gaps and a null `value` means unavailable. The home figure
-shows coverage outside the interaction panel and omits unavailable discs. These measures
-do not establish company autonomy. Run `node --test tests/autonomy.test.mjs` for the
-schema and presentation contract, alongside `pnpm lint` and `pnpm build`.
+`content/specimen/autonomy.json` holds the three homepage measures (approved work accepted,
+accepted work released within 72 h, agent time on clients and products). Recount them from the
+IntrinsicOS journal, never by hand:
+
+    node scripts/recount-measures.mjs --journal ~/.local/state/intrinsic/journal.sqlite \
+      --vault <live-vault> [--at <ISO cutoff>] --write
+
+It writes counts only (no ids or names), with dated windows, the cutoff (`asOf`) and coverage
+in each blurb. Definitions live in `lib/measures/recount.mjs` (from the vault's research
+publishing plan §2) and are pinned by `tests/measures.test.mjs`, including the October 30
+release definition: only accepts that scheduled a release are in its denominator. A null
+`value` means unavailable and draws no disc. These measures are not an autonomy rate; the
+founder's time is not measured. A daily automated recount is a separate IntrinsicOS outcome.
+
+## The VISR demo
+
+`public/visr-demo/` is the real VISR shell vendored by `node scripts/vendor-visr-demo.mjs
+[path/to/tycho/tycho/os]` (comments stripped, PWA/push/service worker left out, a checked
+table of string adaptations); provenance is written to `docs/visr-demo-vendored.md`. Never
+edit vendored files by hand. Everything under `public/visr-demo/demo/` is hand-written and
+survives re-vendoring: `corpus.js` (the invented Northwind/Orchard/Lanternfish world),
+`shim.js` (answers every `/api/*` and `/health` in memory, in-memory localStorage, no token
+prompt, skipped boot), `supt/*.js` (the scripted Superintendent; `tests/visr-supt.test.mjs`,
+`VISR_TRANSCRIPT=<file>` prints a conversation) and `tune.js` (hides what a visitor can't use).
+It is embedded on `/products/intrinsic-os` (`<VisrDemo inline />` in the MDX) and
+`/products/visr`, and full screen at `/visr`. Every entry point says the data is invented and
+the Superintendent is a script. Before shipping a re-vendor, run
+`node scripts/scrub-check-visr-demo.mjs --vault <live-vault> --out <report outside the repo>`
+and review every match: the denylist is built from private sources at run time and is never
+committed.

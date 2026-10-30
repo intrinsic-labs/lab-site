@@ -1,4 +1,8 @@
-/** Declared research areas. These are permanent URLs — approved by Asher 2026-09-03 (D1). */
+/**
+ * Declared research areas. These are permanent URLs — approved by Asher 2026-09-03 (D1) —
+ * so an area stays declared and routed even when nothing is listed in it; the nav, the area
+ * rows and the sitemap show only populated ones (`populatedAreas`, `listedAreas()`).
+ */
 export const AREAS = ["elicitation", "agent-operations", "local-compute"] as const;
 export type Area = (typeof AREAS)[number];
 
@@ -39,6 +43,11 @@ export const AREA_INFO: Record<Area, AreaInfo> = {
       "Open-weight models on a desk, measured against the frontier on the same tasks with the same harness. Where the local engine is a wash, where it isn't, and what the runtime knobs really do — reasoning budgets, quant formats, context division, speculative decoding — reported as numbers with their conditions attached. The end of it is a clear line: which of this lab's own work can run on hardware it owns, and what that costs.",
   },
 };
+
+/** The declared areas, in declared order, that at least one of `posts` sits in. */
+export function populatedAreas(posts: readonly { area: Area }[]): Area[] {
+  return AREAS.filter((a) => posts.some((p) => p.area === a));
+}
 
 export function areaInfo(slug: string): AreaInfo | undefined {
   return (AREAS as readonly string[]).includes(slug) ? AREA_INFO[slug as Area] : undefined;

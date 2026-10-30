@@ -10,8 +10,8 @@ import type { SizedImage } from "@/lib/content/products";
  * from the image's NATURAL width, and a not-yet-loaded image has none. So the box measures
  * 0×0 until the bytes land and then snaps to full height, taking the whole two-column grid
  * with it. Adding `width`/`height` attributes is not enough on its own: they give the box an
- * `aspect-ratio`, but a ratio applied to a zero width is still zero (measured: `tycho/hero.png`
- * laid out at 0×0 with `aspect-ratio: auto 2880 / 1800` set).
+ * `aspect-ratio`, but a ratio applied to a zero width is still zero (measured: a 2880×1800 product
+ * hero laid out at 0×0 with `aspect-ratio: auto 2880 / 1800` set).
  *
  * THE FIX. Make the width DEFINITE and express the other two constraints as caps on it:
  *

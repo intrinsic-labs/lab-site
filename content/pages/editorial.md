@@ -4,19 +4,16 @@ Each item declares which it is and wears the label everywhere it appears.
 
 <KindsList />
 
-There are no papers yet; the first will come out of the elicitation work, once its held-out numbers
-rest on enough hand-labelled pairs to quote.
-
 ## 2. Negative results publish, with their caveats attached
 
 A method that didn't work is a result. A benchmark that turned out to be saturated is a result. We publish
 them at the rung they earned, with **caveats** beneath the main text when needed.
 
-## 3. The method is published; the corpus never is
+## 3. The method is published; private data never is
 
-The elicitation work is built on one person's private transcripts. Every study says what was withheld and
-why. Harnesses, prompts, per-item results, and the random seed and salt values used to run and score each
-evaluation are released where they can be; the personal data is not, ever, and a post whose artifacts
+Some studies draw on private records, such as one person's own transcripts. Every study says what was
+withheld and why. Harnesses, prompts, per-item results, and the random seed and salt values used to run and score each
+evaluation are released where they can be; private data is not, ever, and a post whose artifacts
 can't be released says so instead of leaving the block empty.
 
 ## 4. Disclosure: agents draft, a human approves
@@ -29,6 +26,9 @@ corrections and explicitly approve publication.
 
 When something turns out to be wrong, the correction is added beneath the post with its date. The original
 text is not silently edited. The corrections block appears only when a post has corrections.
+
+A post that no longer holds up is retired rather than deleted: its address stays, and shows the date it was
+retired and the reason in place of the text.
 
 ## 6. What we don't do
 

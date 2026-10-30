@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { KINDS } from "./kinds";
 import { AREAS } from "./areas";
+import { POST_STATUSES } from "./post-status";
 
 const isoDate = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "ISO date (YYYY-MM-DD)");
 
@@ -15,13 +16,22 @@ export const correctionSchema = z.object({
   text: z.string(),
 });
 
+/** Why and when a published post was withdrawn. Required with `status: retired`, and only then. */
+export const retirementSchema = z.object({
+  date: isoDate,
+  /** One or two sentences for an outside reader, rendered as markdown on the notice page. */
+  reason: z.string().min(1),
+});
+
 export const postFrontMatter = z.object({
   title: z.string().min(1),
   kind: z.enum(KINDS),
   area: z.enum(AREAS),
   date: isoDate,
   summary: z.string().min(1),
-  status: z.enum(["draft", "published"]).default("draft"),
+  /** What each status means for listings, feed, sitemap and routes: `./post-status.ts`. */
+  status: z.enum(POST_STATUSES).default("draft"),
+  retired: retirementSchema.optional(),
   caveats: z.array(z.string()).default([]),
   artifacts: z.array(artifactSchema).default([]),
   /** Why the artifacts block is empty, when it is. Rendered instead of hiding the block. */
@@ -32,17 +42,20 @@ export const postFrontMatter = z.object({
   /** Card + post-header image, path under /public/covers/. Absent → GenerativeCover. */
   cover: z.string().optional(),
   coverAlt: z.string().optional(),
+}).refine((p) => (p.status === "retired") === (p.retired !== undefined), {
+  message: "`retired: {date, reason}` is required with status: retired, and only then",
+  path: ["retired"],
 });
 export type PostFrontMatter = z.infer<typeof postFrontMatter>;
 
 /**
- * Products = the company's own product bets (GlyphDeck, Liturgos), the paused Tycho, the
- * vault, and Aspen Grove (unlisted: a personal open-source project since 2026-10-15) —
- * distinct from Work, the client portfolio (`caseStudyFrontMatter` below).
+ * Products = the company's own product bets (GlyphDeck, Liturgos), IntrinsicOS and VISR,
+ * and Aspen Grove (unlisted: a personal open-source project since 2026-10-15) — distinct
+ * from Work, the client portfolio (`caseStudyFrontMatter` below).
  * `released`/`in-development` cover the shipping lifecycle; `private` (running, code
- * withheld), `described` (no code released — the vault) and `in-design` are inherited from
- * the old instrument vocabulary; `paused` is a product that was built and is now on hold
- * (Tycho). Labels live in one place: `STATUS_LABEL` in `lib/content/products.ts`.
+ * withheld), `described` (no code released) and `in-design` are inherited from the old
+ * instrument vocabulary; `paused` is a product that was built and is now on hold.
+ * Labels live in one place: `STATUS_LABEL` in `lib/content/products.ts`.
  */
 export const PRODUCT_STATUSES = [
   "released",
@@ -58,10 +71,10 @@ export type ProductStatus = (typeof PRODUCT_STATUSES)[number];
  * Interactive demos a product page can carry in place of its screenshots. The value names a
  * component in `components/products/demos/` (the registry is `ProductDemo`); a page with one
  * renders it where the gallery would go and shows no hero image. Data, not a slug check —
- * `content/products/tycho.mdx` is the only file that sets it (2026-09-04, Asher: "ditch the
- * screenshots and instead inline an interactive prototype").
+ * `content/products/visr.mdx` sets it (2026-09-04, Asher: "ditch the screenshots and
+ * instead inline an interactive prototype").
  */
-export const PRODUCT_DEMOS = ["tycho"] as const;
+export const PRODUCT_DEMOS = ["visr"] as const;
 export type ProductDemo = (typeof PRODUCT_DEMOS)[number];
 
 export const productFrontMatter = z.object({
@@ -74,13 +87,6 @@ export const productFrontMatter = z.object({
   /** External site, if the product has one of its own. Renders a "Visit →" button. */
   url: z.string().url().optional(),
   order: z.number().int().default(100),
-  /**
-   * Page palette. Omitted means the site's one colour mode (cream). `dark` renders that
-   * product's page — chrome included — as the negative of the plate. Data, not a slug
-   * check, and deliberately not a user-facing toggle: see app/globals.css § Dark dossier.
-   * `/products/tycho` is the only page that sets this.
-   */
-  theme: z.enum(["light", "dark"]).optional(),
   /** An interactive demo standing in for the gallery. See `PRODUCT_DEMOS`. */
   demo: z.enum(PRODUCT_DEMOS).optional(),
 });
