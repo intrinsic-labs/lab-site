@@ -75,7 +75,7 @@ const PATTERNS = [
 ];
 
 const files = [];
-const walk = (d) => { for (const n of ls(d)) { const p = path.join(d, n); fs.statSync(p).isDirectory() ? walk(p) : files.push(p); } };
+const walk = (d) => { for (const n of ls(d)) { const p = path.join(d, n); if (fs.statSync(p).isDirectory()) walk(p); else files.push(p); } };
 TARGETS.forEach(walk);
 
 const hits = [];
