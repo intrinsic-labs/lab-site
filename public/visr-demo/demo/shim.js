@@ -15,8 +15,8 @@
       server's REVIEW_AUTH=synthetic `/review-auth.js` would seed it, so no
       token prompt ever appears; the docked chat open on a wide screen
       (`tycho.chat.dock`, superintendent/dock.js); sound off.
-   2. MARK. A small fixed note, "Demo · invented data · scripted
-      Superintendent", in place of the review preview's marker.
+   2. NO MARK. The page that frames the demo says it is a demo; the shell
+      draws no banner of its own.
    3. NETWORK. `fetch`, XHR (uploads) and `sendBeacon` (the event log) are
       wrapped. `/health` and every `/api/*` path on this origin are answered
       here, from memory, in the desk's contract: `{ok: true, …}` (HTTP 200) or
@@ -76,18 +76,6 @@
   const memory = new MemoryStorage();
   Object.defineProperty(window, "localStorage", { configurable: true, enumerable: true, get: () => memory });
   if (window.localStorage !== memory) throw new Error("demo/shim.js: could not replace localStorage");
-
-  /* -- 2. the mark ------------------------------------------------------------------ */
-  addEventListener("DOMContentLoaded", () => {
-    const m = document.createElement("div");
-    m.className = "t-demo-mark";
-    m.setAttribute("role", "note");
-    m.textContent = "Demo · invented data · scripted Superintendent";
-    m.style.cssText = "position:fixed;left:50%;top:env(safe-area-inset-top,0px);transform:translateX(-50%);"
-      + "z-index:2147483647;pointer-events:none;padding:1px 6px;font:10px/1.4 var(--mono);letter-spacing:1px;"
-      + "white-space:nowrap;color:var(--bg);background:var(--amber);opacity:.85";
-    document.body.append(m);
-  });
 
   /* -- 4. the desk -------------------------------------------------------------------- */
   const C = window.VISR_DEMO_CORPUS;
