@@ -46,12 +46,12 @@ const FIXTURE = () => [
       rec: { text: "Merge it and accept.", reason: "Every acceptance criterion has evidence attached." } }),
   item("owner:lsp-litter-gallery", "owner_review", "larkspur", "Let the breeder publish photo-and-video litter galleries", "Litter gallery with video",
     200, ["accept", "park", "feedback", "not_needed", "later"], { body: "Each litter page now takes photos and short videos from the CMS." }),
-  item("owner:hwk-studio-safety", "owner_review", "heelwork", "Stop the content studio and the importer from silently breaking exercise data",
-    "Content studio safety fixes", 60, ["accept", "park", "feedback", "not_needed", "later"],
-    { body: "Saving a trimmed or cleared title keeps every tag; publishing a frozen import batch is disabled." }),
+  item("owner:hwk-session-reorder", "owner_review", "heelwork", "Let the trainer reorder exercises in a session plan",
+    "Reorder session exercises", 60, ["accept", "park", "feedback", "not_needed", "later"],
+    { body: "Drag to reorder; the order saves with the plan." }),
   item("decision:dec-41", "decision", "vault", "Let the CI rollout merge one-line runner changes without a card each?",
     "CI rollout in private repos", 120, ["approve", "reject", "feedback", "not_needed", "later"],
-    { body: "Local CI is live for IntrinsicOS. The rollout to ten more private repos is one line per workflow." }),
+    { body: "Local CI is live for IntrinsicOS. The rollout to five more private repos is one line per workflow." }),
   item("proposal:run_7c41", "proposal", "larkspur", "Proposed two tasks before the pickup plan is built",
     "Pickup plan tasks", 1800, ["approve", "reject", "not_needed", "later"]),
   item("chore:vlt-104", "chore", "vault", "Create the GitHub App the Mac's CI runners sign in with", "GitHub App for the CI runners",
@@ -178,9 +178,9 @@ test("a scripted conversation moves the desk and reads like the real thing", asy
   assert.equal(desk.has("owner:lsp-litter-gallery"), false, "“it” was the litter-gallery card");
   assert.match(r.text, /Accepted \*\*Litter gallery with video\*\*/);
 
-  r = await v.say("park the studio safety fixes");
-  assert.equal(desk.has("owner:hwk-studio-safety"), false);
-  assert.match(r.text, /Parked \*\*Content studio safety fixes\*\*/);
+  r = await v.say("park the session reorder");
+  assert.equal(desk.has("owner:hwk-session-reorder"), false);
+  assert.match(r.text, /Parked \*\*Reorder session exercises\*\*/);
 
   r = await v.say("approve the larkspur one");
   assert.match(r.text, /Which one/);
@@ -253,11 +253,11 @@ test("a scripted conversation moves the desk and reads like the real thing", asy
   assert.match(r.text, /\*\*Heelwork\*\*/);
   r = await v.say("undo that");
   assert.match(r.text, /can't be taken back/, "the last act was an approval, which undo must not skip past silently");
-  assert.match(r.text, /Content studio safety fixes/, "it names what can be undone instead");
-  assert.equal(desk.has("owner:hwk-studio-safety"), false);
-  r = await v.say("undo the studio safety fixes");
-  assert.equal(desk.has("owner:hwk-studio-safety"), true, "undo by name reopened the parked card");
-  assert.match(r.text, /Reopened \[Content studio safety fixes\]/);
+  assert.match(r.text, /Reorder session exercises/, "it names what can be undone instead");
+  assert.equal(desk.has("owner:hwk-session-reorder"), false);
+  r = await v.say("undo the session reorder");
+  assert.equal(desk.has("owner:hwk-session-reorder"), true, "undo by name reopened the parked card");
+  assert.match(r.text, /Reopened \[Reorder session exercises\]/);
   r = await v.say("can you read that out loud?");
   assert.match(r.text, /Voice isn't available in the demo/);
   r = await v.say("thanks, that's all");

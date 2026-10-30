@@ -72,7 +72,7 @@ repos:
 tags: []
 human-reviewed:
 review-duration-mins:
-draft-generation: run_df5a97ee
+draft-generation: run_5e0b2c71
 source: strategist
 created: ${day(60 * 26)}
 ---
@@ -151,7 +151,7 @@ repos:
 tags: []
 human-reviewed: ${ago(60 * 24 * 4).slice(0, 16)}
 review-duration-mins: 1
-draft-generation: run_004c776b
+draft-generation: run_a81f4d09
 owner: claude/opus
 approved-by: you
 created: ${day(60 * 24 * 4)}
@@ -160,8 +160,7 @@ created: ${day(60 * 24 * 4)}
 # Patients alongside Appointments
 
 In the intake of ${day(60 * 24 * 4)}, the Superintendent recorded your direction for the
-client's navigation card: "these are a cohesive set of changes that would make sense all as
-one PR." Providers should be able to find a patient or work from their schedule, then enter
+client's navigation card: ship the related changes together, as one PR. Providers should be able to find a patient or work from their schedule, then enter
 the same charge flow. One accountable owner delivers the four related tracker cards
 together, because navigation, routes and charge entry points overlap. This extends the
 accepted Visits and off-schedule charge work.
@@ -213,9 +212,7 @@ Frontend only, in a single PR from one owner. Reuse the app's current navigation
 page and charge capture rather than rebuilding them. Approval grants scoped app
 implementation, commits, push, PR creation and review-build installation. The tracker stays
 read-only; the Superintendent links the outcome. Emulator and simulator testing replaces a
-physical-device test for this outcome. You merge after green CI and review. Follow the
-repository's conventions: no attribution trailers, a PR title naming the tracker cards and
-an empty or tweet-length body.
+physical-device test for this outcome. You merge after green CI and review.
 
 No edits to the client's backend, the patient-cache implementation or its activation. The
 sample contract is the handoff. The UI refresh starts after this ships and is excluded. No
@@ -236,7 +233,7 @@ or lowering the bar.
 - [Project brief and standing boundaries](../_brief.md)
 - [Accepted Visits navigation](hlw-visits-tab.md)
 - [Accepted off-schedule charge flow](hlw-off-schedule-charge.md)
-- [Your review, device and merge conventions](../intake/feedback/hlw-session-security.md)
+- [Your review, device and merge conventions](../intake/feedback/hlw-review-conventions.md)
 `,
     },
 
@@ -325,7 +322,7 @@ repos:
 tags: []
 human-reviewed:
 review-duration-mins:
-draft-generation: run_12e91de6
+draft-generation: run_6c2d8e5a
 owner: codex/astra
 approved-by: superintendent
 created: ${day(60 * 24 * 1)}
@@ -511,7 +508,7 @@ separate outcome.
       content: [
         { type: "markdown", title: "Strategist's pitch",
           text: "The family page shows the puppy, the litter's go-home date and the reading list, but nothing about the family's own pickup. A short written plan per family, published by the breeder, finishes the journey the charter describes. This one extends the charter; it doesn't answer a request." },
-        { type: "facts", rows: [["drafted by", "strategist"], ["run", "run_df5a97ee"], ["confidence", "lower: no request behind it"]] },
+        { type: "facts", rows: [["drafted by", "strategist"], ["run", "run_5e0b2c71"], ["confidence", "lower: no request behind it"]] },
       ],
       actions: ["approve", "reject", "feedback", "later", "block"],
       ask: "Approve, refuse or correct this draft outcome.",
@@ -541,12 +538,12 @@ separate outcome.
       key: "owner:hlw-patients-and-appointments", kind: "owner_review", age: 60 * 5,
       project: "engine/harlow", title: "Patients and Appointments give providers two ways into the same charge flow",
       why: "The owner says the work is ready for your review.",
-      recommendation: { by: "claude/opus", text: "Merge PR #214, then accept." },
+      recommendation: { by: "claude/opus", text: "Merge PR #48, then accept." },
       content: [
         { type: "markdown", title: "Checkpoint",
-          text: "## Ready for review\n\nPR #214 is green on head 4e1c9a7: CI and the code-quality scan pass, and both review passes are resolved. It's ready for your merge and your accept; I haven't merged it.\n\n**What changes**\n- **Nav:** four equal tabs (Home / Appointments / Patients / Charges) and no raised button. Old `/visits` and `/patients` links still open.\n- **Appointments:** your scheduled visits that don't have a charge yet, with no search fields.\n- **Patients:** the old Patients tab, restored from git history, with one search box for name or date of birth.\n- **Patient page:** “Charge for [visit date]” when an uncharged scheduled visit exists, and “New charge” for a one-off visit.\n\n**Known limitation:** until the client's patient cache ships, the live Patients list only shows patients the app has already seen this session. The demo build uses a synthetic sample instead. The contract their backend developer needs to meet is committed as `patient-list-contract.md`.\n\n**How it was verified**\n- **Android emulator, against the billing system's sandbox:** New charge saved, and Done returned to the patient page. Failure → Retry, an empty day and a search with no match all behave.\n- **iOS simulator:** the same walk on the Release build of 4e1c9a7.\n- **Not exercised natively:** “Charge for [date]”, because the sandbox's only visit already has a charge. It works in the web preview (screenshot 06) and the tests cover it.\n\n```\ntypecheck   ok\nlint        ok\ntests       412 passed\nci          green   4e1c9a7\n```\n\n**Shared files:** none; no sibling outcome has an open PR on this repo.\n\n**After your accept** I stop the preview services, remove the emulator builds and keep the screenshots." },
+          text: "## Ready for review\n\nPR #48 is green on head 4e1c9a7: CI and the code-quality scan pass, and both review passes are resolved. It's ready for your merge and your accept; I haven't merged it.\n\n**What changes**\n- **Nav:** four equal tabs (Home / Appointments / Patients / Charges) and no raised button. Old `/visits` and `/patients` links still open.\n- **Appointments:** your scheduled visits that don't have a charge yet, with no search fields.\n- **Patients:** the old Patients tab, restored from git history, with one search box for name or date of birth.\n- **Patient page:** “Charge for [visit date]” when an uncharged scheduled visit exists, and “New charge” for a one-off visit.\n\n**Known limitation:** until the client's patient cache ships, the live Patients list only shows patients the app has already seen this session. The demo build uses a synthetic sample instead. The contract their backend developer needs to meet is committed as `patient-list-contract.md`.\n\n**How it was verified**\n- **Android emulator, against the billing system's sandbox:** New charge saved, and Done returned to the patient page. Failure → Retry, an empty day and a search with no match all behave.\n- **iOS simulator:** the same walk on the Release build of 4e1c9a7.\n- **Not exercised natively:** “Charge for [date]”, because the sandbox's only visit already has a charge. It works in the web preview (screenshot 06) and the tests cover it.\n\n```\ntypecheck   ok\nlint        ok\ntests       412 passed\nci          green   4e1c9a7\n```\n\n**Shared files:** none; no sibling outcome has an open PR on this repo.\n\n**After your accept** I stop the preview services, remove the emulator builds and keep the screenshots." },
         { type: "facts", rows: [["checkpoint", "ready_for_review"], ["owner", "claude/opus"],
-                                ["turn ended", ago(60 * 5)], ["branch", "owner/hlw-patients-and-appointments"], ["pr", "#214 · green · not merged"]] },
+                                ["turn ended", ago(60 * 5)], ["branch", "owner/hlw-patients-and-appointments"], ["pr", "#48 · green · not merged"]] },
         { type: "image", title: "01-phone-home-four-tabs.png", ref: "evidence/01-phone-home-four-tabs.png" },
         { type: "image", title: "03-phone-patients-list.png", ref: "evidence/03-phone-patients-list.png" },
         { type: "image", title: "06-phone-patient-charge-for.png", ref: "evidence/06-phone-patient-charge-for.png" },
@@ -569,7 +566,7 @@ separate outcome.
           { action: "later", effect: "It leaves the deck until tomorrow morning." },
         ],
         changed: ["The iOS simulator pass is done; the last checkpoint had Android only.",
-                  "PR #214 is green on its final head.",
+                  "PR #48 is green on its final head.",
                   "The Patients list stays sample-backed until the client's patient cache ships; the contract is committed."],
         recommendation: { text: "Merge it and accept.",
           reason: "Every acceptance criterion has evidence attached, on both emulators and the web preview.",
@@ -586,7 +583,7 @@ separate outcome.
       why: "The Superintendent asked this question.",
       recommendation: { by: "superintendent", text: "Yes, for runner changes whose local run is green." },
       content: [{ type: "markdown", title: "The Superintendent's question",
-        text: "claude/opus has CI running on the Mac for IntrinsicOS and the review desk. Ten more private repositories have workflows: the three client projects, Liturgos and GlyphDeck Studio. Each needs a one-line `runs-on` change, and each PR runs on the Mac before it merges.\n\nShall I let claude/opus merge those itself when the local run is green, instead of putting ten cards on your deck? Workflows that deploy with cloud secrets stay on hosted runners either way, and any red run comes to you." }],
+        text: "claude/opus has CI running on the Mac for IntrinsicOS and the review desk. Five more private repositories have workflows: the three client projects, Liturgos and GlyphDeck Studio. Each needs a one-line `runs-on` change, and each PR runs on the Mac before it merges.\n\nShall I let claude/opus merge those itself when the local run is green, instead of putting five cards on your deck? Workflows that deploy with cloud secrets stay on hosted runners either way, and any red run comes to you." }],
       actions: ["approve", "reject", "feedback", "later"],
       ask: "Answer the Superintendent's question.",
       brief: brief("decision:dec-41", {
@@ -599,8 +596,8 @@ separate outcome.
         ],
         recommendation: { text: "Yes.",
           reason: "Each change is one line in a workflow file, proven by a green run before it merges, and reverted the same way.",
-          doubt: "Two client repos have rulesets that may refuse an agent's merge; those would still need you." },
-        body: "Local CI is live for IntrinsicOS. The rollout to ten more private repos is mechanical: one line per workflow, run on the Mac first. Deploy workflows that hold cloud secrets stay hosted.",
+          doubt: "A repo whose branch rules refuse an agent's merge would still need you." },
+        body: "Local CI is live for IntrinsicOS. The rollout to five more private repos is mechanical: one line per workflow, run on the Mac first. Deploy workflows that hold cloud secrets stay hosted.",
       }),
     }),
 
@@ -721,9 +718,9 @@ separate outcome.
   ];
 
   const HAPPENED = [
-    { kind: "owner_release", key: "release:lsp-application-handoff:run_82258037", project: "engine/larkspur",
+    { kind: "owner_release", key: "release:lsp-application-handoff:run_f3907b1e", project: "engine/larkspur",
       title: "Give every website application a visible, recoverable handoff to the breeder",
-      outcomeId: "lsp-application-handoff", runId: "run_82258037",
+      outcomeId: "lsp-application-handoff", runId: "run_f3907b1e",
       summary: "Released: merged and live. A failed application notice now shows “Didn't send” on the breeder's dashboard, with Send again.",
       destination: null, evidence: [], pullRequests: [], at: ago(60 * 20) },
     { kind: "owner_release", key: "release:vlt-visr-persistent-chat:run_3b19c3d4", project: "meta/vault",
