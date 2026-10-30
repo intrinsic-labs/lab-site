@@ -93,7 +93,7 @@
         + "against the sandbox; the iOS simulator walk is still to run.", { thread: HARLOW }),
       reply("m_seed_n2", t(60 * 6, 45), "Asked claude/opus to finish the iOS walk before review. Nothing waits on you yet.",
         ["m_seed_n1"], ["Read an outcome", "Asked an owner to continue"], { thread: HARLOW }),
-      wake("m_seed_n3", t(60 * 5), "owner", "Harlow patients and appointments", "Ready for review: PR #214 green; both "
+      wake("m_seed_n3", t(60 * 5), "owner", "Harlow patients and appointments", "Ready for review: PR #48 green; both "
         + "emulators pass; “Charge for [date]” shown on the web only.", { thread: HARLOW }),
       reply("m_seed_n4", t(60 * 5, 40), "Put it on your deck with evidence for every criterion. The Patients list is "
         + "sample-backed until the client's patient cache ships, which is their backend's work, not ours. You merge "
@@ -125,7 +125,7 @@
     [1210, "decided", "Moved lsp-19's due date, as you said", "Moved it a week, quoting “push the litter photos a week, the pups aren't ready for pictures yet”.", "receipt:sa-0031"],
     [400, "timer", "Set a timer for the Heelwork content snapshot", "Check the content snapshot came back."],
     [360, "continue", "Asked the Harlow owner to continue", "Finish the iOS walk, then checkpoint for review.", HARLOW],
-    [300, "outcome_status", "Put Harlow patients and appointments on your deck", "PR #214 green; both emulators pass.", HARLOW],
+    [300, "outcome_status", "Put Harlow patients and appointments on your deck", "PR #48 green; both emulators pass.", HARLOW],
     [200, "outcome_status", "Put the Larkspur pickup plan on your deck", "With the strategist's note that nobody asked for it yet.", "draft:lsp-pickup-plan"],
     [130, "question", "Asked you about the CI rollout", "Merge one-line runner changes in the private repos without a card each?", "decision:dec-41"],
     [110, "intake", "Filed intake for bets/glyphdeck", "Players want the case colour to carry over between cartridges."],

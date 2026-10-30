@@ -26,7 +26,7 @@
     harlow() {
       if (was(HARLOW, "accept")) return "Patients and Appointments is accepted; claude/opus is tearing down the preview and the emulator builds. The Patients list stays sample-backed until the client's patient cache ships.";
       if (was(HARLOW, "park")) return "Patients and Appointments is parked, so claude/opus has stopped. The PR stays green and unmerged.";
-      return "claude/opus finished Patients and Appointments: PR #214 is green and both emulators pass. It waits on your merge and your accept; the Patients list is sample-backed until the client's patient cache ships.";
+      return "claude/opus finished Patients and Appointments: PR #48 is green and both emulators pass. It waits on your merge and your accept; the Patients list is sample-backed until the client's patient cache ships.";
     },
     heelwork() {
       if (answered(NAMES)) return "codex/astra has your answer on the exercise names and is landing the server fallback. A server-hardening follow-up is in review.";
