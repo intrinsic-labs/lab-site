@@ -16,16 +16,16 @@
   "metrics": [
     {
       "key": "accepted",
-      "label": "Outcomes approved October 13–26 that the founder has accepted",
+      "label": "Outcomes approved October 13–27 that have been accepted",
       "shortLabel": "Approved work accepted",
       "countNoun": "approved outcomes",
-      "blurb": "Approved October 13–26 and accepted since.",
+      "blurb": "Approved October 13–27 and accepted by 2026-10-30 04:00 UTC, 1 of them by the manager agent, which may accept only work that can't reach real users. The rest are in progress or stopped.",
       "value": 90.3,
       "numerator": 93,
       "denominator": 103,
       "unit": "%",
       "direction": "up",
-      "method": "First outcome_approved per outcome from 2026-10-13 to 72 h before 2026-10-30T01:00Z; accepted = a review accept event for the same outcome before 2026-10-30T01:00Z.",
+      "method": "First outcome_approved per outcome from 2026-10-13T00:00:00.000Z to 2026-10-27T04:00:00.000Z (72 h before the 2026-10-30T04:00:00.000Z cutoff); accepted = a review accept for the same outcome before the cutoff (1 by the manager agent).",
       "source": "IntrinsicOS journal (events)"
     },
     {
@@ -33,13 +33,13 @@
       "label": "Accepted outcomes needing a release that reached their destination within 72 hours",
       "shortLabel": "Accepted work released",
       "countNoun": "releases",
-      "blurb": "Merged, deployed or sent within 72 hours of acceptance. Accepted October 13–26.",
+      "blurb": "Merged, deployed or sent within 72 hours of acceptance, by the owner's own record. Accepted October 13–27; 42 other accepts were already live and are not counted.",
       "value": 89.4,
       "numerator": 42,
       "denominator": 47,
       "unit": "%",
       "direction": "up",
-      "method": "First review accept per outcome from 2026-10-13 to 72 h before 2026-10-30T01:00Z, limited to outcomes whose accept scheduled a release; released = owner_release_done at or after the accept and within 72 h. 42 further accepts needed no release step.",
+      "method": "First review accept per outcome from 2026-10-13T04:00:00.000Z to 2026-10-27T04:00:00.000Z, limited to accepts that scheduled a release; released = owner_release_done at or after the accept and within 72 h. 42 further accepts needed no release step. \"Released\" is the owner's record, not an independent delivery check.",
       "source": "IntrinsicOS journal (events)"
     },
     {
@@ -47,14 +47,15 @@
       "label": "Agent working minutes on client and product projects, October 16–30",
       "shortLabel": "Agent time on clients and products",
       "countNoun": "agent minutes",
-      "blurb": "Share of agent working time on client work and products. Last 14 days.",
-      "value": 31.8,
-      "numerator": 2573,
-      "denominator": 8095,
+      "blurb": "Share of owner-agent working minutes spent on client work and products, October 16–30. The rest went to the runtime and this site. Other agent roles aren't counted.",
+      "value": 33.6,
+      "numerator": 2825,
+      "denominator": 8404,
       "unit": "%",
       "direction": "up",
-      "method": "Owner-session minutes clipped to 2026-10-16T01:00Z – 2026-10-30T01:00Z; outward = client (engine) and product (bets) projects; internal = the runtime and the Lab site.",
+      "method": "Owner-session minutes clipped to 2026-10-16T04:00:00.000Z – 2026-10-30T04:00:00.000Z; outward = client (engine) and product (bets) projects; internal = the runtime and the Lab site.",
       "source": "IntrinsicOS journal (runs)"
     }
-  ]
+  ],
+  "asOf": "2026-10-30T04:00:00.000Z"
 }

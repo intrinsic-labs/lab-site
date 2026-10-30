@@ -36,10 +36,10 @@
       + "meets the criteria.",
     deck: "The deck is everything waiting on your judgment, one card each: drafts to approve, work to accept, "
       + "questions to answer and tasks that are yours. Each card says what it is, what I'd do, and what each answer does.",
-    intake: "Intake is where raw ideas land, one pile per project. The strategist reads it and drafts outcomes from "
-      + "it; nothing in intake starts work on its own.",
-    strategist: "The strategist is the agent that turns intake into draft outcomes. Its drafts land on your deck to "
-      + "approve, refuse or correct.",
+    intake: "Intake is where raw ideas land, one pile per project. A few minutes after a note is filed, the drafter turns it "
+      + "into a draft outcome, a chore for you, or nothing; nothing in intake starts work on its own.",
+    strategist: "The strategist reads each project once a week and proposes up to three outcomes. Like the drafter's "
+      + "drafts from intake, its proposals land on your deck to approve, refuse or correct.",
     park: "Park sets an outcome aside with a reason and a time to look again, and its owner stops. Later only takes "
       + "the card off your deck until tomorrow morning; nothing else changes.",
     demo: "This is a demo. The company, its projects and its agents are invented, I'm a script rather than a model, "

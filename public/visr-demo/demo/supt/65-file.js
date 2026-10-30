@@ -91,7 +91,7 @@
       const why = p.inferred ? ` It reads like a ${proj.name} idea, so that's where it went.` : "";
       const local = S.intake === 1 ? " On this page it lives only in your browser." : "";
       return { text: `Filed for **${proj.name}**: “${p.note}”\n\nIt's in ${proj.name}'s intake${where}, where the `
-        + `strategist reads it on its next pass and may draft an outcome from it.${why}${local}`,
+        + `drafter reads it in a few minutes and turns it into a draft outcome, a chore or nothing.${why}${local}`,
         used: [`Filed intake for ${proj.ref}`] };
     },
 

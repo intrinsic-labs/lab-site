@@ -207,7 +207,7 @@
       const one = lines.filter(l => ws.some(w => w === l.agent.split("/").pop()));
       const shown = one.length ? one : lines;
       return { text: (one.length ? "" : "Right now:\n\n") + shown.map(l => `- **${l.agent}** · ${l.what}`).join("\n")
-        + (one.length ? "" : "\n\nThe strategist drafts from intake, and I keep the board moving. Nobody is stuck on anyone but you."),
+        + (one.length ? "" : "\n\nThe drafter works from intake, and I keep the board moving. Nobody is stuck on anyone but you."),
         used: ["Read the board"] };
     },
   };

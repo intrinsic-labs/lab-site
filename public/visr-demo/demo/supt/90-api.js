@@ -49,7 +49,7 @@
     if (e.type === "intake") {
       const p = L.desk.project(e.project) || { ref: String(e.project || "a project") };
       if (L.desk.self(p.ref, "intake")) return;
-      L.log.add({ at, tool: "intake_seen", label: `You filed intake for ${p.ref}`, summary: "Filed from the deck; the strategist reads it on its next pass." });
+      L.log.add({ at, tool: "intake_seen", label: `You filed intake for ${p.ref}`, summary: "Filed from the deck; the drafter reads it in a few minutes." });
     }
   }
 
