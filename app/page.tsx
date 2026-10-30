@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { listablePosts } from "@/lib/content/posts";
+import { populatedAreas } from "@/lib/content/areas";
 import { allProducts } from "@/lib/content/products";
 import { AutonomyOrbs } from "@/components/home/AutonomyOrbs";
 import { Masthead } from "@/components/home/Masthead";
@@ -11,6 +12,9 @@ import { pageContent } from "@/lib/content/pages";
 
 export default async function Home() {
   const [posts, products, subtitle, tagline] = await Promise.all([listablePosts(), allProducts(), pageContent("home-subtitle"), pageContent("home-tagline")]);
+  // Research sections render only when something is listed: no empty "Latest" heading, and
+  // an area with no listed post isn't offered as a way in.
+  const areas = populatedAreas(posts);
 
   return (
     <>
@@ -32,14 +36,16 @@ export default async function Home() {
         <AutonomyOrbs />
       </section>
 
-      <div className="mx-auto max-w-6xl px-6 min-w-0">
-        <section className="pt-16">
-          <div className="flex items-baseline justify-between mb-6">
-            <h2 className="font-serif text-2xl font-medium tracking-tight">Latest</h2>
-            <Link href="/research" className="label hover:text-ink">All research →</Link>
-          </div>
-          <LatestGrid posts={posts.slice(0, 3)} />
-        </section>
+      <div className="mx-auto max-w-6xl px-6 pb-20 min-w-0">
+        {posts.length > 0 && (
+          <section className="pt-16">
+            <div className="flex items-baseline justify-between mb-6">
+              <h2 className="font-serif text-2xl font-medium tracking-tight">Latest</h2>
+              <Link href="/research" className="label hover:text-ink">All research →</Link>
+            </div>
+            <LatestGrid posts={posts.slice(0, 3)} />
+          </section>
+        )}
 
         <section className="pt-16">
           <div className="flex items-baseline justify-between mb-6">
@@ -49,10 +55,12 @@ export default async function Home() {
           <ProductsGrid items={products} />
         </section>
 
-        <section className="pt-16 pb-20">
-          <h2 className="font-serif text-2xl font-medium tracking-tight mb-6">Research areas</h2>
-          <AreaCards />
-        </section>
+        {areas.length > 0 && (
+          <section className="pt-16">
+            <h2 className="font-serif text-2xl font-medium tracking-tight mb-6">Research areas</h2>
+            <AreaCards areas={areas} />
+          </section>
+        )}
       </div>
     </>
   );

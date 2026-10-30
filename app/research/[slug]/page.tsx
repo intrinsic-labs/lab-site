@@ -5,8 +5,13 @@ import { Mdx } from "@/lib/mdx/render";
 import { PostHeader } from "@/components/research/PostHeader";
 import { PostMeta } from "@/components/research/PostMeta";
 import { SystemPrimer } from "@/components/research/SystemPrimer";
+import { RetiredNotice } from "@/components/research/RetiredNotice";
 import { site } from "@/lib/site";
 
+/**
+ * Generated: published and retired posts everywhere, drafts only outside production (the
+ * draft rail — `renderableSlugs()`, `lib/content/post-status.ts`). Anything else 404s.
+ */
 export const dynamicParams = false;
 
 export async function generateStaticParams() {
@@ -16,6 +21,10 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const post = await postBySlug((await params).slug);
   if (!post) return {};
+  // A retired post's URL resolves to a notice, not content: keep it out of search indexes.
+  if (post.retired) {
+    return { title: post.title, description: post.retired.reason.replace(/\[([^\]]+)\]\([^)]*\)/g, "$1"), robots: { index: false, follow: true } };
+  }
   return {
     title: post.title,
     description: post.summary,
@@ -34,6 +43,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 export default async function PostPage({ params }: { params: Promise<{ slug: string }> }) {
   const post = await postBySlug((await params).slug);
   if (!post) notFound();
+  if (post.retired) return <RetiredNotice post={{ ...post, retired: post.retired }} />;
   return (
     <article className="mx-auto max-w-6xl px-6">
       <PostHeader post={post} />

@@ -6,6 +6,7 @@ import { ProductHero } from "@/components/products/ProductHero";
 import { Gallery } from "@/components/products/Gallery";
 import { ProductDemo } from "@/components/products/demos";
 import { SystemCards } from "@/components/products/SystemCards";
+import { VisrDemo } from "@/components/products/demos/VisrDemo";
 
 export const dynamicParams = false;
 export async function generateStaticParams() { return (await allProducts()).map((p) => ({ slug: p.slug })); }
@@ -32,24 +33,19 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   const p = await productBySlug((await params).slug);
   if (!p) notFound();
   const images = await productImages(p.slug);
-  // The palette is data (front matter), not a slug check. `.dossier-dark` is inert now that
-  // the site's one colour mode is dark — kept so no content file breaks. See globals.css.
-  const dark = p.theme === "dark";
   const statusLine = p.statusNote ?? (p.status === "described" ? null : STATUS_LABEL[p.status]);
   return (
-    <div data-theme={dark ? "dark" : undefined} className={dark ? "dossier-dark" : undefined}>
-      <article>
-        <ProductHero product={p} images={images} demo={!!p.demo} />
+    <article>
+      <ProductHero product={p} images={images} demo={!!p.demo} />
 
-        {p.demo ? <ProductDemo id={p.demo} /> : <Gallery images={images.gallery} />}
+      {p.demo ? <ProductDemo id={p.demo} /> : <Gallery images={images.gallery} />}
 
-        <div className="mx-auto max-w-6xl px-6">
-          <div className="mx-auto max-w-[68ch] border-t border-rule py-14">
-            {statusLine && <p className="label mb-8">{statusLine}</p>}
-            <div className="prose prose-post"><Mdx source={p.body} components={{ SystemCards }} /></div>
-          </div>
+      <div className="mx-auto max-w-6xl px-6">
+        <div className="mx-auto max-w-[68ch] border-t border-rule py-14">
+          {statusLine && <p className="label mb-8">{statusLine}</p>}
+          <div className="prose prose-post"><Mdx source={p.body} components={{ SystemCards, VisrDemo }} /></div>
         </div>
-      </article>
-    </div>
+      </div>
+    </article>
   );
 }

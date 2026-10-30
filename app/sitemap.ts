@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { publishedPosts } from "@/lib/content/posts";
 import { allProducts } from "@/lib/content/products";
 import { allCaseStudies } from "@/lib/content/work";
-import { AREAS } from "@/lib/content/areas";
+import { populatedAreas } from "@/lib/content/areas";
 import { site } from "@/lib/site";
 
 export const dynamic = "force-static";
@@ -19,7 +19,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: u("/work") },
     { url: u("/about") },
     { url: u("/about/editorial") },
-    ...AREAS.map((a) => ({ url: u(`/research/areas/${a}`) })),
+    // Only areas with a published post; empty ones keep their URL but aren't advertised.
+    ...populatedAreas(posts).map((a) => ({ url: u(`/research/areas/${a}`) })),
     ...posts.map((p) => ({ url: u(`/research/${p.slug}`), lastModified: p.date })),
     ...products.map((p) => ({ url: u(`/products/${p.slug}`) })),
     { url: u("/products/aspen-grove/open-loom") },

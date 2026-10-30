@@ -1,6 +1,6 @@
 # Product images
 
-One folder per product slug (`tycho/`, `vault/`, `glyphdeck/`, `liturgos/`, `aspen-grove/`, …).
+One folder per product slug (`intrinsic-os/`, `glyphdeck/`, `liturgos/`, `aspen-grove/`, …).
 `lib/content/products.ts` → `productImages(slug)` reads the folder at build time; there is no
 front-matter field for images, the folder IS the declaration.
 
@@ -19,7 +19,7 @@ front-matter field for images, the folder IS the declaration.
   `hero.*` exactly as before. **No code change and no front-matter field either way** — the
   folder is the declaration. Make it 4:3 and subject-centred.
 - **every other image** — the gallery (a product whose front matter declares `demo:` shows an
-  interactive demo in the gallery's place instead and no hero image — Tycho; see
+  interactive demo in the gallery's place instead and no hero image — VISR; see
   `components/products/demos/`), shown in filename order as a carousel
   (`components/products/Gallery.tsx`). Name them so they sort:  `1a-home.png`, `1b-drawer.png`,
   `01-…`, `02-…`. Slides are a **fixed height** with automatic width, so portrait phone
@@ -33,7 +33,7 @@ Alt text: gallery images render with an empty `alt` (they are decorative in cont
 prose says what they show); the hero and the card use the product's name.
 
 **Dark screenshots are the one thing to watch.** The site's ground is pure black, so a
-screenshot that is itself near-black (Tycho's) reads as a hole in the page rather than as an
+screenshot that is itself near-black reads as a hole in the page rather than as an
 image. Nothing in code can detect that — pick or crop a frame with something in it.
 
 ## What is where
@@ -46,8 +46,6 @@ Everything here is a **copy**, not a link — the site builds standalone. Proven
   `~/dev/mobile/glyph/website/public/{console,studio,og}`.
 - `liturgos/` — `hero.png` is the dashboard (`shot-1`); `01`–`03` are `shot-2`–`shot-4`.
   Copied from `~/dev/web/liturgos/apps/marketing/public/`.
-- `tycho/` — the capture harness output: `hero.png` plus `01-cabinet` … `05-mobile`. The
-  last is phone-aspect, which the carousel handles beside the landscape ones.
 - `aspen-grove/` — `hero.jpg` is the marbled plate (shared with the Open Loom banner at
   `/products/aspen-grove/open-loom`), copied from latent-spaces-web's `openloom.jpg`. The
   fourteen `1a`–`1n` Claude Design screenshots are the gallery; `1a-home.png` was also the

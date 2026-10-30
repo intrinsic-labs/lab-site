@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { AREAS, AREA_INFO } from "@/lib/content/areas";
+import { AREA_INFO, type Area } from "@/lib/content/areas";
 import { SectionHead } from "@/components/ui/SectionHead";
 
 /**
@@ -12,13 +12,17 @@ import { SectionHead } from "@/components/ui/SectionHead";
  * the boxes back the same day). The beam label (Craft / Sovereignty) is gone from here
  * because it means nothing out of the Guide's context; it stays on AreaInfo for the
  * area pages and the vault.
+ *
+ * `areas` is the populated ones (`listedAreas()`): an area with nothing listed in it is not
+ * offered as a way in. Renders nothing when no area has a post.
  */
-export function AreaBlocks() {
+export function AreaBlocks({ areas }: { areas: readonly Area[] }) {
+  if (areas.length === 0) return null;
   return (
     <section className="pb-20">
       <SectionHead n="01" title="Research areas" rule={false} />
       <ul className="card-grid sm:grid-cols-3">
-        {AREAS.map((a) => {
+        {areas.map((a) => {
           const info = AREA_INFO[a];
           return (
             <li key={a} className="bg-paper">

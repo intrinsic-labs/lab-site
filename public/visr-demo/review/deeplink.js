@@ -1,37 +1,48 @@
-/* REVIEW · deep links — a phone alert opens the thing it is about.
-
-   ntfy and other links point into the app by fragment, so the static shell
-   (and the service worker's cached copy of it) serves every link:
-     #item=<encodeURIComponent(queue key)>   that item's desk
-     #board                                  the telemetry board
-     #monday                                 the latest Monday meeting
-     #monday=YYYY-MM-DD                      that Monday meeting
-   The fragment is read once and cleared with replaceState, so a reload lands
-   where he was rather than reopening the link. Any other fragment is left
-   alone. The controller (app.js) decides what opening means.
-
-     DeepLink.parse(hash) → { item } | { board: true } | { monday: date | "" } | null
-     DeepLink.take()      → the same for this page's hash, which is cleared */
 "use strict";
-
 const DeepLink = {
-  parse(hash) {
-    const h = String(hash || "").replace(/^#/, "");
-    if (h === "board") return { board: true };
-    if (h === "monday") return { monday: "" };
-    const day = /^monday=(\d{4}-\d{2}-\d{2})$/.exec(h);
-    if (day) return { monday: day[1] };
-    const m = /^item=(.+)$/.exec(h);
-    if (!m) return null;
-    try {
-      const key = decodeURIComponent(m[1]).trim();
-      return key ? { item: key } : null;
-    } catch { return null; }
-  },
-
-  take() {
-    const link = this.parse(location.hash);
-    if (link) history.replaceState(history.state, "", location.pathname + location.search);
-    return link;
-  },
+    parse(hash) {
+        const h = String(hash || "").replace(/^#/, "");
+        if (h === "board")
+            return { board: true };
+        if (h === "monday")
+            return { monday: "" };
+        if (h === "chat" || h === "chat=")
+            return { chat: "" };
+        const chat = /^chat=(.+)$/.exec(h);
+        if (chat) {
+            try {
+                const id = decodeURIComponent(chat[1]).trim();
+                const control = [...id].some(c => c.charCodeAt(0) < 32 || c.charCodeAt(0) === 127);
+                return id && id.length <= 200 && !control ? { chat: id } : null;
+            }
+            catch {
+                return null;
+            }
+        }
+        const day = /^monday=(\d{4}-\d{2}-\d{2})$/.exec(h);
+        if (day)
+            return { monday: day[1] };
+        const file = /^sfile=(f_[A-Za-z0-9._:-]{1,126})$/.exec(h);
+        if (file)
+            return { sfile: file[1] };
+        const m = /^item=(.+?)(?:&shot=(\d{1,4}))?$/.exec(h);
+        if (!m)
+            return null;
+        try {
+            const key = decodeURIComponent(m[1]).trim();
+            if (!key)
+                return null;
+            const shot = m[2] ? parseInt(m[2], 10) : 0;
+            return shot > 0 ? { item: key, shot } : { item: key };
+        }
+        catch {
+            return null;
+        }
+    },
+    take() {
+        const link = this.parse(location.hash);
+        if (link)
+            history.replaceState(history.state, "", location.pathname + location.search);
+        return link;
+    },
 };

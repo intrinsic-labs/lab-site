@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { listablePosts } from "@/lib/content/posts";
+import { populatedAreas } from "@/lib/content/areas";
 import { ResearchHero } from "@/components/research/ResearchHero";
 import { AreaBlocks } from "@/components/research/AreaBlocks";
 import { FeaturedRow } from "@/components/research/FeaturedRow";
@@ -22,9 +23,12 @@ export const metadata: Metadata = { title: "Research", description: "Papers, not
  * The page is the light surface: app/research/layout.tsx wraps it in
  * `data-theme="light"`, and every component below reads the semantic tokens, so none of
  * them needed a change for the cream ground.
+ *
+ * With nothing listed (every post retired, no draft on a preview) the area row, featured
+ * row and grid all fall away and `content/pages/research-empty.md` stands in for them.
  */
 export default async function ResearchPage() {
-  const [posts, intro] = await Promise.all([listablePosts(), pageContent("research-intro")]);
+  const [posts, intro, empty] = await Promise.all([listablePosts(), pageContent("research-intro"), pageContent("research-empty")]);
   const items: IndexItem[] = posts.map((p) => ({
     slug: p.slug, title: p.title, kind: p.kind, area: p.area, date: p.date, draft: p.status === "draft", cover: p.cover, coverAlt: p.coverAlt,
   }));
@@ -35,8 +39,14 @@ export default async function ResearchPage() {
   return (
     <div className="mx-auto max-w-6xl px-6 pb-8">
       <ResearchHero intro={<Mdx source={intro.content} />} />
-      <AreaBlocks />
-      {featured && <FeaturedRow featured={featured} next={next} />}
+      <AreaBlocks areas={populatedAreas(posts)} />
+      {featured ? (
+        <FeaturedRow featured={featured} next={next} />
+      ) : (
+        <section className="border-t border-rule py-14">
+          <div className="prose max-w-2xl text-lg text-ink-2"><Mdx source={empty.content} /></div>
+        </section>
+      )}
       {items.length > 0 && (
         <section>
           <SectionHead n="03" title="All research" />

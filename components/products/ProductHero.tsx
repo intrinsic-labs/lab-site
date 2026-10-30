@@ -47,7 +47,7 @@ export function ProductHero({
 
         {/* The hero image is a STAND-IN for a gallery, not a companion to one (Asher,
             2026-09-04: "drop the header image and just feature the screenshots"). A product
-            with slides shows none here, and so does one with an interactive demo (Tycho);
+            with slides shows none here, and so does one with an interactive demo (VISR);
             IntrinsicOS, which has neither, keeps its plate. */}
         {!demo && images.gallery.length === 0 && (
           // Inset at every size, rounded at every size — the height cap meant it never

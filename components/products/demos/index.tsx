@@ -1,5 +1,4 @@
 import type { ProductDemo as ProductDemoId } from "@/lib/content/schema";
-import { TychoDemo } from "./TychoDemo";
 import { VisrDemo } from "./VisrDemo";
 
 /**
@@ -8,7 +7,6 @@ import { VisrDemo } from "./VisrDemo";
  * the schema enum — the type makes a missing entry a compile error rather than an empty box.
  */
 const DEMOS: Record<ProductDemoId, () => React.JSX.Element> = {
-  tycho: TychoDemo,
   visr: VisrDemo,
 };
 

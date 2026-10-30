@@ -16,12 +16,17 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
-        // The Ghost is no longer an instrument of its own — it is what Tycho produces,
-        // and lives as a section of Tycho's dossier. Permanent: the old URL was published.
-        // Listed before the general /instruments/:slug rule below, since redirects are
-        // matched in array order and this one needs to win over it for "ghost".
-        source: "/instruments/ghost",
-        destination: "/products/tycho#the-ghost",
+        // Tycho (and The Ghost, a section of its page) was removed from the site on
+        // 2026-10-30. Its published URLs land on the products index rather than a 404.
+        // Both precede the general /instruments/:slug rule below, since redirects are
+        // matched in array order.
+        source: "/products/tycho",
+        destination: "/products",
+        permanent: true,
+      },
+      {
+        source: "/instruments/:slug(tycho|ghost)",
+        destination: "/products",
         permanent: true,
       },
       {

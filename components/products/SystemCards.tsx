@@ -10,19 +10,19 @@ const CARDS = [
     href: "#runtime",
     name: "IntrinsicOS",
     role: "The runtime",
-    text: "Starts and stops the agents, decides what each is allowed to do, and records every action they take.",
+    text: "Starts and stops the agents, checks each session against what was approved, and records every session.",
   },
   {
     href: "/products/visr",
     name: "VISR",
     role: "The review desk",
-    text: "The one place the founder approves, edits, sends back and accepts the work. Runs on his phone.",
+    text: "The one place the founder approves, edits, sends back and accepts the work. Used from his phone.",
   },
   {
     href: "#agents",
     name: "The agents",
     role: "Claude · ChatGPT · Grok Bot",
-    text: "Claude and ChatGPT do the engineering and review each other. Grok Bot runs administration and finance.",
+    text: "Claude and ChatGPT do the engineering and review each other. Grok Bot handles administration, finance and IT.",
   },
 ] as const;
 

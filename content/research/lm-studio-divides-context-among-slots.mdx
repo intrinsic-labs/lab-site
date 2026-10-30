@@ -5,7 +5,10 @@ area: local-compute
 date: 2026-09-03
 cover: /covers/lm-studio-divides-context-among-slots.jpg
 coverAlt: "Two identical rows of small houses divided by one straight road"
-status: published
+status: retired
+retired:
+  date: "2026-10-30"
+  reason: "This field note showed that LM Studio divides its context window among parallel request slots, which LM Studio already documents."
 summary: "-c 16384 --parallel 4 gives each concurrent request 4k of context, not 16k. A four-item probe failed all four with context exceeded before any inference."
 caveats:
   - Observed on LM Studio llama.cpp runtime on one machine. May change with runtime updates.

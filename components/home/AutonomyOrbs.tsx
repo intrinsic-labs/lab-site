@@ -76,7 +76,7 @@ export async function AutonomyOrbs() {
       <div className="mx-auto max-w-6xl px-6">
         <div className="mt-8 grid gap-y-3 border-t border-rule pt-6 text-center md:mt-6 md:grid-cols-3 md:items-baseline md:pt-4 md:text-left">
           <p className="label text-ink-2">
-            Measured {data.generated}.
+            Measured {data.asOf ? `${data.asOf.slice(0, 16).replace("T", " ")} UTC` : data.generated}.
           </p>
           {/* First on a phone, centre cell at md+ (Asher, 2026-09-04). */}
           <h2 className="label order-first text-ink md:order-none md:text-center">Operating measures</h2>
