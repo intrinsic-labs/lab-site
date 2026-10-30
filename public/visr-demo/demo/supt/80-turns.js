@@ -73,6 +73,11 @@
       const began = Math.max(now, lastDue);
       lastDue = began + ms;
       S.pending.push({ to: msg.id, thread, began: now, due: lastDue, steps });
+      /* The client reads a busy conversation every 2 s; nudge its live conversations
+         the moment this reply is due, so it lands when it is "typed", not on the next tick. */
+      if (typeof Conversation !== "undefined" && Conversation.live && typeof setTimeout === "function") {
+        setTimeout(() => { for (const c of Conversation.live) c.now?.().catch?.(() => {}); }, lastDue - now + 40);
+      }
       const out = { ok: true, message: clone(msg), busy: true };
       S.clients.set(cid, out);
       return out;
