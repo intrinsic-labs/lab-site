@@ -14,7 +14,7 @@
      L.acts.perform(item, action, { owner?, text?, via: request|chip, messageId?, asked?: {messageId, quote}, offerRef? })
        → { ok, line, entry } | { ok: false, reason }   (async)
      L.acts.undo(entry) → { ok, summary } | { ok: false, reason }   (async)
-     L.acts.owner(text, item) → "agent/cedar" when one is named and the card lets you pick */
+     L.acts.owner(text, item) → "codex/sol" when one is named and the card lets you pick */
 "use strict";
 
 (function (L) {

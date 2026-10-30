@@ -21,9 +21,12 @@
 
 (function (L) {
   const FALLBACK_PROJECTS = [
-    { category: "engine", ref: "engine/northwind", name: "Northwind" },
-    { category: "bets", ref: "bets/orchard", name: "Orchard" },
-    { category: "bets", ref: "bets/lanternfish", name: "Lanternfish" },
+    { category: "engine", ref: "engine/harlow", name: "Harlow" },
+    { category: "engine", ref: "engine/heelwork", name: "Heelwork" },
+    { category: "engine", ref: "engine/larkspur", name: "Larkspur" },
+    { category: "bets", ref: "bets/glyphdeck", name: "GlyphDeck" },
+    { category: "bets", ref: "bets/liturgos", name: "Liturgos" },
+    { category: "meta", ref: "meta/vault", name: "IntrinsicOS" },
   ];
   const SELF_MS = 4000;
 
