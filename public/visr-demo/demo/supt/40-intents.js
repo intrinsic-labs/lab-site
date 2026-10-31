@@ -3,7 +3,7 @@
    Each intent is a bag of weighted words (one typo allowed), phrases and
    patterns (10-text.js `score`); the highest score over THRESHOLD wins, ties
    going to the earlier intent in PRIORITY. An act on a card ("accept it",
-   "park the checklist", "aprove the planner") is found by its verb; a verb
+   "park the slides", "aprove the pickup plan") is found by its verb; a verb
    that also turns up in ordinary speech ("later", "done") only counts as an
    act when a card is in play. A lead-in like "file an idea:" beats any verb
    inside the idea itself, and a bare project name asks for its status.
@@ -45,8 +45,10 @@
     status: { words: { status: 3, progress: 2, update: 2 },
       phrases: { "status of": 3.5, "status on": 3.5, "how is": 1.5, "how are things": 3, "going with": 2,
         "where are we": 3, "update on": 3, "progress on": 3, "what is happening with": 3.5, "what is going on with": 3.5,
-        "catch me up": 3.5, "how is it going": 2.5 } },
-    who: { words: { agents: 2, agent: 1.5, ash: 1.5, birch: 1.5, cedar: 1.5, team: 1.5, everyone: 1.5, busy: 1 },
+        "catch me up": 3.5, "how is it going": 2.5, "how is everything": 3.5, "how are we doing": 3.5,
+        "how are things going": 3.5 } },
+    who: { words: { agents: 2, agent: 1.5, opus: 1.5, sol: 1.5, sonnet: 1.5, astra: 1.5, claude: 1.5, codex: 1.5,
+      team: 1.5, everyone: 1.5, busy: 1 },
       phrases: { "who is working": 4, "who is on": 3, "who is doing": 3.5, "what are the agents": 4, "agents doing": 3.5,
         "who owns": 3.5, "working on what": 4, "what is everyone": 3.5, "who is building": 3.5 } },
     log: { words: { log: 2.5 },
@@ -74,7 +76,7 @@
     ["done", ["done", "finished"], ["mark done", "mark it done", "mark as done", "i sent it", "sent it"]],
     ["reject", ["reject", "refuse", "decline"], ["turn down", "turn it down", "say no to", "answer no"]],
     ["not_needed", ["dismiss"], ["not needed", "no longer needed", "do not need", "drop it", "close it", "drop the"]],
-    ["feedback", ["feedback"], ["tell the owner", "tell birch", "tell ash", "tell cedar", "tell the drafter",
+    ["feedback", ["feedback"], ["tell the owner", "tell opus", "tell sol", "tell sonnet", "tell astra", "tell the drafter",
       "let the owner know", "send a note", "tell them"]],
     ["acknowledge", ["acknowledge"], []],
   ];

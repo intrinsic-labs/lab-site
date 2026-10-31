@@ -4,7 +4,7 @@ import { VISR_DEMO_SRC, VISR_DEMO_TITLE } from "@/components/products/demos/Visr
 
 export const metadata: Metadata = {
   title: "VISR demo",
-  description: "VISR, the IntrinsicOS review desk, full screen with invented data.",
+  description: "VISR, the IntrinsicOS review desk, full screen with sample data.",
   robots: { index: false, follow: false },
 };
 
@@ -19,7 +19,7 @@ export default function VisrDemoPage() {
   return (
     <div className="fixed inset-0 z-[60] flex flex-col bg-paper">
       <div className="flex shrink-0 items-center justify-between gap-4 border-b border-rule px-3 py-2 sm:px-4">
-        <p className="label min-w-0">VISR demo · invented data · the Superintendent chat is a script, not a model</p>
+        <p className="label min-w-0">VISR demo · sample data · the Superintendent chat is a script, not a model</p>
         <Link href="/products/intrinsic-os" className="label shrink-0 text-accent underline-offset-4 hover:underline">
           ← IntrinsicOS
         </Link>

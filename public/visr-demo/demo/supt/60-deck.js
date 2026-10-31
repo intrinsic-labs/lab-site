@@ -33,7 +33,7 @@
   const live = key => L.desk.find(key);
   const projectName = i => L.projects.of(i)?.name || "";
   const extractNote = raw => (/:\s*(.{3,})$/.exec(raw)
-    || /\btell (?:the )?(?:owner|drafter|birch|ash|cedar|them|agent\/\w+)\s+(?:that\s+|to\s+)?(.{3,})$/i.exec(raw))?.[1]?.trim() || "";
+    || /\btell (?:the )?(?:owner|drafter|opus|sol|sonnet|astra|them|(?:claude|codex)\/\w+)\s+(?:that\s+|to\s+)?(.{3,})$/i.exec(raw))?.[1]?.trim() || "";
 
   function ask(action, list, ctx, lead) {
     ctx.pending = { type: "card", action, candidates: list.map(i => i.key) };
@@ -170,7 +170,7 @@
     },
 
     async undo(c, ctx, msg) {
-      /* "undo the northwind one" names a card; "undo that" means the last thing done here,
+      /* "undo the studio safety fixes" names a card; "undo that" means the last thing done here,
          and if that can't be taken back, say so rather than quietly undoing something older */
       const said = T.words(String(msg?.text || "").toLowerCase()).filter(w => w.length > 4);
       const undoable = [...L.log.entries].reverse().filter(x => x.undo && x.reopenKey);

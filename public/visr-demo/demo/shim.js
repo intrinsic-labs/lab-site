@@ -15,8 +15,8 @@
       server's REVIEW_AUTH=synthetic `/review-auth.js` would seed it, so no
       token prompt ever appears; the docked chat open on a wide screen
       (`tycho.chat.dock`, superintendent/dock.js); sound off.
-   2. MARK. A small fixed note, "Demo · invented data · scripted
-      Superintendent", in place of the review preview's marker.
+   2. NO MARK. The page that frames the demo says it is a demo; the shell
+      draws no banner of its own.
    3. NETWORK. `fetch`, XHR (uploads) and `sendBeacon` (the event log) are
       wrapped. `/health` and every `/api/*` path on this origin are answered
       here, from memory, in the desk's contract: `{ok: true, …}` (HTTP 200) or
@@ -42,7 +42,7 @@
                           act → {ok} or {ok: false, reason}
         desk.intake()     every filed note, newest first:
                           [{id, project, note, source, at}]
-        desk.projects     the fictional projects [{slug, category, ref, name, relDir}]
+        desk.projects     the sample projects [{slug, category, ref, name, relDir}]
         desk.on(fn)       fn(event) after every act and every filed note, from
                           any source: {type: "act", key, action, source,
                           result, item, at} or {type: "intake", id, project,
@@ -76,18 +76,6 @@
   const memory = new MemoryStorage();
   Object.defineProperty(window, "localStorage", { configurable: true, enumerable: true, get: () => memory });
   if (window.localStorage !== memory) throw new Error("demo/shim.js: could not replace localStorage");
-
-  /* -- 2. the mark ------------------------------------------------------------------ */
-  addEventListener("DOMContentLoaded", () => {
-    const m = document.createElement("div");
-    m.className = "t-demo-mark";
-    m.setAttribute("role", "note");
-    m.textContent = "Demo · invented data · scripted Superintendent";
-    m.style.cssText = "position:fixed;left:50%;top:env(safe-area-inset-top,0px);transform:translateX(-50%);"
-      + "z-index:2147483647;pointer-events:none;padding:1px 6px;font:10px/1.4 var(--mono);letter-spacing:1px;"
-      + "white-space:nowrap;color:var(--bg);background:var(--amber);opacity:.85";
-    document.body.append(m);
-  });
 
   /* -- 4. the desk -------------------------------------------------------------------- */
   const C = window.VISR_DEMO_CORPUS;
@@ -265,8 +253,7 @@
       settle(it);
       if (action === "approve" && it.ownerChoices) {
         const chosen = req.owner || it.defaultOwner;
-        const who = chosen.split("/")[1];
-        message = `Approved ${it.key.split(":").pop()}; ${who[0].toUpperCase() + who.slice(1)} starts on the supervisor's next tick.`;
+        message = `Approved ${it.key.split(":").pop()}; ${chosen} starts on the supervisor's next tick.`;
       } else if (it.kind === "decision") {
         message = action === "approve" ? "Answered yes. The Superintendent acts on it."
           : action === "reject" ? "Answered no. The Superintendent is told." : "Sent. The Superintendent reads your answer as written.";
@@ -345,20 +332,22 @@
       title: `IntrinsicOS status · updated ${at.toTimeString().slice(0, 5)}`,
       health: ["✅ Supervisor ticking every 1m", "✅ Bridge up", "✅ Dead-man pinged"],
       sections: [
-        { title: "Active (2)", items: ["• `nw-launch-checklist` — agent/birch turn, 12m",
-                                       "• `lan-sonar-tuning` — agent/cedar, waiting on you"] },
+        { title: "Active (4)", items: ["• `vlt-owner-branch-recovery` — codex/sol turn, 12m",
+                                       "• `vlt-local-ci-safe-path` — claude/opus turn, 3m",
+                                       "• `hlw-patients-and-appointments` — claude/opus, ready for review",
+                                       "• `hwk-exercise-title-fallback` — codex/astra, waiting on you"] },
         { title: `Waiting on you (${q.counts.active})`,
           items: q.items.filter(i => i.lane !== "happened" && !i.deferred).slice(0, 4).map(i => `• ${i.title}`) },
       ],
       review: "-# Review and act in VISR.",
       usage: ["Agents 34% of 40% target (read 2m ago)"],
       connectivity: ["Chat ✅ delivered 1m ago", "Cloud snapshot ✅ published 12m ago"],
-      footer: "-# Edited in place by the supervisor each minute. Demo: invented figures.",
+      footer: "-# Edited in place by the supervisor each minute. Demo: sample figures.",
       weekly: { known: true, value: {
         since: ago(60 * 24 * 7), days: 7,
         ownerTurnsPerTouch: { ownerTurns: 17, touches: 5, ratio: 3.4 },
         judgmentShare: { decideActs: 31, acts: 50, share: 0.62 },
-        acceptedByCategory: { meta: 0, engine: 2, bets: 1, other: 0 },
+        acceptedByCategory: { meta: 4, engine: 3, bets: 1, other: 0 },
         cardToDecision: { medianSeconds: 11400, decisions: 29 },
         approvedWithoutRun: { hours: 72, count: 0, outcomeIds: [] },
         standingByRule: [{ ruleId: "R2", applied: 4, undone: 1 }],
@@ -375,15 +364,16 @@
     const plus = n => { const x = new Date(d); x.setDate(x.getDate() + n); return x.toISOString().slice(0, 10); };
     const today = new Date().toISOString().slice(0, 10);
     const actions = [
-      { dri: "you", due: plus(2), text: "Send Northwind the redirect list to confirm", ref: "task:nw-12", reported: false, proof: null },
-      { dri: "agent/birch", due: plus(1), text: "Bring the launch checklist to review", ref: "outcome:nw-launch-checklist",
+      { dri: "you", due: plus(2), text: "Create the GitHub App the CI runners sign in with", ref: "task:vlt-104", reported: false, proof: null },
+      { dri: "claude/opus", due: plus(1), text: "Bring Harlow's Patients and Appointments to review", ref: "outcome:hlw-patients-and-appointments",
         reported: true, proof: { kind: "checkpoint", at: ago(60 * 5), detail: "ready_for_review" } },
-      { dri: "agent/cedar", due: plus(4), text: "Tune the sonar against the tank's known depth", ref: "outcome:lan-sonar-tuning", reported: false, proof: null },
+      { dri: "codex/astra", due: plus(3), text: "Add the exercise-name fallback once you answer", ref: "outcome:hwk-exercise-title-fallback", reported: false, proof: null },
+      { dri: "codex/sol", due: plus(4), text: "Recover owner worktrees left on another branch", ref: "outcome:vlt-owner-branch-recovery", reported: false, proof: null },
     ].map(a => ({ ...a, done: Boolean(a.proof || a.reported), overdue: !(a.proof || a.reported) && a.due < today }));
     return { ok: true, today, date, dates: [date], previous: null, next: null,
       path: `Projects/meta/monday/${date}.md`,
-      note: { lines: 5, writtenAt: d.toISOString(),
-        markdown: "**Northwind launches this week.** The checklist is with you for acceptance.\n- Orchard's planner draft is waiting on one frost-date question.\n- Lanternfish's depth tuning waits on your answer about the tank test.\n\nFocus this week: launch Northwind, approve or reshape the Orchard planner." },
+      note: { lines: 6, writtenAt: d.toISOString(),
+        markdown: "**Harlow's Patients and Appointments lands this week.** The PR is green and with you to merge and accept.\n- Larkspur's pickup-plan draft waits on one question: has the breeder asked for it?\n- Heelwork's exercise names wait on your answer about the server fallback.\n- Local CI runs on the Mac; the client repos follow once the GitHub App exists.\n\nFocus this week: land Harlow, decide the pickup plan, unblock the CI rollout." },
       actions, actionsWrittenAt: d.toISOString(), problems: [] };
   }
 
