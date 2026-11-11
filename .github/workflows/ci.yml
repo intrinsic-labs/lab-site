@@ -1,0 +1,65 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0 # the feature-map check needs its `revision:` on the checked-out history
+
+      # Node 24, as the Vercel project builds with (Node.js Version 24.x). The tests import
+      # the .ts sources directly, which needs Node's type stripping. Node comes first: pnpm 11
+      # needs Node 22.13+ to run.
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+
+      # pnpm's version comes from "packageManager" in package.json.
+      - uses: pnpm/action-setup@v6
+        with:
+          cache: true
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Tests
+        run: pnpm test
+
+      - name: Feature map (errors fail; drift and unmapped routes warn)
+        run: node scripts/check-feature-map.mjs FEATURE_MAP.md --routes 'app/**/*.{ts,tsx}'
+
+      # A known draft makes the rail check below real even when content/ holds no draft.
+      # It lives only in this runner's checkout; Vercel never sees it.
+      - name: Add the draft-rail probe post
+        run: cp tests/fixtures/draft-rail-probe.mdx content/research/zz-draft-rail-probe.mdx
+
+      - name: Build (preview mode)
+        run: pnpm build
+
+      - name: Drafts have routes in a preview build
+        run: node scripts/check-draft-rail.mjs --preview
+
+      - name: Build (production)
+        env:
+          VERCEL_ENV: production
+        run: pnpm build
+
+      - name: No draft has a route in a production build
+        run: node scripts/check-draft-rail.mjs
