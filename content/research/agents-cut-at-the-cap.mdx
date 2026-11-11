@@ -1,0 +1,41 @@
+---
+title: Long agent sessions were cut at the time cap with nothing recorded
+kind: field-note
+area: agent-operations
+date: 2026-11-11
+status: draft
+summary: "Over 20 days, 10 of 121 agent sessions hit a 60-minute hard cap having recorded no status: 29% of all session-minutes. After raising the cap to 120 minutes, stating the budget in the prompt and nudging the agent to checkpoint every 25 minutes, the next 20 days had 0 of 972 cut that way, and 1.4% of minutes ended unrecorded from any cause."
+caveats:
+  - "A session is not the same unit before and after. From October 21 a long piece of work could continue across several shorter sessions, which partly explains the eightfold rise in session count. The minutes measure is the fairer comparison."
+  - "Other changes landed in the after-window, including a new default model on most Claude sessions. The effect of the checkpoint rule is not isolated."
+  - "Only Claude-run sessions were ever cut. The same harness running Codex never reached either cap, and its longest session in either window was 53 minutes. Why is not established."
+  - "Counts start on September 23, when the run journal begins. The after-window ends November 3, before the harness changed again (see the last section)."
+artifacts: []
+artifactsNote: "The harness is private. The rule is fully stated in the post. The counts come from SQL queries over our run journal, which holds private task names and is not released."
+corrections: []
+---
+
+We run software agents in sessions that each own a piece of work: an agent works for a while, records a checkpoint (a short status saying where things stand), and is resumed later. That checkpoint is what a person reviews. A session that ends without one leaves its files in place but its progress unreported.
+
+Between September 23 and October 13, 10 of 121 such sessions ended at exactly 60:00, the hard cap set by the harness (the software that starts, times and stops each agent session), with nothing recorded. They were 8% of sessions and 29% of the minutes (600 of 2,063). The files survived; the status report and the item on the reviewer's queue did not.
+
+## What changed
+
+Four things, on October 13:
+
+- **The agent sees its budget.** The prompt states the start time, the hard cap (raised to 120 minutes), and the rule: record a working checkpoint at least every 25 minutes and the final one before 110.
+- **A harness hook nudges it.** A hook is code that runs after each of the agent's tool calls. About 24 minutes into the session, and every 5 minutes after, the agent is reminded to checkpoint. A `sleep` of 10 minutes or more is blocked.
+- **A human is alerted at 90 minutes** without a checkpoint.
+- **A session cut at the cap keeps its card** on the review queue instead of disappearing.
+
+## After
+
+In the 20 days that followed, 0 of 972 sessions were cut at the cap with nothing recorded. Counting every way a session can end without a checkpoint (crashes, a stall check, being stopped), 187 of 12,984 minutes were lost, 1.4%, against 29% before. The 90th-percentile session got shorter (58.8 → 29.3 minutes); the median barely moved (7.7 → 9.0).
+
+The longer cap alone doesn't explain it. Fourteen sessions ran past 60 minutes and would have been cut under the old cap. Twelve of them finished with a checkpoint, one was stopped by a separate stall check after its working checkpoint was saved, and one ran the full 120 minutes and was cut, with five working checkpoints already recorded. Nothing it had done was lost.
+
+The nudge fired 438 times on 229 sessions, and the 90-minute alert fired once. **The hook is a nudge, not a guarantee:** in the first two days, one session waiting on a hung review ignored ten nudges before the stall check stopped it. If the agent complies, a 25-minute checkpoint caps what a cut can lose at one interval; if it doesn't, the stall check and the human alert are the backstop.
+
+## Where this goes next
+
+On November 9 the harness changed shape: each project now has one long-running owner session instead of one session per piece of work, with no hard cap at all. That replaces the problem this rule solved with a different one, how to know where a session that never ends stands, and we'll count that the same way once it has run as long.
