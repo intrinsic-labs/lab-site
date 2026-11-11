@@ -6,6 +6,12 @@ its `_brief.md` is the business-side source of truth; `docs/site-plan-2026-08-17
 (sections, decisions D1–D7 + rulings) and `docs/publication-cadence.md` (how a post gets
 published) are the design docs. This file is the engineering entry point.
 
+**Verify and navigate:** [VERIFY.md](VERIFY.md) takes a cold agent from checkout to a running
+site, Playwright screenshots, the checks CI runs, deploys, rollback and cleanup;
+[FEATURE_MAP.md](FEATURE_MAP.md) maps every route to its code, content source and selector.
+Change a route or its content source and update its map entry in the same commit, then run
+`node scripts/check-feature-map.mjs FEATURE_MAP.md --routes 'app/**/*.{ts,tsx}'`.
+
 ## Layout
 
 ```
@@ -196,8 +202,8 @@ that costs, both measured on 2026-09-04 rather than assumed:
 
 ## Commands
 
-`pnpm dev` · `pnpm build` · `pnpm lint` · `VERCEL_ENV=production pnpm build` (rail check) ·
-`node --test tests/*.test.mjs`
+`pnpm dev` · `pnpm build` · `pnpm lint` · `pnpm test` · `VERCEL_ENV=production pnpm build`
+then `node scripts/check-draft-rail.mjs` (rail check). The full CI sequence is in VERIFY.md.
 
 ## The cold-reader gate (standing, since 2026-09-03)
 
