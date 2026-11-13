@@ -1,0 +1,47 @@
+---
+title: Four limits sized for a quiet Mac failed when many agents tested on it at once
+kind: field-note
+area: agent-operations
+date: 2026-11-13
+status: draft
+summary: "On November 11 and 12, many coding agents running test suites on one Mac broke four pieces of shared infrastructure. A process sweep with a 3 s listing limit quietly killed nothing (2 of 320 stress runs failed; 0 of 320 after the fix). A 5-minute limit meant for one git call killed 2 passing verifies. A shim recursed to about 4,000 processes and 86 GB of swap. A version probe with no timeout hung test runs for 30+ minutes."
+caveats:
+  - "The 0/320 comes from a synthetic stress harness: one test file run 320 times, 20 in parallel with 12 CPU burners, on November 12. It is not a count of production sweeps."
+  - "As of November 13, only one adoption (the step that verifies and switches the automation to a new commit) has been observed since these fixes landed. The 15-minute budget has not yet been tested under the load that broke the old limit."
+  - "The load averages (about 195 and about 200), the swap and the free-disk figures come from the pull request descriptions written at the time, not from a recorded monitoring series."
+  - "The 20-of-20 live-input failure is a reproduction with a 400 ms stall, not a production failure rate."
+  - "Why `codex --version` started hanging on this Mac is not established. The fix bounds the damage; it does not explain the hang."
+  - "One Mac, one company's agents, two days. The thresholds that held here (10 s, 15 minutes) are ours, not general constants."
+artifacts: []
+artifactsNote: "The repository is private, so the pull requests and diffs are not linked. The four rules at the end are the transferable part, and each is stated fully enough to apply without the code."
+corrections: []
+---
+
+Our automation runs on one Mac, and many coding agents run their test suites on it at the same time. Each limit below was set when the machine was quiet. On November 11 and 12, with the load average at times near 200, four of them failed.
+
+## The process sweep quietly killed nothing
+
+When a tested agent run ends, a sweep ends the commands the agent started that outlived it. It listed processes once, with `ps` limited to 3 s. Under load the listing took longer, the call failed, and the sweep treated the failure as nothing to kill. In one verify's log, two sweep tests got an empty result after about 4 s, and flaky tests in this area failed two verifies on November 12. The sweep also looked only once, so a daemon that forked while its launcher was being signalled was never seen.
+
+Now each listing gets 10 s and up to three tries, and after the grace period the sweep lists again and kills both the survivors and anything newly tied to the workspace. Run 320 times, 20 in parallel alongside 12 CPU burners, the test file went from 2 failures to 0. The same change fixed a live-input test that failed 20 times out of 20 under a 400 ms stall: it sent its message on a 10 ms timer that raced a 300 ms settle check.
+
+## The verify was killed while passing
+
+Before the automation switches to a new commit, it runs the full test suite in a separate checkout. That run inherited the default limit for a single git or GitHub call: 5 minutes. Healthy runs took 127 to 275 s in November, so there was little margin. Under load the limit killed two runs that were passing, on November 11 and November 12; one was about 45 tests in. Neither involved a failing test. The verify now has its own 15-minute budget.
+
+## A shim found itself
+
+Agents reach GitHub through a small script named `gh`, first on their PATH, that calls our CLI, which then looks up the real `gh` on PATH. It skipped only its own state directory's copy. A process with a different state directory, such as a test run, found the live shim, took it for the real `gh`, and called back in, endlessly. Two chains reached about 4,000 processes, 86 GB of swap and 1% free disk before they were killed.
+
+The fix recognises any shim by a marker line, and sets an environment variable on the real `gh` so a call that comes back into the shim refuses once instead of forking. The marker alone was not enough: the next day it recurred through a hand-made wrapper without the marker, so any script that wraps the CLI's `gh` command now counts as a shim.
+
+## A version probe hung for half an hour
+
+Two tests checked whether the Codex CLI was installed by running `codex --version` with no timeout. On this Mac the probe sometimes never returned, and on November 12 it hung whole test runs for 30+ minutes, twice. The other probes in the repository already had a 10 s timeout; these two, and a third found later, now do.
+
+## What we'd tell someone doing the same
+
+- Re-list after the grace period, and treat a failed listing as a failure, never as an empty one.
+- Give a full-suite verify its own time budget, not the per-command default.
+- Guard any PATH-found shim against finding itself: recognise every copy, and set a re-entry variable it refuses to run under.
+- Time out every version probe.
