@@ -1,0 +1,34 @@
+---
+title: What broke when many agents ran tests on one Mac at once
+kind: field-note
+area: agent-operations
+date: 2026-11-13
+status: published
+summary: "On November 11 and 12, with many agent runs on one shared Mac and load readings near 200 at times, four things broke. A 3 s process listing timed out and the cleanup sweep killed nothing. A 5-minute limit meant for one git call killed 2 test runs that were passing. A shim found itself on PATH and recursed to about 4,000 processes. A version probe with no timeout hung test runs for 30+ minutes."
+caveats:
+  - "The 2/320 → 0/320 comes from a synthetic stress harness (one test file run 320 times, 20 in parallel with 12 CPU burners) and covers the sweep fix together with fixes to the tests themselves. It is not a count of production sweeps."
+  - "The fixes are a day old. We have not yet seen the 15-minute verify budget run under load like the one that broke the old limit."
+  - "The load readings (about 195 and about 200), the swap and the free-disk figures are as reported in the pull requests written at the time, not from a monitoring series."
+  - "Why codex --version sometimes hung on this Mac is not established. The timeout bounds the damage; it does not explain the hang."
+  - "One Mac, one company's agents, two days. The 10 s and 15-minute settings are ours, not general constants."
+artifacts: []
+artifactsNote: "The repository is private, so the pull requests and diffs are not linked. The four rules at the end are the transferable part."
+corrections: []
+---
+
+Our agents share one Mac. On November 11 and 12, with many agent runs on it and load readings near 200 at times, four pieces of shared plumbing broke, each in a different way.
+
+**A failed listing read as an empty one.** When an agent run ends, a sweep kills the processes it left behind. It listed processes with `ps` limited to 3 s. Under load the call timed out, and the sweep treated that as nothing to kill. After its grace period it re-checked only the processes it had already chosen, so a daemon that forked mid-shutdown was never picked up. Now each listing gets 10 s and up to three tries, and when it has targets, it also looks for new ones after the grace period. With this and fixes to the tests themselves, a test file run 320 times, 20 in parallel beside 12 CPU burners, went from 2 failures to 0.
+
+**A passing verify was killed.** Before our automation switches to a new commit, it runs the full test suite. That run had inherited the 5-minute limit meant for a single git call. Healthy runs took 127 to 275 s in November, so under load the limit killed two runs in which no test had failed. The verify now has its own 15-minute budget.
+
+**A shim found itself.** Agents reach GitHub through a `gh` script early on their PATH, which looks up the real `gh` on PATH. It skipped only the shim in its own state directory, so a process with a different one, such as a test run, could take the live shim for the real `gh` and call back in. Two chains reached about 4,000 processes, 86 GB of swap and 1% free disk before they were killed. The lookup now recognises the marker every generated shim carries, and a re-entry variable makes a call that comes back refuse instead of forking. The next day a hook's own wrapper, without the marker, caused the same loop, so a script whose opening lines wrap the CLI's `gh` command is now recognised as a shim too.
+
+**A version probe never returned.** Tests checked whether the Codex CLI was installed by running `codex --version` with no timeout. Twice on November 12 that hung whole test runs for over 30 minutes. The three probes we found now have a 10 s timeout.
+
+## What we'd tell someone doing the same
+
+- Treat a failed listing as a failure, never as an empty result, and look for new targets after the grace period.
+- Give a full-suite verify its own time budget, not the per-command default.
+- Guard any shim found on PATH against finding itself: recognise it from any state directory, and set a re-entry variable it refuses to run under.
+- Time out every version probe.
