@@ -1,8 +1,8 @@
 ---
 feature-map: 1
 root: .
-revision: 5c6fd22bdce4ccb51920e97d2d33806f2a35547b
-reconciled: 2026-11-11
+revision: 21ebd475985602db426de9a757900d1a3337d4b0
+reconciled: 2026-11-16
 ---
 # lab-site feature map
 
@@ -30,7 +30,7 @@ that exist in the code today, marked `working`; everything else says `none` with
 - **Code:** `app/page.tsx`, `components/home/`, `content/pages/home-tagline.md`, `content/pages/home-subtitle.md`, `content/specimen/autonomy.json`
 - **Backend:** none — build-time reads of `content/`; `autonomy.json` is written by `scripts/recount-measures.mjs`
 - **Status:** live
-- **Notes:** With every post retired, no Latest and no Research areas section render. That is correct, not a bug. A null measure value draws no disc.
+- **Notes:** Latest and Research areas render only when at least one post is published; with none, neither renders, and that is correct. A null measure value draws no disc.
 
 ### Header, footer and navigation
 - **ID:** `shell.nav`
@@ -67,19 +67,19 @@ that exist in the code today, marked `working`; everything else says `none` with
 - **Code:** `app/research/page.tsx`, `app/research/layout.tsx`, `components/research/`, `content/pages/research-intro.md`, `content/pages/research-empty.md`, `lib/content/posts.ts`
 - **Backend:** none — `content/research/*.mdx` at build time
 - **Status:** live
-- **Notes:** Today all six posts are retired, so the index shows the empty state.
+- **Notes:** With no published post the index shows the empty state. Which posts are listed changes with every publication, so check rather than trust a count here: `grep -H '^status:' content/research/*.mdx`.
 
 ### Research post
 - **ID:** `research.post`
 - **Purpose:** A published post: header, body, then caveats, corrections and artifacts only when non-empty. A `draft` renders only on previews, with a draft chip.
 - **Where:** `/research/<slug>`
-- **Reach:** the index, an area page, or the URL
-- **Requires:** a `published` post (none today) or, for `draft`, a non-production build (`VERCEL_ENV` not `production`)
+- **Reach:** the index, an area page, or the URL, e.g. `/research/agents-cut-at-the-cap`
+- **Requires:** a `published` post or, for `draft`, a non-production build (`VERCEL_ENV` not `production`)
 - **Selector:** none — `getByRole('heading', { level: 1 })`
 - **Code:** `app/research/[slug]/page.tsx`, `components/research/`, `lib/content/posts.ts`, `lib/content/post-status.ts`, `lib/content/draft-rail.ts`, `lib/mdx/render.tsx`, `content/research/`
 - **Backend:** none — `content/research/<slug>.mdx`; front matter validated by `lib/content/schema.ts`
 - **Status:** live
-- **Notes:** The draft rail: `VERCEL_ENV=production pnpm build` must emit no route for a draft (`scripts/check-draft-rail.mjs`, in CI). No published or draft post exists today, so the live check is the script's test plus a temporary draft file; see VERIFY.md.
+- **Notes:** The draft rail: `VERCEL_ENV=production pnpm build` must emit no route for a draft (`scripts/check-draft-rail.mjs`, in CI). CI copies the probe draft `tests/fixtures/draft-rail-probe.mdx` in before both builds so the check never passes vacuously; see VERIFY.md.
 
 ### Retired post notice
 - **ID:** `research.retired`
@@ -102,7 +102,7 @@ that exist in the code today, marked `working`; everything else says `none` with
 - **Code:** `app/research/areas/[area]/page.tsx`, `lib/content/areas.ts`, `content/pages/research-area-empty.md`
 - **Backend:** none — `content/research/`
 - **Status:** live
-- **Notes:** Area slugs are permanent URLs. All three are empty today.
+- **Notes:** Area slugs are permanent URLs. An area appears in the nav and on `/research` only while it has a published post.
 
 ### RSS feed
 - **ID:** `research.feed`
@@ -265,4 +265,4 @@ that exist in the code today, marked `working`; everything else says `none` with
 - `./app/icon.png`, `./app/apple-icon.png`, `./app/opengraph-image.jpg`, `./app/twitter-image.jpg` — site icons and share images, no page of their own
 - `./app/globals.css` — tokens and theme remap, no route
 - `public/visr-demo/` — vendored VISR desk served inside the iframe; not a Next route
-- `scripts/` — maintenance and verification scripts, not site features
+- `scripts/` — maintenance and verification scripts, not site features: `check-feature-map.mjs` with `scripts/feature-map/` (this map's check), `check-draft-rail.mjs` with `scripts/lib/ts-imports.mjs` (the draft rail), `verify-drive.mjs` (the VERIFY.md browser drive), `recount-measures.mjs`, `vendor-visr-demo.mjs`, `scrub-check-visr-demo.mjs`

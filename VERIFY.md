@@ -114,8 +114,7 @@ counts as the draft it defaults to. It then reads `.next/prerender-manifest.json
 routed; with `--preview` it fails if any draft is *not* routed, because a preview must render
 drafts for review.
 
-`content/research` holds no draft today, so without help the check would pass vacuously (it
-says so). The probe post (`tests/fixtures/draft-rail-probe.mdx`) is a real, schema-valid draft:
+When `content/research` holds no draft, the check alone would pass vacuously (it says so). The probe post (`tests/fixtures/draft-rail-probe.mdx`) is a real, schema-valid draft:
 copied in before both builds, it must appear in the preview build and be absent from the
 production one. On 2026-11-11 the preview build listed `/research/zz-draft-rail-probe` and the
 production build did not. The probe only ever exists in a CI runner or your own copy; Vercel
@@ -238,8 +237,9 @@ remembered PID. In a throwaway worktree or copy, also `rm -rf .next node_modules
 - **A production build after a preview build leaves no stale draft pages:** `next build`
   empties `.next` first, so the rail check reads only the last build. Always run the check
   right after the build it is about.
-- **No post is published or draft right now**; all six are retired. The home page, `/research`,
-  the feed and the area pages show their empty states, and that is correct.
+- **With no published post**, the home page, `/research`, the feed and the area pages show
+  their empty states, and that is correct. Don't record which posts are published in these
+  docs; it changes with every post (`grep -H '^status:' content/research/*.mdx`).
 - **`node` prints a `MODULE_TYPELESS_PACKAGE_JSON` warning** when the tests or the rail check
   import a `.ts` file, because `package.json` has no `"type"`. It is harmless.
 - Headless Chromium renders the WebGL work covers and the home spirograph; no GPU flags needed.
