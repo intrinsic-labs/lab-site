@@ -10,7 +10,7 @@ If something is not on a card or in a thread in VISR, it is not waiting on Asher
 ## What is still manual
 
 - **Taste and the physical world.** Interface judgments are his, and an owner that needs a login or a physical action says so and waits.
-- **Much of the review is an instruction, not a rule the code enforces.** The runtime enforces the checks before each session, who may accept, session limits, the stop switch and each project's merge rules. For code, it checks for the other family's review only at some merges (sign-in and payment code, and an owner's work the Superintendent merges) and when it verifies a delivery itself. Edits to company documents go to that review automatically.
+- **Much of the review is an instruction, not a rule the code enforces.** The runtime enforces the checks before each session, who may accept, session limits, the stop switch and, for pilot project owners, each project's merge rules. For code, it checks for the other family's review only at some merges (sign-in and payment code, and an owner's work the Superintendent merges) and when it verifies a delivery itself. Edits to company documents go to that review automatically.
 - **His time is not measured.** A daily self-report failed in its first trial, so the [operating measures](/#operating-measures) on the home page are not an autonomy rate.
 
 ## What has failed
