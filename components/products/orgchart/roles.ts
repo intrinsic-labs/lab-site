@@ -72,7 +72,7 @@ export const ROLES: Role[] = [
     mayDecide: [
       "Which drafts become approved work, and which agent owns each. The Superintendent can open work too, and the record shows who did.",
       "Accepting results that involve interface or taste calls, client or public sends, production or a physical check.",
-      "Merges on the paths each project reserves for him, and every merge on a project with no merge rules.",
+      "Merges on the paths each project reserves for him, and, on pilot projects, every merge where no merge rules are set.",
       "Spending money, sending anything outside the company, releasing to production or deleting real data, when the Superintendent asks: each needs his tap on that exact action. An owner may release to production where its approved outcome allows it.",
       "How much the Superintendent may do without asking.",
     ],
@@ -150,7 +150,7 @@ export const ROLES: Role[] = [
     does:
       "Deliver approved outcomes from start to landing. On a pilot project, one persistent owner runs every outcome of that project; other projects still get one owner per outcome. It works in its own copies of the code, on its own branches. A pilot owner has no hard time limit; a per-outcome owner's turn stops at two hours. Owners are asked to checkpoint at least every 25 minutes, and the runtime reminds them.",
     mayDecide: [
-      "How to build the approved outcome, and which model does each piece. The outcome's recommended model is the default; it records why when it departs from it.",
+      "How to build the approved outcome, and which model does each piece. On pilot projects the outcome's chosen model is a recommendation it follows by default, recording why when it departs; elsewhere that choice is the owner itself.",
       "On pilot projects, landing its own pull requests through the runtime's landing tool, which allows it only where the project's merge rules give it every changed file, the checks are green and, for sign-in or payment code, the cross-family review is clean. Missing rules reserve every merge to Asher.",
       "Small work inside its project without a new approval: a bug, a test, CI, cleanup, docs.",
       "Not widening the approved scope, and not accepting its own result.",
@@ -192,7 +192,7 @@ export const ROLES: Role[] = [
     family: "Either family",
     tier: "checking",
     does:
-      "Turns each of Asher's notes, and his corrections to earlier drafts, into a draft outcome with acceptance criteria, a few small tasks for him, a date change on existing work, or nothing. In a project with an owner, a small engineering ask goes straight to that owner instead.",
+      "Turns each of Asher's notes, and his corrections to earlier drafts, into a draft outcome with acceptance criteria, a few small tasks for him, a proposed date change for him to approve, or nothing. In a project with an owner, a small engineering ask goes straight to that owner instead.",
     mayDecide: ["The shape of the proposal only. It can't approve anything or choose an owner: the runtime reverts either attempt."],
     talksTo: [
       { to: "asher", how: "Each draft becomes a card in VISR" },
@@ -237,7 +237,7 @@ export const ROLES: Role[] = [
       "When an owner or the Superintendent edits the company's own documents, skills or prompts, a model of the other family reviews the exact text: whether it is correct and will stay true.",
     mayDecide: [
       "Routine edits apply first and are reviewed after; findings are fixed forward, never reverted.",
-      "An owner's protected edits (project briefs, agent guides, approved outcomes, authority rules) are reviewed first, then wait for Asher or a standing rule of his. The Superintendent may apply some itself first, within the latitude he gives it.",
+      "An owner's protected edits (project briefs, agent guides, approved outcomes, authority rules) are reviewed first, then wait for Asher or a standing rule of his; some paths stay his alone. The Superintendent may apply some itself first, within the latitude he gives it.",
     ],
     talksTo: [
       { to: "owners", how: "Returns findings to the editor" },
