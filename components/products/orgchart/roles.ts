@@ -72,8 +72,8 @@ export const ROLES: Role[] = [
     mayDecide: [
       "Which drafts become approved work, and which agent owns each. The Superintendent can open work too, and the record shows who did.",
       "Accepting results that involve interface or taste calls, client or public sends, production or a physical check.",
-      "Merges on the paths each project reserves for him.",
-      "Spending money, sending anything outside the company, releasing to production or deleting real data. Each needs his tap on that exact action.",
+      "Merges on the paths each project reserves for him, and every merge on a project with no merge rules.",
+      "Spending money, sending anything outside the company, releasing to production or deleting real data, when the Superintendent asks: each needs his tap on that exact action. An owner may release to production where its approved outcome allows it.",
       "How much the Superintendent may do without asking.",
     ],
     talksTo: [
@@ -93,12 +93,12 @@ export const ROLES: Role[] = [
       "Runs the company day to day alongside Asher: keeps approved work moving, opens and accepts outcomes, thinks through his brain dumps with him, fixes what blocks the work and prepares his decisions. It can walk him through the VISR deck and act on cards when he asks.",
     mayDecide: [
       "Opening approved work and choosing its owner, within the same pacing and limits as Asher's approvals.",
-      "Accepting a finished result when the project allows it or the work can't reach real users. Each accept is recorded with its reason and can be undone.",
+      "Accepting a finished result, as far as the project's acceptance rules and the latitude Asher gives it allow; a project he keeps for himself stays his. Each accept is recorded with its reason and can be undone.",
       "Merging internal pull requests whose checks pass and whose release review is clean. A merge that ships a product, or that touches its own permission rules, waits for Asher.",
       "Not spending, outside sends, production releases or deleting real data: for those it can only ask, with a button he taps.",
     ],
     talksTo: [
-      { to: "asher", how: "The main chat in VISR; decisions arrive as yes/no buttons under its reply" },
+      { to: "asher", how: "The main chat in VISR; decisions wait in a dock above the message box" },
       { to: "threads", how: "Gives each matter its own thread" },
       { to: "owners", how: "A private thread with each project's owner" },
       { to: "jefferson", how: "Hands work back and forth, so Asher never relays" },
@@ -117,11 +117,11 @@ export const ROLES: Role[] = [
       "Separate Superintendent sessions, each with its own record: one per alert, owner or bot handoff, timer or scheduled routine, and a project's thread when that project has no owner of its own.",
     mayDecide: [
       "What the Superintendent may decide, within that one matter.",
-      "What to post to the main chat: only a decision Asher must make, a blocker or a finished result, never progress.",
+      "What to post: only a decision Asher must make, a blocker or a finished result, never progress. A record thread posts to the main chat; a project thread posts in its own conversation.",
       "A reserved action raised from a thread waits as a row in the main chat until Asher taps it.",
     ],
     talksTo: [
-      { to: "superintendent", how: "Post decisions, blockers and results to the main chat" },
+      { to: "superintendent", how: "Record threads post decisions, blockers and results to the main chat" },
       { to: "asher", how: "A project thread without an owner is where he talks to that project" },
     ],
   },
@@ -148,10 +148,10 @@ export const ROLES: Role[] = [
     family: "Claude or Codex",
     tier: "building",
     does:
-      "Deliver approved outcomes from start to landing. On a pilot project, one persistent owner runs every outcome of that project; other projects still get one owner per outcome. It works in its own copies of the code, on its own branches, in turns of up to two hours, and records a checkpoint at least every 25 minutes.",
+      "Deliver approved outcomes from start to landing. On a pilot project, one persistent owner runs every outcome of that project; other projects still get one owner per outcome. It works in its own copies of the code, on its own branches. A pilot owner has no hard time limit; a per-outcome owner's turn stops at two hours. Owners are asked to checkpoint at least every 25 minutes, and the runtime reminds them.",
     mayDecide: [
       "How to build the approved outcome, and which model does each piece. The outcome's recommended model is the default; it records why when it departs from it.",
-      "Landing its own pull requests where the project's merge rules give it every changed file, the checks are green and, for sign-in or payment code, the cross-family review is clean. The rest waits for Asher.",
+      "Landing its own pull requests through the runtime's landing tool, which allows it only where the project's merge rules give it every changed file, the checks are green and, for sign-in or payment code, the cross-family review is clean. Missing rules reserve every merge to Asher.",
       "Small work inside its project without a new approval: a bug, a test, CI, cleanup, docs.",
       "Not widening the approved scope, and not accepting its own result.",
     ],
@@ -206,7 +206,7 @@ export const ROLES: Role[] = [
     family: "Either family",
     tier: "checking",
     does:
-      "Once a week for each client project and product bet, or on request, reads the project and pitches up to three next outcomes as drafts. A project can be switched off.",
+      "Reads a project and pitches up to three next outcomes as drafts per run, in a weekly slot for each client project and product bet, or on request. A project can be switched off.",
     mayDecide: ["Nothing beyond proposing. A project's weekly slot waits while its last batch of drafts is still undecided."],
     talksTo: [{ to: "asher", how: "Its drafts arrive as cards in VISR" }],
   },
@@ -219,8 +219,8 @@ export const ROLES: Role[] = [
     does:
       "A nightly health check of the runtime's records and the company's documents: drift, failed runs, work that never landed, stale docs. A second nightly pass reads a redacted digest of the day's agent sessions for recurring failures and loose ends. It also runs cross-family code review: a model from the other family than the author's reviews each pull request.",
     mayDecide: [
-      "Fixing documentation, skills and prompts itself, by exact find-and-replace, outside the protected files (authority rules, project briefs, outcomes, agent guides). Everything else stays a finding.",
-      "Review verdicts. A release review covers the exact commit that will merge, so any later push needs a new one, and a failed review never counts as clean.",
+      "Fixing documentation, skills and prompts itself, by exact find-and-replace, only in the places it is allowed to edit. Everything else, including authority rules, project briefs, outcomes and agent guides, stays a finding.",
+      "Review verdicts. A release review covers the exact commit that will merge, so a later substantive change needs a new one, and a failed review never counts as clean.",
     ],
     talksTo: [
       { to: "superintendent", how: "New findings wake its chat" },
@@ -237,7 +237,7 @@ export const ROLES: Role[] = [
       "When an owner or the Superintendent edits the company's own documents, skills or prompts, a model of the other family reviews the exact text: whether it is correct and will stay true.",
     mayDecide: [
       "Routine edits apply first and are reviewed after; findings are fixed forward, never reverted.",
-      "Protected edits (project briefs, agent guides, approved outcomes, authority rules) are reviewed first, then wait as a change only Asher, or a standing rule of his, decides.",
+      "An owner's protected edits (project briefs, agent guides, approved outcomes, authority rules) are reviewed first, then wait for Asher. The Superintendent may apply some itself first, within the latitude he gives it.",
     ],
     talksTo: [
       { to: "owners", how: "Returns findings to the editor" },
