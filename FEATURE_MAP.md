@@ -1,7 +1,7 @@
 ---
 feature-map: 1
 root: .
-revision: 21ebd475985602db426de9a757900d1a3337d4b0
+revision: 89be765586f0d862e3162293c8a05cd2f7d98ed3
 reconciled: 2026-11-16
 ---
 # lab-site feature map
