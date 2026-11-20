@@ -23,7 +23,7 @@ Intrinsic Labs is one founder, Asher, working with AI agents on its engineering 
 <VisrShot file="thread.webp" alt="A phone screen showing the thread for one outcome: the owner's checkpoints, an emulator pass and then ready for review, each followed by the Superintendent's note on what it did next.">A thread for one outcome: the owner's checkpoints and what the Superintendent did with each.</VisrShot>
 </VisrShots>
 
-Screenshots from the [VISR demo](/visr), which runs on fictional sample data with client names changed.
+Screenshots from the [VISR demo](/visr), which runs on sample cards adapted from the company's own work, with client names changed. Nothing in them is live.
 
 ## Who does what
 
