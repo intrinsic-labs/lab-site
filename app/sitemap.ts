@@ -24,6 +24,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...posts.map((p) => ({ url: u(`/research/${p.slug}`), lastModified: p.date })),
     ...products.map((p) => ({ url: u(`/products/${p.slug}`) })),
     { url: u("/products/aspen-grove/open-loom") },
+    { url: u("/products/intrinsic-os/how-it-works") },
     ...caseStudies.map((c) => ({ url: u(`/work/${c.slug}`) })),
   ];
 }

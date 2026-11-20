@@ -1,7 +1,7 @@
 ---
 feature-map: 1
 root: .
-revision: 21ebd475985602db426de9a757900d1a3337d4b0
+revision: 4e1c6a290db8e0a3fa0dfe8616f5c0a01c3b732a
 reconciled: 2026-11-16
 ---
 # lab-site feature map
@@ -141,7 +141,7 @@ that exist in the code today, marked `working`; everything else says `none` with
 
 ### IntrinsicOS with the embedded VISR demo
 - **ID:** `products.intrinsic-os`
-- **Purpose:** What the runtime is, its three parts, and the live VISR desk embedded mid-page.
+- **Purpose:** What the runtime is, its three parts, a link to its how-it-works report, and the live VISR desk embedded mid-page.
 - **Where:** `/products/intrinsic-os`; the demo sits under "the VISR" section
 - **Reach:** header IntrinsicOS
 - **Requires:** none; at tablet (1024x768) and desktop widths the Superintendent chat docks beside the deck, at phone width it does not. The frame is lazy, so scroll it into view before judging it
@@ -150,6 +150,18 @@ that exist in the code today, marked `working`; everything else says `none` with
 - **Backend:** none — the demo's `public/visr-demo/demo/shim.js` answers every `/api/*` call in memory; zero network `/api` requests by design
 - **Status:** live
 - **Notes:** The demo's data is sample data (`public/visr-demo/demo/corpus.js`). Run the scrub check after changing it; see VERIFY.md.
+
+### IntrinsicOS: how it works (report)
+- **ID:** `products.intrinsic-os-how-it-works`
+- **Purpose:** A Lab report on how IntrinsicOS and VISR work: who decides what, how a piece of work moves, where the founder sits, what is still manual and what has failed. Carries an interactive org chart of every role and three screenshots of the fictional VISR demo.
+- **Where:** `/products/intrinsic-os/how-it-works`
+- **Reach:** the "How IntrinsicOS works" link under the three cards on `/products/intrinsic-os`; not in the nav
+- **Requires:** none. The chart works by tap, click, Tab, the arrow keys, Enter and Space; with JavaScript off it renders with Asher selected, and "Every role as a list" (a native `<details>`) holds every role in full
+- **Selector:** working — `getByRole('group', { name: /^Org chart/ })` for the chart, `getByRole('button', { name: /Superintendent/ })` for a node (`aria-pressed` marks the selected one), `#orgchart-detail` for the detail panel
+- **Code:** `app/products/intrinsic-os/how-it-works/page.tsx`, `components/products/orgchart/`, `components/products/howitworks/`, `content/pages/intrinsic-os-how-it-works-intro.md`, `content/pages/intrinsic-os-how-it-works-limits.md`, `public/products/intrinsic-os/how-it-works/`
+- **Backend:** none — build-time reads of the two prose files; the chart's data is `components/products/orgchart/roles.ts`
+- **Status:** live
+- **Notes:** The screenshots sit in a subfolder because `productImages("intrinsic-os")` turns any image at the top of `public/products/intrinsic-os/` into a gallery on the parent page. Every role line in `roles.ts` is checked against the private runtime docs; `tests/orgchart.test.mjs` checks its links and that no retired bot appears.
 
 ### VISR product page
 - **ID:** `products.visr`
@@ -235,7 +247,7 @@ that exist in the code today, marked `working`; everything else says `none` with
 
 ### Sitemap and robots
 - **ID:** `seo.sitemap-robots`
-- **Purpose:** `/sitemap.xml` lists the static pages, populated areas, published posts, products, the OpenLoom base and case studies; `/robots.txt` allows all and names the sitemap.
+- **Purpose:** `/sitemap.xml` lists the static pages, populated areas, published posts, products, the OpenLoom base, the IntrinsicOS how-it-works report and case studies; `/robots.txt` allows all and names the sitemap.
 - **Where:** `/sitemap.xml`, `/robots.txt`
 - **Reach:** URL
 - **Requires:** none
